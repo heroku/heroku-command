@@ -29,6 +29,21 @@ class Command {
     if (['true', '1'].indexOf((process.env.HEROKU_DEBUG || '').toLowerCase()) !== -1) return 1
     return 0
   }
+
+  log (...args) {
+    console.log(...args)
+  }
+
+  styledJSON (obj) {
+    let json = JSON.stringify(obj, null, 2)
+    if (this.supportsColor) {
+      let cardinal = require('cardinal')
+      let theme = require('cardinal/themes/jq')
+      this.log(cardinal.highlight(json, {json: true, theme: theme}))
+    } else {
+      this.log(json)
+    }
+  }
 }
 
 module.exports = Command
