@@ -7,6 +7,7 @@
   "repository": "https://github.com/heroku/heroku-command",
   "dependencies": {
     "cardinal": "1.0.0",
+    "got": "6.7.1",
     "heroku-client": "3.0.0-beta3",
     "netrc": "0.1.4"
   }

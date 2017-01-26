@@ -1,10 +1,12 @@
 'use strict'
 
 const parse = require('./parse')
+const slack = require('./slack')
 
 class Command {
   constructor (options = {}) {
     this.argv = options.argv
+    this.slack = options.slack
     this.constructor.mixins = this.constructor.mixins || []
     this.constructor.flags = this.constructor.flags || []
     this.constructor._init = this.constructor._init || []
@@ -14,6 +16,20 @@ class Command {
   async init () {
     await parse.call(this)
     for (let init of this.constructor._init) await init.call(this)
+  }
+
+  async done () {
+    if (this.slack) {
+      slack.respond({
+        text: `\`/heroku ${this.slack.text}\``,
+        attachments: [
+          {
+            text: '```' + this._output.join('\n') + '```',
+            mrkdwn_in: ['text']
+          }
+        ]
+      }, this.slack)
+    }
   }
 
   get supportsColor () {
@@ -31,7 +47,12 @@ class Command {
   }
 
   log (...args) {
-    console.log(...args)
+    if (this.slack) {
+      if (!this._output) this._output = []
+      this._output.push(...args)
+    } else {
+      console.log(...args)
+    }
   }
 
   styledJSON (obj) {
