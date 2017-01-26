@@ -3,10 +3,12 @@
 const auth = require('./auth')
 
 function api (options = {}) {
-  return function api () {
+  return function () {
     auth({required: options.required}).call(this)
-    const Heroku = require('heroku-client')
-    this.api = new Heroku({token: this.auth})
+    this.constructor._init.push(function () {
+      const Heroku = require('heroku-client')
+      this.api = new Heroku({token: this.auth})
+    })
   }
 }
 
