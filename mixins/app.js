@@ -12,6 +12,7 @@ function app (options = {}) {
     this.constructor.flags.push(APP_FLAG)
     this.constructor._init.push(function () {
       this.app = this.flags.app
+      if (!this.app && options.required !== false) throw new Error('No app specified')
     })
   }
 }
