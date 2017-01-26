@@ -1,0 +1,12 @@
+{
+  "name": "heroku-command",
+  "description": "base Heroku CLI command",
+  "version": "0.0.0",
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "https://github.com/heroku/heroku-command",
+  "dependencies": {
+    "heroku-client": "3.0.0-beta3",
+    "netrc": "0.1.4"
+  }
+}
