@@ -1,5 +1,5 @@
 {
-  "name": "heroku-command",
+  "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
   "version": "0.0.0",
   "license": "ISC",
