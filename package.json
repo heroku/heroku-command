@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "ISC",
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-command",
