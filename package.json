@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "dependencies": {
     "ansi-escapes": "1.4.0",
     "cardinal": "1.0.0",
