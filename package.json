@@ -2,9 +2,6 @@
   "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
   "version": "0.0.2",
-  "license": "ISC",
-  "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-command",
   "dependencies": {
     "ansi-escapes": "1.4.0",
     "cardinal": "1.0.0",
@@ -12,5 +9,14 @@
     "got": "6.7.1",
     "heroku-client": "3.0.0",
     "netrc": "0.1.4"
+  },
+  "devDependencies": {
+    "np": "2.12.0"
+  },
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "https://github.com/heroku/heroku-command",
+  "scripts": {
+    "release": "np"
   }
 }
