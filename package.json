@@ -11,12 +11,25 @@
     "netrc": "0.1.4"
   },
   "devDependencies": {
-    "np": "2.12.0"
+    "chai": "3.5.0",
+    "jsdoc-to-markdown": "3.0.0",
+    "mocha": "3.2.0",
+    "np": "2.12.0",
+    "nyc": "10.1.2",
+    "standard": "8.6.0"
   },
   "license": "ISC",
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-command",
+  "standard": {
+    "ignore": [
+      "lib/linewrap.js"
+    ]
+  },
   "scripts": {
-    "release": "np"
+    "doc": "jsdoc2md --template README.hbs --files http.js > README.md",
+    "release": "np",
+    "test": "nyc mocha && standard",
+    "version": "npm run doc && git add README.md"
   }
 }
