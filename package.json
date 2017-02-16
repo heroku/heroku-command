@@ -2,6 +2,8 @@
   "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
   "version": "0.1.0",
+  "author": "Jeff Dickey @dickeyxxx",
+  "bugs": "https://github.com/heroku/heroku-cli-command/issues",
   "dependencies": {
     "ansi-escapes": "1.4.0",
     "cardinal": "1.0.0",
@@ -18,18 +20,23 @@
     "nyc": "10.1.2",
     "standard": "8.6.0"
   },
+  "homepage": "https://github.com/heroku/heroku-cli-command",
+  "keywords": [
+    "heroku",
+    "heroku-cli-plugin"
+  ],
   "license": "ISC",
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-command",
-  "standard": {
-    "ignore": [
-      "lib/linewrap.js"
-    ]
-  },
   "scripts": {
     "doc": "jsdoc2md --template README.hbs --files http.js > README.md",
     "release": "np",
     "test": "nyc mocha && standard",
     "version": "npm run doc && git add README.md"
+  },
+  "standard": {
+    "ignore": [
+      "lib/linewrap.js"
+    ]
   }
 }
