@@ -451,17 +451,11 @@ debug-log@^1.0.0, debug-log@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/debug-log/-/debug-log-1.0.1.tgz#2307632d4c04382b8df8a32f70b895046d52745f"
 
-debug@2.2.0:
+debug@2.2.0, debug@^2.1.1, debug@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
-
-debug@^2.1.1, debug@^2.2.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
-  dependencies:
-    ms "0.7.2"
 
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
@@ -995,9 +989,9 @@ has-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-1.0.0.tgz#9d9e793165ce017a00f00418c43f942a7b1d11fa"
 
-heroku-client@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.0.tgz#2f1c174c8bb2effc00e4a2d4dc813b6c885b5167"
+heroku-client@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.1.tgz#9c6a3c54ceeb805b45c3833926bf8ef0d1fb7ca5"
   dependencies:
     debug "^2.2.0"
     is-retry-allowed "^1.0.0"
@@ -1014,9 +1008,9 @@ hosted-git-info@^2.1.4:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.2.0.tgz#7a0d097863d886c0fabbdcd37bf1758d8becf8a5"
 
-http-call@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.3.tgz#f5cb1fec3eb067be4711dde8ac2cb75c5cb6711e"
+http-call@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.4.tgz#3d72429b15d85712e6883791f0120721cb6f8fa2"
 
 ignore@^3.0.9, ignore@^3.2.0:
   version "3.2.2"
@@ -1610,10 +1604,6 @@ mocha@3.2.0:
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
-
-ms@0.7.2:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
 
 mute-stream@0.0.5:
   version "0.0.5"
