@@ -1008,9 +1008,9 @@ hosted-git-info@^2.1.4:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.2.0.tgz#7a0d097863d886c0fabbdcd37bf1758d8becf8a5"
 
-http-call@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.4.tgz#3d72429b15d85712e6883791f0120721cb6f8fa2"
+http-call@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.6.tgz#d8f8e7de2a2712499daab42ab56aac5c128989ae"
 
 ignore@^3.0.9, ignore@^3.2.0:
   version "3.2.2"
