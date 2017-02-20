@@ -1,5 +1,3 @@
-'use strict'
-
 let mix = superclass => new MixinBuilder(superclass)
 
 class MixinBuilder {
