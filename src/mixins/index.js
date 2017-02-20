@@ -12,8 +12,6 @@ class MixinBuilder {
   }
 }
 
-module.exports = {
-  heroku: require('./heroku'),
-  app: require('./app'),
-  mix
-}
+export {mix}
+export {default as app} from './app'
+export {default as heroku} from './heroku'

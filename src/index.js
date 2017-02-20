@@ -1,8 +1,6 @@
-'use strict'
+import 'babel-polyfill'
 
-module.exports = {
-  Command: require('./lib/command'),
-  Topic: require('./lib/topic'),
-  convertLegacy: require('./lib/legacy'),
-  mixins: require('./lib/mixins')
-}
+export {default as Command} from './command'
+export {default as Topic} from './topic'
+export {default as onvertLegacy} from './legacy'
+export {default as mixins} from './mixins'
