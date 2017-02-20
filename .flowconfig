@@ -1,10 +1,10 @@
 [ignore]
-<PROJECT_ROOT>/node_modules/.*
+.*/node_modules/.*
 
 [include]
 
 [libs]
-flow-types
+flow-typed
 
 [options]
 emoji=true

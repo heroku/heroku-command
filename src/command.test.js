@@ -1,16 +1,20 @@
 // @flow
+
 /* globals
   test
+  expect
   */
-const Command = require('../lib/command')
+
+import {Command} from '.'
 
 class TestCommand extends Command {
-  async run () {
+  run () {
     this.log('foo')
   }
 }
 
-test('runs the command', async function () {
-  let cmd = new TestCommand()
-  await cmd.run()
+test('runs the command', () => {
+  let cmd = new TestCommand({mock: true})
+  cmd.run()
+  expect(cmd.stdout).toEqual('foo')
 })

@@ -8,7 +8,7 @@ const http = require('./http')
 const _flags = Symbol('flags')
 const _args = Symbol('args')
 
-class Command extends mixins.mix(Object).with(color(), output(), parse(), http()) {
+class Command extends mixins.mix(class {}).with(color(), output(), parse(), http()) {
   constructor (options = {}) {
     super(options)
     this.options = options
@@ -72,4 +72,4 @@ Command.flags = [
   {name: 'no-color', hidden: true}
 ]
 
-module.exports = Command
+export default Command
