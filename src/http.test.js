@@ -22,14 +22,12 @@ afterEach(() => {
   api.done()
 })
 
-test('runs the command', async () => {
+test('makes an HTTP request', async () => {
   api.get('/')
   .matchHeader('user-agent', `foo/1.0 node-${process.version}`)
   .reply(200, {message: 'ok'})
 
-  const tester = new HttpTester({
-    config: {name: 'foo', version: '1.0'}
-  })
+  const tester = new HttpTester({name: 'foo', version: '1.0'})
   let response = await tester.http.get('https://api.heroku.com')
   expect(response).toEqual({message: 'ok'})
 })

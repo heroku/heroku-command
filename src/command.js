@@ -26,18 +26,6 @@ class Command extends color(output(parse(http(Base)))) {
     await super.done()
   }
 
-  /**
-   * get whether or not command is in debug mode
-   * @returns {number} - 0 if not debugging, otherwise current debug level (1 or 2 usually)
-   */
-  get debugging () {
-    if (this.flags && this.flags.debug) return this.flags.debug
-    const HEROKU_DEBUG = process.env.HEROKU_DEBUG
-    if (HEROKU_DEBUG === 'true') return 1
-    if (HEROKU_DEBUG) return parseInt(HEROKU_DEBUG)
-    return 0
-  }
-
   static get id () {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }

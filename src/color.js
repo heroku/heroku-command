@@ -1,19 +1,28 @@
-'use strict'
+// @flow
+/* globals
+   Class
+ */
 
 import supports from 'supports-color'
+import Base from './base'
+import chalk from 'chalk'
 
-export default Base => class extends Base {
-  get supportsColor () {
+type Color = typeof chalk
+
+export default (Base: Class<Base>) => class extends Base {
+  get supportsColor (): typeof supports {
     if (this.slack) return false
     if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) return false
     return supports
   }
 
-  get color () {
+  _color: Color
+
+  get color (): Color {
     if (this._color) return this._color
 
-    this._color = require('chalk')
-    this._color.enabled = this.supportsColor
+    this._color = chalk
+    this._color.enabled = !!this.supportsColor
 
     this._color.attachment = s => this._color.cyan(s)
     this._color.addon = s => this._color.yellow(s)
@@ -29,6 +38,6 @@ export default Base => class extends Base {
 
     this._color.app = s => this.supportsColor && process.platform !== 'win32' ? this._color.heroku(`⬢ ${s}`) : this._color.heroku(s)
 
-    return this._color
+    return (this._color: Color)
   }
 }
