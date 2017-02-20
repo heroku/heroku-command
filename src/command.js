@@ -12,6 +12,7 @@ class Command extends mixins.mix(Object).with(color(), output(), parse(), http()
   constructor (options = {}) {
     super(options)
     this.options = options
+    this.config = options.config
     this.argv = options.argv
   }
 
@@ -32,7 +33,9 @@ class Command extends mixins.mix(Object).with(color(), output(), parse(), http()
    */
   get debugging () {
     if (this.flags && this.flags.debug) return this.flags.debug
-    if (['true', '1'].indexOf((process.env.HEROKU_DEBUG || '').toLowerCase()) !== -1) return 1
+    const HEROKU_DEBUG = process.env.HEROKU_DEBUG
+    if (HEROKU_DEBUG === 'true') return 1
+    if (HEROKU_DEBUG) return parseInt(HEROKU_DEBUG)
     return 0
   }
 
