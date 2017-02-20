@@ -1,11 +1,16 @@
-'use strict'
+// @flow
+/* globals
+   Class
+ */
 
 const slack = Symbol('slack')
 const stdout = Symbol('stdout')
 const stderr = Symbol('stderr')
 const util = require('util')
 const linewrap = require('./linewrap')
-const screen = require('./screen')
+
+import {errtermwidth} from './screen'
+import type {Config} from './base'
 
 function epipe (fn) {
   try {
@@ -17,7 +22,7 @@ function epipe (fn) {
 
 function wrap (msg) {
   return linewrap(6,
-    screen.errtermwidth, {
+    errtermwidth, {
       skipScheme: 'ansi-color',
       skip: /^\$ .*$/
     })(msg || '')
@@ -43,7 +48,7 @@ function getErrorMessage (err) {
   }
   // Unhandled error
   if (err.message && err.code) {
-    return `${err.code}: ${err.message}`
+    return `${util.inspect(err.code)}: ${err.message}`
   } else if (err.message) {
     return err.message
   }
@@ -52,21 +57,21 @@ function getErrorMessage (err) {
 
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
-export default Base => class extends Base {
-  constructor (options) {
-    super(options)
-    if (options.mock) {
+export default (Base: Class<any>) => class extends Base {
+  constructor (config: Config) {
+    super(config)
+    if (config.mock) {
       this[stdout] = []
       this[stderr] = []
     }
-    if (options.slack) this[slack] = []
+    if (config.slack) this[slack] = []
 
     this.action = message => {
       if (this.action.task) {
         if (this.action.task.spinner) this.action.task.spinner.text = `${message}...`
         else process.stderr.write(`\n${message}...`)
       } else {
-        this.action.task = {text: `${message}...`, command: this}
+        this.action.task = {text: `${message}...`, command: this, spinner: null}
         if (this.displaySpinner) {
           const Spinner = require('./spinner')
           this.action.task.spinner = new Spinner(this.action.task)
@@ -107,15 +112,15 @@ export default Base => class extends Base {
     }
   }
 
-  get displaySpinner () {
-    return !this[slack] && process.stdin.isTTY && process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+  get displaySpinner (): boolean {
+    return !this[slack] && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
   }
 
-  get stdout () {
+  get stdout (): string[] {
     return this[stdout].join('\n')
   }
 
-  get stderr () {
+  get stderr (): string[] {
     return this[stderr].join('\n')
   }
 
@@ -137,7 +142,7 @@ export default Base => class extends Base {
     }
   }
 
-  log (data, ...args) {
+  log (data, ...args: any) {
     epipe(() => {
       this.action.pause(() => {
         if (this[stdout]) this[stdout].push(util.format(data, ...args))
@@ -148,21 +153,21 @@ export default Base => class extends Base {
     })
   }
 
-  write (msg) {
+  write (msg: string) {
     epipe(() => {
       if (this[slack]) this[slack].push(msg)
       else process.stdout.write(msg)
     })
   }
 
-  writeError (msg) {
+  writeError (msg: string) {
     epipe(() => {
       if (this[slack]) this[slack].push(msg)
       else process.stderr.write(msg)
     })
   }
 
-  styledJSON (obj) {
+  styledJSON (obj: any) {
     let json = JSON.stringify(obj, null, 2)
     if (this.supportsColor) {
       let cardinal = require('cardinal')
@@ -173,11 +178,11 @@ export default Base => class extends Base {
     }
   }
 
-  styledHeader (header) {
+  styledHeader (header: string) {
     this.log(this.color.gray('=== ') + this.color.bold(header))
   }
 
-  styledObject (obj, keys) {
+  styledObject (obj: any, keys: string[]) {
     const util = require('util')
     let keyLengths = Object.keys(obj).map(key => key.toString().length)
     let maxKeyLength = Math.max.apply(Math, keyLengths) + 2
@@ -211,15 +216,15 @@ export default Base => class extends Base {
   /**
    * inspect an object for debugging
    */
-  i (obj) {
+  i (obj: any) {
     this.action.pause(() => console.dir(obj, {colors: true}))
   }
 
-  debug (obj) {
+  debug (obj: string) {
     if (this.debugging) this.action.pause(() => console.log(obj))
   }
 
-  error (err) {
+  error (err: Error | string) {
     epipe(() => {
       if (typeof err === 'string') {
         this.action.pause(() => {
@@ -235,10 +240,10 @@ export default Base => class extends Base {
     })
   }
 
-  warn (message) {
+  warn (message: Error | string) {
     epipe(() => {
       this.action.pause(() => {
-        if (this.debugging) console.trace(`WARNING: ${message}`)
+        if (this.debugging) console.trace(`WARNING: ${util.inspect(message)}`)
         else console.error(bangify(wrap(message), this.color.yellow(arrow)))
       })
     })
