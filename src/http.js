@@ -1,4 +1,11 @@
+// @flow
+/* globals
+   Class
+ */
+
 import util from 'util'
+import Base from './base'
+import HTTP from 'http-call'
 
 function renderHeaders (headers) {
   return Object.keys(headers).map(key => {
@@ -7,7 +14,7 @@ function renderHeaders (headers) {
   }).join('\n')
 }
 
-export function logRequest (http) {
+export function logRequest (http: HTTP) {
   if (!this.debugging) return
   this.error(`--> ${http.method} ${http.url}`)
   if (this.debugging > 1) {
@@ -16,7 +23,7 @@ export function logRequest (http) {
   }
 }
 
-export function logResponse (http, response) {
+export function logResponse (http: HTTP, response: any) {
   if (!this.debugging) return
   this.error(`<-- ${http.method} ${http.url} ${http.response.statusCode}`)
   if (this.debugging > 1) {
@@ -25,23 +32,18 @@ export function logResponse (http, response) {
   }
 }
 
-export default function () {
-  return Base => class HTTP extends Base {
-    get http () {
-      const http = Symbol('http')
-      if (this[http]) return this[http]
-      const {default: HTTP} = require('http-call')
-
-      let cmd = this
-      this[http] = class extends HTTP {
-        // 'user-agent' = `${this.config.name}/${this.config.version}`
-        async request () {
-          module.exports.logRequest.bind(cmd)(this)
-          await super.request()
-          module.exports.logResponse.bind(cmd)(this, this.body)
-        }
+export default (Base: Class<Base>) => class extends Base {
+  get http (): Class<HTTP> {
+    let cmd = this
+    return class DebugHTTP extends HTTP {
+      headers = {
+        'user-agent': `${cmd.config.name}/${cmd.config.version} node-${process.version}`
       }
-      return this[http]
+      async request () {
+        logRequest.bind(cmd)(this)
+        await super.request()
+        logResponse.bind(cmd)(this, this.body)
+      }
     }
   }
 }

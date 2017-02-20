@@ -52,202 +52,200 @@ function getErrorMessage (err) {
 
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
-module.exports = () => {
-  return Base => class extends Base {
-    constructor (options) {
-      super(options)
-      if (options.mock) {
-        this[stdout] = []
-        this[stderr] = []
-      }
-      if (options.slack) this[slack] = []
-
-      this.action = message => {
-        if (this.action.task) {
-          if (this.action.task.spinner) this.action.task.spinner.text = `${message}...`
-          else process.stderr.write(`\n${message}...`)
-        } else {
-          this.action.task = {text: `${message}...`, command: this}
-          if (this.displaySpinner) {
-            const Spinner = require('./spinner')
-            this.action.task.spinner = new Spinner(this.action.task)
-            this.action.task.spinner.start()
-          } else this.writeError(this.action.task.text)
-        }
-      }
-
-      this.action.status = status => {
-        if (!this.action.task) return
-        if (this.action.task.spinner) this.action.task.spinner.status = status
-        else process.stderr.write(` ${status}`)
-      }
-
-      this.action.done = (msg = 'done') => {
-        if (!this.action.task) return
-        this.action.status(msg)
-        if (this.action.task.spinner) this.action.task.spinner.stop(msg)
-        else process.stderr.write('\n')
-        delete this.action.task
-      }
-
-      this.action.pause = fn => {
-        if (this.action.task) {
-          if (this.action.task.spinner) {
-            this.action.task.spinner.stop()
-            this.action.task.spinner.clear()
-          } else {
-            delete this.action.task
-            process.stderr.write('\n')
-          }
-        }
-        fn()
-        if (this.action.task && this.action.task.spinner) {
-          process.stderr.write('\n')
-          this.action.task.spinner.start()
-        }
-      }
+export default Base => class extends Base {
+  constructor (options) {
+    super(options)
+    if (options.mock) {
+      this[stdout] = []
+      this[stderr] = []
     }
+    if (options.slack) this[slack] = []
 
-    get displaySpinner () {
-      return !this[slack] && process.stdin.isTTY && process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
-    }
-
-    get stdout () {
-      return this[stdout].join('\n')
-    }
-
-    get stderr () {
-      return this[stderr].join('\n')
-    }
-
-    async done () {
-      if (super.done) super.done()
-      this.showCursor()
-      this.action.done()
-      if (this[slack]) {
-        const slack = require('./slack')
-        slack.respond({
-          text: `\`/heroku ${this[slack].join('\n')}\``,
-          attachments: [
-            {
-              text: '```' + this[slack].join('\n') + '```',
-              mrkdwn_in: ['text']
-            }
-          ]
-        }, this[slack].join('\n'))
-      }
-    }
-
-    log (data, ...args) {
-      epipe(() => {
-        this.action.pause(() => {
-          if (this[stdout]) this[stdout].push(util.format(data, ...args))
-          else if (this[slack]) this[slack].push(util.format(data, ...args))
-          else if (arguments.length === 0) console.log()
-          else console.log(data, ...args)
-        })
-      })
-    }
-
-    write (msg) {
-      epipe(() => {
-        if (this[slack]) this[slack].push(msg)
-        else process.stdout.write(msg)
-      })
-    }
-
-    writeError (msg) {
-      epipe(() => {
-        if (this[slack]) this[slack].push(msg)
-        else process.stderr.write(msg)
-      })
-    }
-
-    styledJSON (obj) {
-      let json = JSON.stringify(obj, null, 2)
-      if (this.supportsColor) {
-        let cardinal = require('cardinal')
-        let theme = require('cardinal/themes/jq')
-        this.log(cardinal.highlight(json, {json: true, theme: theme}))
+    this.action = message => {
+      if (this.action.task) {
+        if (this.action.task.spinner) this.action.task.spinner.text = `${message}...`
+        else process.stderr.write(`\n${message}...`)
       } else {
-        this.log(json)
+        this.action.task = {text: `${message}...`, command: this}
+        if (this.displaySpinner) {
+          const Spinner = require('./spinner')
+          this.action.task.spinner = new Spinner(this.action.task)
+          this.action.task.spinner.start()
+        } else this.writeError(this.action.task.text)
       }
     }
 
-    styledHeader (header) {
-      this.log(this.color.gray('=== ') + this.color.bold(header))
+    this.action.status = status => {
+      if (!this.action.task) return
+      if (this.action.task.spinner) this.action.task.spinner.status = status
+      else process.stderr.write(` ${status}`)
     }
 
-    styledObject (obj, keys) {
-      const util = require('util')
-      let keyLengths = Object.keys(obj).map(key => key.toString().length)
-      let maxKeyLength = Math.max.apply(Math, keyLengths) + 2
-      function pp (obj) {
-        if (typeof obj === 'string' || typeof obj === 'number') {
-          return obj
-        } else if (typeof obj === 'object') {
-          return Object.keys(obj).map(k => k + ': ' + util.inspect(obj[k])).join(', ')
+    this.action.done = (msg = 'done') => {
+      if (!this.action.task) return
+      this.action.status(msg)
+      if (this.action.task.spinner) this.action.task.spinner.stop(msg)
+      else process.stderr.write('\n')
+      delete this.action.task
+    }
+
+    this.action.pause = fn => {
+      if (this.action.task) {
+        if (this.action.task.spinner) {
+          this.action.task.spinner.stop()
+          this.action.task.spinner.clear()
         } else {
-          return util.inspect(obj)
+          delete this.action.task
+          process.stderr.write('\n')
         }
       }
-      let logKeyValue = (key, value) => {
-        this.log(`${key}:` + ' '.repeat(maxKeyLength - key.length - 1) + pp(value))
+      fn()
+      if (this.action.task && this.action.task.spinner) {
+        process.stderr.write('\n')
+        this.action.task.spinner.start()
       }
-      for (var key of (keys || Object.keys(obj).sort())) {
-        let value = obj[key]
-        if (Array.isArray(value)) {
-          if (value.length > 0) {
-            logKeyValue(key, value[0])
-            for (var e of value.slice(1)) {
-              this.log(' '.repeat(maxKeyLength) + pp(e))
-            }
+    }
+  }
+
+  get displaySpinner () {
+    return !this[slack] && process.stdin.isTTY && process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+  }
+
+  get stdout () {
+    return this[stdout].join('\n')
+  }
+
+  get stderr () {
+    return this[stderr].join('\n')
+  }
+
+  async done () {
+    if (super.done) super.done()
+    this.showCursor()
+    this.action.done()
+    if (this[slack]) {
+      const slack = require('./slack')
+      slack.respond({
+        text: `\`/heroku ${this[slack].join('\n')}\``,
+        attachments: [
+          {
+            text: '```' + this[slack].join('\n') + '```',
+            mrkdwn_in: ['text']
           }
-        } else if (value !== null && value !== undefined) {
-          logKeyValue(key, value)
-        }
+        ]
+      }, this[slack].join('\n'))
+    }
+  }
+
+  log (data, ...args) {
+    epipe(() => {
+      this.action.pause(() => {
+        if (this[stdout]) this[stdout].push(util.format(data, ...args))
+        else if (this[slack]) this[slack].push(util.format(data, ...args))
+        else if (arguments.length === 0) console.log()
+        else console.log(data, ...args)
+      })
+    })
+  }
+
+  write (msg) {
+    epipe(() => {
+      if (this[slack]) this[slack].push(msg)
+      else process.stdout.write(msg)
+    })
+  }
+
+  writeError (msg) {
+    epipe(() => {
+      if (this[slack]) this[slack].push(msg)
+      else process.stderr.write(msg)
+    })
+  }
+
+  styledJSON (obj) {
+    let json = JSON.stringify(obj, null, 2)
+    if (this.supportsColor) {
+      let cardinal = require('cardinal')
+      let theme = require('cardinal/themes/jq')
+      this.log(cardinal.highlight(json, {json: true, theme: theme}))
+    } else {
+      this.log(json)
+    }
+  }
+
+  styledHeader (header) {
+    this.log(this.color.gray('=== ') + this.color.bold(header))
+  }
+
+  styledObject (obj, keys) {
+    const util = require('util')
+    let keyLengths = Object.keys(obj).map(key => key.toString().length)
+    let maxKeyLength = Math.max.apply(Math, keyLengths) + 2
+    function pp (obj) {
+      if (typeof obj === 'string' || typeof obj === 'number') {
+        return obj
+      } else if (typeof obj === 'object') {
+        return Object.keys(obj).map(k => k + ': ' + util.inspect(obj[k])).join(', ')
+      } else {
+        return util.inspect(obj)
       }
     }
-
-    /**
-     * inspect an object for debugging
-     */
-    i (obj) {
-      this.action.pause(() => console.dir(obj, {colors: true}))
+    let logKeyValue = (key, value) => {
+      this.log(`${key}:` + ' '.repeat(maxKeyLength - key.length - 1) + pp(value))
     }
-
-    debug (obj) {
-      if (this.debugging) this.action.pause(() => console.log(obj))
-    }
-
-    error (err) {
-      epipe(() => {
-        if (typeof err === 'string') {
-          this.action.pause(() => {
-            if (this[stderr]) this[stderr].push(err)
-            else if (this[slack]) this[slack].push(err)
-            else console.error(err)
-          })
-        } else {
-          if (this.action.task) this.action.done(this.color.bold.red('!'))
-          if (this.debugging) console.error(err.stack)
-          else console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
+    for (var key of (keys || Object.keys(obj).sort())) {
+      let value = obj[key]
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          logKeyValue(key, value[0])
+          for (var e of value.slice(1)) {
+            this.log(' '.repeat(maxKeyLength) + pp(e))
+          }
         }
-      })
+      } else if (value !== null && value !== undefined) {
+        logKeyValue(key, value)
+      }
     }
+  }
 
-    warn (message) {
-      epipe(() => {
+  /**
+   * inspect an object for debugging
+   */
+  i (obj) {
+    this.action.pause(() => console.dir(obj, {colors: true}))
+  }
+
+  debug (obj) {
+    if (this.debugging) this.action.pause(() => console.log(obj))
+  }
+
+  error (err) {
+    epipe(() => {
+      if (typeof err === 'string') {
         this.action.pause(() => {
-          if (this.debugging) console.trace(`WARNING: ${message}`)
-          else console.error(bangify(wrap(message), this.color.yellow(arrow)))
+          if (this[stderr]) this[stderr].push(err)
+          else if (this[slack]) this[slack].push(err)
+          else console.error(err)
         })
-      })
-    }
+      } else {
+        if (this.action.task) this.action.done(this.color.bold.red('!'))
+        if (this.debugging) console.error(err.stack)
+        else console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
+      }
+    })
+  }
 
-    showCursor () {
-      const ansi = require('ansi-escapes')
-      if (process.stderr.isTTY) process.stderr.write(ansi.cursorShow)
-    }
+  warn (message) {
+    epipe(() => {
+      this.action.pause(() => {
+        if (this.debugging) console.trace(`WARNING: ${message}`)
+        else console.error(bangify(wrap(message), this.color.yellow(arrow)))
+      })
+    })
+  }
+
+  showCursor () {
+    const ansi = require('ansi-escapes')
+    if (process.stderr.isTTY) process.stderr.write(ansi.cursorShow)
   }
 }

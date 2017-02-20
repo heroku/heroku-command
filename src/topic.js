@@ -1,9 +1,10 @@
 const screen = require('./screen')
-const mixins = require('./mixins')
-const color = require('./color')
-const output = require('./output')
 
-class Topic extends mixins.mix(Object).with(color(), output()) {
+import Base from './base'
+import color from './color'
+import output from './output'
+
+class Topic extends color(output(Base)) {
   constructor (options) {
     super(options)
     this.commands = options.commands
