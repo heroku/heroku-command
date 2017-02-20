@@ -38,6 +38,7 @@
   "jest": {
     "testEnvironment": "node",
     "coverageDirectory": "./coverage/",
+    "setupFiles": ["./initjest.js"],
     "collectCoverage": true
   },
   "keywords": [

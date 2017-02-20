@@ -4,9 +4,10 @@ const mixins = require('./mixins')
 const color = require('./color')
 const output = require('./output')
 const parse = require('./parse')
-const http = require('./http')
 const _flags = Symbol('flags')
 const _args = Symbol('args')
+
+import http from './http'
 
 class Command extends mixins.mix(class {}).with(color(), output(), parse(), http()) {
   constructor (options = {}) {
