@@ -8,14 +8,14 @@ import supports from 'supports-color'
 import Base, {type Config} from './base'
 import chalk from 'chalk'
 
-const CustomColors = {
-  attachment: s => chalk.cyan(s),
-  addon: s => chalk.yellow(s),
-  configVar: s => chalk.green(s),
-  release: s => chalk.blue.bold(s),
-  cmd: s => chalk.cyan.bold(s),
-  app: s => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
-  heroku: s => {
+export const CustomColors = {
+  attachment: (s: string) => chalk.cyan(s),
+  addon: (s: string) => chalk.yellow(s),
+  configVar: (s: string) => chalk.green(s),
+  release: (s: string) => chalk.blue.bold(s),
+  cmd: (s: string) => chalk.cyan.bold(s),
+  app: (s: string) => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
+  heroku: (s: string) => {
     if (!chalk.enabled) return s
     let has256 = supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
     return has256 ? '\u001b[38;5;104m' + s + chalk.styles.reset.open : chalk.magenta(s)
