@@ -1,15 +1,13 @@
-'use strict'
-
-const mixins = require('./mixins')
-const color = require('./color')
-const output = require('./output')
-const parse = require('./parse')
 const _flags = Symbol('flags')
 const _args = Symbol('args')
 
+import Base from './base'
 import http from './http'
+import color from './color'
+import output from './output'
+import parse from './parse'
 
-class Command extends mixins.mix(class {}).with(color(), output(), parse(), http()) {
+class Command extends color(output(parse(http(Base)))) {
   constructor (options = {}) {
     super(options)
     this.options = options
