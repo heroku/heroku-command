@@ -1,7 +1,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-command-engine:latestickeyxxx/cli-command-engine:latest
+  - image: dickeyxxx/cli-command-engine:latest
 stages:
   build:
     workDir: ~/cli-engine-command
