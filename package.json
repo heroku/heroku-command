@@ -6,7 +6,7 @@
   "bugs": "https://github.com/heroku/heroku-cli-command/issues",
   "dependencies": {
     "ansi-escapes": "1.4.0",
-    "babel-polyfill": "6.23.0",
+    "babel-runtime": "6.23.0",
     "cardinal": "1.0.0",
     "chalk": "1.1.3",
     "got": "6.7.1",
@@ -22,6 +22,7 @@
     "babel-eslint": "7.1.1",
     "babel-jest": "18.0.0",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
+    "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-es2015": "6.22.0",
     "babel-preset-stage-2": "6.22.0",
     "codecov": "1.0.1",
