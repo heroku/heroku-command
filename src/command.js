@@ -1,18 +1,64 @@
-const _flags = Symbol('flags')
-const _args = Symbol('args')
+// @flow
 
-import Base from './base'
-import http from './http'
-import color from './color'
-import output from './output'
-import parse from './parse'
+import HTTP from './http'
+import Color from './color'
+import Output from './output'
+import Parser from './parser'
+import pjson from '../package.json'
+import {type Config, Default as DefaultConfig} from './config'
+import type {Flag} from './flag'
+import type {Arg} from './arg'
 
-class Command extends color(output(parse(http(Base)))) {
-  constructor (options = {}) {
-    super(options)
-    this.options = options
-    this.config = options.config
-    this.argv = options.argv
+export default class Command {
+  static topic: string
+  static command: string
+
+  static _version: pjson.version
+
+  static _flags: Flag[] = [
+    {name: 'debug', hidden: true},
+    {name: 'no-color', hidden: true}
+  ]
+
+  static _args: Arg[] = []
+
+  static get id () {
+    return this.command ? `${this.topic}:${this.command}` : this.topic
+  }
+
+  static get flags () { return this._flags }
+  static set flags (flags: Flag[]) { this._flags.push(...flags) }
+
+  static get args () { return this._args }
+  static set args (args: Arg[]) { this._args.push(...args) }
+
+  config: Config
+  argv: string[]
+
+  output: Output
+  color: Color
+  parser: Parser
+  http: HTTP
+
+  constructor (config: $Shape<Config>, argv: string[]) {
+    this.config = Object.assign(DefaultConfig, config)
+    this.argv = argv
+    this.output = new Output(this)
+    this.color = new Color(this)
+    this.parser = new Parser(this)
+    this.http = new HTTP(this)
+  }
+
+  /**
+   * get whether or not command is in debug mode
+   * @returns {number} - 0 if not debugging, otherwise current debug level (1 or 2 usually)
+   */
+  get debugging (): number {
+    if (this.flags && this.flags.debug) return 1
+    const HEROKU_DEBUG = process.env.HEROKU_DEBUG
+    if (HEROKU_DEBUG === 'true') return 1
+    if (HEROKU_DEBUG) return parseInt(HEROKU_DEBUG)
+    return 0
   }
 
   /**
@@ -22,41 +68,8 @@ class Command extends color(output(parse(http(Base)))) {
     throw new Error('must implement abstract class Command')
   }
 
-  async done () {
-    await super.done()
+  async init () {
+    await this.parser.parse()
   }
-
-  static get id () {
-    return this.command ? `${this.topic}:${this.command}` : this.topic
-  }
-
-  static get flags () {
-    if (!this[_flags]) this[_flags] = []
-    return this[_flags]
-  }
-
-  static set flags (flags) {
-    if (!this[_flags]) this[_flags] = []
-    if (!flags) return
-    this[_flags] = this[_flags].concat(flags)
-  }
-
-  static get args () {
-    if (!this[_args]) this[_args] = []
-    return this[_args]
-  }
-
-  static set args (args) {
-    if (!this[_args]) this[_args] = []
-    if (!args) return
-    this[_args] = this[_args].concat(args)
-  }
+  async done () {}
 }
-
-Command._version = require('../package.json').version
-Command.flags = [
-  {name: 'debug', hidden: true},
-  {name: 'no-color', hidden: true}
-]
-
-export default Command

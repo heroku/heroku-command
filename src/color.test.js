@@ -5,31 +5,30 @@
   expect
   */
 
-import Base from './base'
+import Base from './command'
 import color, {CustomColors} from './color'
-import {DefaultConfig} from '../test/constants.js'
 import chalk from 'chalk'
 
-class ColorTester extends color(Base) {}
+class Command extends color(Base) {}
 
 test('shows red text', () => {
-  const tester = new ColorTester(DefaultConfig)
+  const cmd = new Command()
   chalk.enabled = true
-  expect(tester.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
+  expect(cmd.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
 })
 
 test('shows app', () => {
-  const tester = new ColorTester(DefaultConfig)
+  const cmd = new Command()
   chalk.enabled = true
-  expect(tester.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
+  expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
 })
 
 test('makes sure all custom options are accessible', () => {
-  const tester = new ColorTester(DefaultConfig)
+  const cmd = new Command()
   chalk.enabled = true
   for (let k in CustomColors) {
-    if (typeof tester.color[k] === 'function') {
-      tester.color[k]('foo')
+    if (typeof cmd.color[k] === 'function') {
+      cmd.color[k]('foo')
     }
   }
 })

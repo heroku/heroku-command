@@ -1,14 +1,25 @@
-export default Base => class extends Base {
-  async init () {
-    if (super.init) await super.init()
-    let args = (this.constructor.args || []).slice(0)
-    let flags = this.constructor.flags || []
-    let parsingArgs = this.argv.slice(2)
+// @flow
+
+import Command from './command'
+
+export default class Parse {
+  constructor (cmd: Command) {
+    this.cmd = cmd
+  }
+
+  cmd: Command
+  flags: {[name: string]: string | true} = {}
+  args: {[name: string]: string} = {}
+
+  async parse () {
+    let args = this.cmd.constructor.args.slice(0)
+    let flags = this.cmd.constructor.flags
+    let parsingArgs = this.cmd.argv.slice(2)
 
     async function parseFlags () {
       for (let flag of flags || []) {
         if (this.flags[flag.name]) {
-          if (flag.parse) this.flags[flag.name] = flag.parse.bind(this)(this.flags[flag.name])
+          if (flag.parse) this.flags[flag.name] = flag.parse(this.flags[flag.name], this.cmd)
         } else {
           if (flag.default) this.flags[flag.name] = await flagDefault(flag)
           if (!this.flags[flag.name] && (flag.optional === false || flag.required === true)) {
@@ -29,10 +40,7 @@ export default Base => class extends Base {
         if (!val) throw new Error(`Flag --${flag.name} expects a value.`)
         this.flags[flag.name] = val
       } else {
-        // if flag is specified multiple times, increment
-        if (!cur) this.flags[flag.name] = 0
-        this.flags[flag.name]++
-
+        if (!cur) this.flags[flag.name] = true
         // push the rest of the short characters back on the stack
         if (!long && arg.length > 2) parsingArgs.unshift(`-${arg.slice(2)}`)
       }
@@ -47,27 +55,22 @@ export default Base => class extends Base {
       return flags.find(f => f.char === arg[1])
     }
 
-    let flagDefault = flag => {
-      let val = typeof flag.default === 'function' ? flag.default.bind(this)() : flag.default
+    let flagDefault = (flag): Promise<string> => {
+      let val = typeof flag.default === 'function' ? flag.default(this.cmd) : flag.default
       return Promise.resolve(val)
     }
 
     let parsingFlags = true
-    this.flags = {}
-    this.args = this.constructor.variableArgs ? [] : {}
     while (parsingArgs.length) {
       let arg = parsingArgs.shift()
       if (parsingFlags && arg.startsWith('-')) {
         if (arg === '--') { parsingFlags = false; continue }
         if (parseFlag(arg)) continue
       }
-      if (this.constructor.variableArgs) {
-        this.args.push(arg)
-      } else {
-        let expected = args.shift()
-        if (!expected) throw new Error(`Unexpected argument ${arg}`)
-        this.args[expected.name] = arg
-      }
+      // TODO: varargs
+      let expected = args.shift()
+      if (!expected) throw new Error(`Unexpected argument ${arg}`)
+      this.args[expected.name] = arg
     }
 
     let missingArg = args.find(a => a.optional !== true && a.required !== false)

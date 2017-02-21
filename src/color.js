@@ -1,11 +1,9 @@
 // @flow
 /* globals
-   Class
    $Shape
  */
 
 import supports from 'supports-color'
-import Base, {type Config} from './base'
 import chalk from 'chalk'
 
 export const CustomColors = {
@@ -22,11 +20,12 @@ export const CustomColors = {
   }
 }
 
-type Color = $Shape<typeof chalk & typeof CustomColors>
+type ColorType = $Shape<typeof chalk & typeof CustomColors>
 
-export default (Base: Class<Base>) => class extends Base {
-  constructor (config: Config) {
-    super(config)
+export default class Color {
+  _color: ColorType
+
+  constructor () {
     if (!this.supportsColor) chalk.enabled = false
   }
 
@@ -36,7 +35,7 @@ export default (Base: Class<Base>) => class extends Base {
     return supports
   }
 
-  get color (): Color {
+  get color (): ColorType {
     if (this._color) return this._color
     this._color = new Proxy(chalk, {
       get: (chalk, name) => {
