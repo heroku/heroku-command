@@ -4,14 +4,12 @@
    $Shape
  */
 
-const util = require('util')
-const linewrap = require('./linewrap')
-
+import util from 'util'
+import linewrap from './linewrap'
 import {errtermwidth} from './screen'
 import Action from './action'
 import supports from 'supports-color'
 import chalk from 'chalk'
-import type {Config} from '../config'
 
 export const CustomColors = {
   supports,
@@ -81,22 +79,24 @@ class StreamOutput {
   }
 
   write (msg: string) {
-    if (this.out.config.mock) this.output += msg
+    if (this.out.mock) this.output += msg
     this.stream.write(msg)
   }
 
   log (data: string, ...args: any[]) {
+    let msg = data ? util.format(data, ...args) : ''
+    msg += '\n'
     this.out.action.pause(() => {
-      if (this.out.config.mock) this.output += util.format(data, ...args)
-      else if (arguments.length === 0) console.log()
-      else console.log(data, ...args)
+      if (this.out.mock) this.output += msg
+      else if (arguments.length === 0) this.stream.write(msg)
+      else this.stream.write(msg)
     })
   }
 }
 
 export default class Output {
-  constructor (config: Config) {
-    this.config = config
+  constructor (mock: boolean) {
+    this.mock = mock
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
@@ -109,7 +109,7 @@ export default class Output {
     })
   }
 
-  config: Config
+  mock: boolean
   action: Action
   stdout: StreamOutput
   stderr: StreamOutput

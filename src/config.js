@@ -1,17 +1,30 @@
 // @flow
 
-import pjson from '../package.json'
-
-export type Config = {
+export type PJSON = {
   name: string,
-  version: string,
-  argv0: string,
-  mock: boolean
+  version: string
 }
 
-export const Default = {
-  name: pjson.name,
-  version: pjson.version,
-  argv0: process.argv[0],
-  mock: false
+export type ConfigOptions = {
+  name?: string,
+  version?: string,
+  argv0?: string,
+  mock?: boolean,
+  pjson?: PJSON
+}
+
+export default class Config {
+  constructor (options: ConfigOptions) {
+    this.pjson = options.pjson || require('../package.json')
+    this.name = options.name || this.pjson.name
+    this.version = options.version || this.pjson.version
+    this.argv0 = options.argv0 || process.argv[0]
+    this.mock = options.mock || false
+  }
+
+  name: string
+  version: string
+  argv0: string
+  mock: boolean
+  pjson: PJSON
 }

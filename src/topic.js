@@ -4,23 +4,21 @@
  */
 
 import {stdtermwidth} from './output/screen'
-import Output from './output'
+import Base from './base'
 import type Command from './command'
-import type {Config} from './config'
+import type {ConfigOptions} from './config'
 import type {Arg} from './arg'
 import type {Flag} from './flag'
 
-class Topic extends Output {
-  constructor (commands: Class<Command>[], config: Config) {
+class Topic extends Base {
+  constructor (commands: Class<Command>[], config: ConfigOptions) {
     super(config)
     this.commands = commands
-    this.argv0 = config.argv0
   }
 
   static topic: string
 
   commands: Class<Command>[]
-  argv0: string
 
   async help (args: string[], matchedCommand: Class<Command>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
@@ -30,13 +28,13 @@ class Topic extends Output {
   listCommandsHelp () {
     let commands = this.commands.filter(c => !c.hidden).map(c => [this.usage(c), c.description])
     if (commands.length === 0) return
-    this.log(`${this.argv0} ${this.constructor.topic} commands: (${this.color.cmd(this.argv0 + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
+    this.log(`${this.config.argv0} ${this.constructor.topic} commands: (${this.color.cmd(this.config.argv0 + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
     this.log(this.renderList(commands))
     this.log()
   }
 
   commandHelp (command: Class<Command>) {
-    let usage = `${this.argv0} ${this.usage(command)}`
+    let usage = `${this.config.argv0} ${this.usage(command)}`
     this.log(`Usage: ${this.color.cmd(usage)}\n`)
     if (command.description) this.log(`${command.description.trim()}\n`)
     let flags = (command.flags || []).filter(f => !f.hidden)
