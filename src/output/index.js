@@ -14,6 +14,7 @@ import chalk from 'chalk'
 import type {Config} from '../config'
 
 export const CustomColors = {
+  supports,
   attachment: (s: string) => chalk.cyan(s),
   addon: (s: string) => chalk.yellow(s),
   configVar: (s: string) => chalk.green(s),
@@ -21,12 +22,13 @@ export const CustomColors = {
   cmd: (s: string) => chalk.cyan.bold(s),
   app: (s: string) => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
   heroku: (s: string) => {
-    if (!chalk.enabled) return s
-    console.dir(supports)
-    let has256 = supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
+    if (!CustomColors.supports) return s
+    let has256 = CustomColors.supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
     return has256 ? '\u001b[38;5;104m' + s + chalk.styles.reset.open : chalk.magenta(s)
   }
 }
+
+if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) CustomColors.supports = false
 
 function wrap (msg) {
   return linewrap(6,
@@ -95,7 +97,6 @@ class StreamOutput {
 export default class Output {
   constructor (config: Config) {
     this.config = config
-    if (!this.supportsColor) chalk.enabled = false
     this.mock = config.output.mock
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
@@ -127,17 +128,11 @@ export default class Output {
     this.action.stop()
   }
 
-  get supportsColor (): typeof supports | null {
-    if (this.slack) return
-    if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) return
-    return supports
-  }
-
   log (data, ...args: any) { this.stdout.log(data, ...args) }
 
   styledJSON (obj: any) {
     let json = JSON.stringify(obj, null, 2)
-    if (this.supportsColor) {
+    if (CustomColors.supports) {
       let cardinal = require('cardinal')
       let theme = require('cardinal/themes/jq')
       this.log(cardinal.highlight(json, {json: true, theme: theme}))
