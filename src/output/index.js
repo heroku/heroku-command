@@ -81,13 +81,13 @@ class StreamOutput {
   }
 
   write (msg: string) {
-    if (this.out.mock) this.output += msg
+    if (this.out.config.mock) this.output += msg
     this.stream.write(msg)
   }
 
   log (data: string, ...args: any[]) {
     this.out.action.pause(() => {
-      if (this.out.mock) this.output += util.format(data, ...args)
+      if (this.out.config.mock) this.output += util.format(data, ...args)
       else if (arguments.length === 0) console.log()
       else console.log(data, ...args)
     })
@@ -97,7 +97,6 @@ class StreamOutput {
 export default class Output {
   constructor (config: Config) {
     this.config = config
-    this.mock = config.output.mock
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
@@ -111,7 +110,6 @@ export default class Output {
   }
 
   config: Config
-  mock = false
   action: Action
   stdout: StreamOutput
   stderr: StreamOutput
