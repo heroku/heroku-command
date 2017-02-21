@@ -8,3 +8,4 @@ flow-typed
 coverage
 .flowconfig
 .babelrc
+*.log

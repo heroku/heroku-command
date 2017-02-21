@@ -20,6 +20,7 @@ export default class Command extends Output {
   static hidden: ?boolean
   static usage: ?string
   static help: ?string
+  static aliases: ?string[]
 
   static _version: pjson.version
 
