@@ -10,7 +10,7 @@ stages:
         path: /tmp/test-results
       - type: checkout
       - type: cache-restore
-        key: cli-engine-command-{{ .Branch}}-{{checksum "package.json"}}
+        key: cli-engine-command-{{checksum "package.json"}}
       - type: shell
         command: |
           set -exu
@@ -34,6 +34,6 @@ stages:
         path: /tmp/artifacts
         destination: build
       - type: cache-save
-        key: cli-engine-command-{{ .Branch}}-{{checksum "package.json"}}
+        key: cli-engine-command-{{checksum "package.json"}}
         paths:
           - /usr/local/share/.cache/yarn
