@@ -1,19 +1,16 @@
 // @flow
 /* globals
-   $Shape
    Class
  */
 
-import http from './http'
-import type HTTP from 'http-call'
-import Output from './output'
+import Base from './base'
 import Parser from './parser'
 import pjson from '../package.json'
-import {type Config, Default as DefaultConfig} from './config'
+import Config, {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 
-export default class Command extends Output {
+export default class Command extends Base {
   static topic: string
   static command: ?string
   static description: ?string
@@ -41,31 +38,16 @@ export default class Command extends Output {
   static get args () { return this._args }
   static set args (args: Arg[]) { this._args.push(...args) }
 
-  constructor (argv: string[] = [], config: $Shape<Config> = {}) {
-    super(Object.assign(DefaultConfig, config))
+  constructor (argv: string[] = [], config: ConfigOptions = {}) {
+    super(config)
     this.argv = argv
     this.parser = new Parser(this)
-    this.http = http(this)
   }
 
+  parser: Parser
   argv: string[]
   flags: {[flag: string]: string | true}
   args: {[arg: string]: string}
-
-  parser: Parser
-  http: Class<HTTP>
-
-  /**
-   * get whether or not command is in debug mode
-   * @returns {number} - 0 if not debugging, otherwise current debug level (1 or 2 usually)
-   */
-  get debugging (): number {
-    if (this.flags && this.flags.debug) return 1
-    const HEROKU_DEBUG = process.env.HEROKU_DEBUG
-    if (HEROKU_DEBUG === 'true') return 1
-    if (HEROKU_DEBUG) return parseInt(HEROKU_DEBUG)
-    return 0
-  }
 
   async init () {
     await this.parser.parse()
