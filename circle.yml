@@ -1,12 +1,39 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: ubuntu:14.04
+  - image: dickeyxxx/cli-command-engine:latestickeyxxx/cli-command-engine:latest
 stages:
   build:
-    workDir: ~/my-project
+    workDir: ~/cli-engine-command
     steps:
+      - type: test-results-store
+        path: /tmp/test-results
       - type: checkout
+      - type: cache-restore
+        key: cli-engine-command-{{ .Branch}}-{{checksum "package.json"}}
       - type: shell
-        shell: /bin/bash
-        command: ls && tree
+        command: |
+          set -exu
+
+          # setup yarn
+          yarn --prefer-offline --pure-lockfile
+
+          # test project
+          JEST_JUNIT_OUTPUT=/tmp/test-results/jest.xml ./node_modules/.bin/jest --coverage --testResultsProcessor jest-junit
+          ./node_modules/.bin/flow
+          ./node_modules/.bin/standard
+          bash <(curl -s https://codecov.io/bash)
+
+          # show files in npm pack
+          npm pack
+          tar xvzf cli-engine*.tgz
+          rm -rf package
+          mkdir -p /tmp/artifacts
+          mv cli-engine*.tgz /tmp/artifacts/cli-engine.tgz
+      - type: artifacts-store
+        path: /tmp/artifacts
+        destination: build
+      - type: cache-save
+        key: cli-engine-command-{{ .Branch}}-{{checksum "package.json"}}
+        paths:
+          - /usr/local/share/.cache/yarn

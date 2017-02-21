@@ -3,6 +3,8 @@
 .envrc
 .flowconfig
 .npmignore
+Dockerfile
+circle.yml
 coverage
 flow-typed
 node_modules
