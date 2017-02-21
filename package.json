@@ -47,7 +47,7 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "main": "lib/command.js",
+  "main": "lib/index.js",
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "build": "babel src -d lib --ignore '*.test.js'",

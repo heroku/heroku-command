@@ -13,4 +13,3 @@ export type Flag = {
   parse?: (string | boolean, cmd: Command) => string,
   default?: (cmd: Command) => Promise<string>
 }
-

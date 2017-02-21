@@ -25,7 +25,7 @@ export default (base: Base) => class HTTP extends http {
   logRequest () {
     if (!this.debugging) return
     base.stderr.log(`--> ${this.method} ${this.url}`)
-    if (base.debugging > 1) {
+    if (base.config.debugging > 1) {
       base.error(this.renderHeaders(this.headers))
       // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
     }
@@ -34,7 +34,7 @@ export default (base: Base) => class HTTP extends http {
   logResponse () {
     if (!this.debugging) return
     base.error(`<-- ${this.method} ${this.url} ${this.response.statusCode}`)
-    if (base.debugging > 1) {
+    if (base.config.debugging > 1) {
       base.error(this.renderHeaders(this.response.headers))
       if (this.body) base.error(`--- BODY\n${util.inspect(this.body)}\n---`)
     }

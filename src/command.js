@@ -1,12 +1,11 @@
 // @flow
 /* globals
-   Class
  */
 
 import Base from './base'
 import Parser from './parser'
 import pjson from '../package.json'
-import Config, {type ConfigOptions} from './config'
+import {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 
