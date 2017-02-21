@@ -14,7 +14,7 @@ class Command extends Base {
 }
 
 test('runs the command', () => {
-  let cmd = new Command([], {output: {mock: true}})
+  let cmd = new Command([], {mock: true})
   cmd.run()
   expect(cmd.stdout.output).toEqual('foo')
 })
