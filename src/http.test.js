@@ -23,7 +23,7 @@ afterEach(() => {
 
 test('makes an HTTP request', async () => {
   api.get('/')
-  .matchHeader('user-agent', `heroku-cli-command/${pjson.version} node-${process.version}`)
+  .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
   .reply(200, {message: 'ok'})
 
   const cmd = new Command()
