@@ -9,6 +9,7 @@
 
 import Base from './command'
 import nock from 'nock'
+import pjson from '../package.json'
 
 class Command extends Base {}
 
@@ -22,7 +23,7 @@ afterEach(() => {
 
 test('makes an HTTP request', async () => {
   api.get('/')
-  .matchHeader('user-agent', `foo/1.0 node-${process.version}`)
+  .matchHeader('user-agent', `heroku-cli-command/${pjson.version} node-${process.version}`)
   .reply(200, {message: 'ok'})
 
   const cmd = new Command()

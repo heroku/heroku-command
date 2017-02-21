@@ -1,6 +1,7 @@
 // @flow
 /* globals
    stream$Writable
+   $Shape
  */
 
 const util = require('util')
@@ -8,7 +9,23 @@ const linewrap = require('../linewrap')
 
 import {errtermwidth} from './screen'
 import Action from './action'
-import type Command from './command'
+import supports from 'supports-color'
+import chalk from 'chalk'
+import type {Config} from '../config'
+
+export const CustomColors = {
+  attachment: (s: string) => chalk.cyan(s),
+  addon: (s: string) => chalk.yellow(s),
+  configVar: (s: string) => chalk.green(s),
+  release: (s: string) => chalk.blue.bold(s),
+  cmd: (s: string) => chalk.cyan.bold(s),
+  app: (s: string) => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
+  heroku: (s: string) => {
+    if (!chalk.enabled) return s
+    let has256 = supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
+    return has256 ? '\u001b[38;5;104m' + s + chalk.styles.reset.open : chalk.magenta(s)
+  }
+}
 
 function wrap (msg) {
   return linewrap(6,
@@ -48,14 +65,12 @@ function getErrorMessage (err) {
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
 class StreamOutput {
-  mock = false
   output = ''
   stream: stream$Writable
-  cmd: Command
+  out: Output
 
-  constructor (stream: stream$Writable, cmd: Command) {
-    this.mock = cmd.config.output ? cmd.config.output.mock : false
-    this.cmd = cmd
+  constructor (stream: stream$Writable, output: Output) {
+    this.out = output
     this.stream = stream
     this.stream.on('error', err => {
       if (err.code !== 'EPIPE') throw err
@@ -63,13 +78,13 @@ class StreamOutput {
   }
 
   write (msg: string) {
-    if (this.mock) this.output += msg
+    if (this.out.mock) this.output += msg
     this.stream.write(msg)
   }
 
   log (data: string, ...args: any[]) {
-    this.cmd.action.pause(() => {
-      if (this.mock) this.output += util.format(data, ...args)
+    this.out.action.pause(() => {
+      if (this.out.mock) this.output += util.format(data, ...args)
       else if (arguments.length === 0) console.log()
       else console.log(data, ...args)
     })
@@ -77,24 +92,44 @@ class StreamOutput {
 }
 
 export default class Output {
-  mock = false
-  cmd: Command
-  action = new Action(this.cmd)
-  stdout = new StreamOutput(process.stdout, this.cmd)
-  stderr = new StreamOutput(process.stderr, this.cmd)
+  constructor (config: Config) {
+    this.config = config
+    if (!this.supportsColor) chalk.enabled = false
+    this.mock = config.output.mock
+    this.stdout = new StreamOutput(process.stdout, this)
+    this.stderr = new StreamOutput(process.stderr, this)
+    this.action = new Action(this)
 
-  constructor (cmd: Command) {
-    this.cmd = cmd
+    this.color = new Proxy(chalk, {
+      get: (chalk, name) => {
+        if (CustomColors[name]) return CustomColors[name]
+        return chalk[name]
+      }
+    })
   }
+
+  config: Config
+  mock = false
+  action: Action
+  stdout: StreamOutput
+  stderr: StreamOutput
+  color: $Shape<typeof chalk & typeof CustomColors>
 
   get displaySpinner (): boolean {
     return !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
   }
 
+  async init () {}
+
   async done () {
-    if (super.done) super.done()
     this.showCursor()
     this.action.stop()
+  }
+
+  get supportsColor (): typeof supports | null {
+    if (this.slack) return
+    if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) return
+    return supports
   }
 
   log (data, ...args: any) { this.stdout.log(data, ...args) }
@@ -160,15 +195,15 @@ export default class Output {
 
   error (err: Error | string) {
     if (typeof err === 'string') err = new Error(err)
-    if (this.action.task) this.action.stop(this.cmd.color.bold.red('!'))
+    if (this.action.task) this.action.stop(this.color.bold.red('!'))
     if (this.debugging) console.error(err.stack)
-    else console.error(bangify(wrap(getErrorMessage(err)), this.cmd.color.red(arrow)))
+    else console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
   }
 
   warn (message: Error | string) {
     this.action.pause(() => {
       if (this.debugging) console.trace(`WARNING: ${util.inspect(message)}`)
-      else console.error(bangify(wrap(message), this.cmd.color.yellow(arrow)))
+      else console.error(bangify(wrap(message), this.color.yellow(arrow)))
     })
   }
 

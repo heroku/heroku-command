@@ -1,7 +1,11 @@
 // @flow
+/* globals
+   $Shape
+   Class
+ */
 
-import HTTP from './http'
-import Color from './color'
+import http from './http'
+import type HTTP from 'http-call'
 import Output from './output'
 import Parser from './parser'
 import pjson from '../package.json'
@@ -9,7 +13,7 @@ import {type Config, Default as DefaultConfig} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 
-export default class Command {
+export default class Command extends Output {
   static topic: string
   static command: string
 
@@ -32,22 +36,19 @@ export default class Command {
   static get args () { return this._args }
   static set args (args: Arg[]) { this._args.push(...args) }
 
-  config: Config
-  argv: string[]
-
-  output: Output
-  color: Color
-  parser: Parser
-  http: HTTP
-
-  constructor (config: $Shape<Config>, argv: string[]) {
-    this.config = Object.assign(DefaultConfig, config)
+  constructor (argv: string[] = [], config: $Shape<Config> = {}) {
+    super(Object.assign(DefaultConfig, config))
     this.argv = argv
-    this.output = new Output(this)
-    this.color = new Color(this)
     this.parser = new Parser(this)
-    this.http = new HTTP(this)
+    this.http = http(this)
   }
+
+  argv: string[]
+  flags: {[flag: string]: string | true}
+  args: {[arg: string]: string}
+
+  parser: Parser
+  http: Class<HTTP>
 
   /**
    * get whether or not command is in debug mode
@@ -61,6 +62,13 @@ export default class Command {
     return 0
   }
 
+  async init () {
+    await this.parser.parse()
+    await super.init()
+    this.flags = this.parser.flags
+    this.args = this.parser.args
+  }
+
   /**
    * actual command run code goes here
    */
@@ -68,8 +76,7 @@ export default class Command {
     throw new Error('must implement abstract class Command')
   }
 
-  async init () {
-    await this.parser.parse()
+  async done () {
+    await super.done()
   }
-  async done () {}
 }
