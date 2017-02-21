@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli-command",
   "description": "base Heroku CLI command",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/heroku-cli-command/issues",
   "dependencies": {
@@ -56,7 +56,6 @@
     "prepare": "npm run clean && npm run build && npm run copy-flow",
     "release": "np",
     "test": "jest && flow && standard",
-    "version": "npm run doc && git add README.md",
     "watch": "babel --watch src -d lib --ignore '*.test.js'"
   },
   "standard": {
