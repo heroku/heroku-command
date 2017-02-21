@@ -15,7 +15,11 @@ import type {Arg} from './arg'
 
 export default class Command extends Output {
   static topic: string
-  static command: string
+  static command: ?string
+  static description: ?string
+  static hidden: ?boolean
+  static usage: ?string
+  static help: ?string
 
   static _version: pjson.version
 

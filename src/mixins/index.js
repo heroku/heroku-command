@@ -1,4 +1,9 @@
 // @flow
 
-export {default as app} from './app'
-export {default as heroku} from './heroku'
+import app from './app'
+import heroku from './heroku'
+
+export default {
+  app,
+  heroku
+}
