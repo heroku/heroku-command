@@ -8,6 +8,7 @@
 import Base from '../command'
 import {CustomColors} from '.'
 import chalk from 'chalk'
+import supports from 'supports-color'
 
 class Command extends Base {}
 
@@ -19,7 +20,10 @@ test('shows red text', () => {
 
 test('shows app', () => {
   const cmd = new Command()
+  console.dir(supports)
   chalk.enabled = true
+  console.dir(supports)
+  console.dir(cmd.color.app('foo'))
   expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
 })
 

@@ -22,6 +22,7 @@ export const CustomColors = {
   app: (s: string) => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
   heroku: (s: string) => {
     if (!chalk.enabled) return s
+    console.dir(supports)
     let has256 = supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
     return has256 ? '\u001b[38;5;104m' + s + chalk.styles.reset.open : chalk.magenta(s)
   }

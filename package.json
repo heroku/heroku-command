@@ -38,7 +38,6 @@
   "homepage": "https://github.com/heroku/heroku-cli-command",
   "jest": {
     "testEnvironment": "node",
-    "coverageDirectory": "./coverage/",
     "setupFiles": [
       "./test/init.js"
     ]
