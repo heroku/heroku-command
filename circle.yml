@@ -5,6 +5,9 @@ containerInfo:
 stages:
   build:
     workDir: ~/cli-engine-command
+    environment:
+      - CIRCLE_PROJECT_USERNAME: heroku
+      - CIRCLE_PROJECT_REPONAME: cli-engine-command
     steps:
       - type: test-results-store
         path: /tmp/test-results
