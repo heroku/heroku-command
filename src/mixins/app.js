@@ -1,4 +1,9 @@
-'use strict'
+// @flow
+/* globals
+   Class
+ */
+
+import type Command from '../command'
 
 const APP_FLAG = {
   name: 'app',
@@ -7,21 +12,26 @@ const APP_FLAG = {
   hasValue: true
 }
 
-module.exports = (options = {}) => {
-  return superclass => {
-    class klass extends superclass {
-      async init () {
-        await super.init()
-        if (!this.app && options.required !== false) throw new Error('No app specified')
-      }
+type Options = {
+  required?: boolean
+}
 
-      get app () {
-        if (this._app) return this._app
-        this._app = this.flags.app
-        return this._app
+export default function (Command: Class<Command>, options: Options = {}) {
+  return class extends Command {
+    static flags = [APP_FLAG]
+    _app: string
+
+    async init () {
+      await super.init()
+      if (!this.app && options.required !== false) {
+        throw new Error('No app specified')
       }
     }
-    klass.flags = [APP_FLAG]
-    return klass
+
+    get app (): string {
+      if (this._app) return this._app
+      this._app = this.flags.app
+      return this._app
+    }
   }
 }

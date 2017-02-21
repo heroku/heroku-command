@@ -5,16 +5,16 @@
   expect
   */
 
-import {Command} from '.'
+import Base from './command'
 
-class TestCommand extends Command {
+class Command extends Base {
   run () {
     this.log('foo')
   }
 }
 
 test('runs the command', () => {
-  let cmd = new TestCommand({mock: true})
+  let cmd = new Command({mock: true})
   cmd.run()
   expect(cmd.stdout).toEqual('foo')
 })
