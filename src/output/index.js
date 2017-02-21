@@ -5,7 +5,7 @@
  */
 
 const util = require('util')
-const linewrap = require('../linewrap')
+const linewrap = require('./linewrap')
 
 import {errtermwidth} from './screen'
 import Action from './action'
