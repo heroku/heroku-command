@@ -50,7 +50,7 @@
   "main": "lib/command.js",
   "repository": "https://github.com/heroku/heroku-command",
   "scripts": {
-    "build": "babel src -d lib --ignore '*.test.js' --source-maps inline",
+    "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "copy-flow": "flow-copy-source -v -i '*.test.js' src lib",
     "prepare": "npm run clean && npm run build && npm run copy-flow",
