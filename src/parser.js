@@ -21,7 +21,7 @@ export default class Parse {
         if (this.flags[flag.name]) {
           if (flag.parse) this.flags[flag.name] = flag.parse(this.flags[flag.name], this.cmd)
         } else {
-          if (flag.default) this.flags[flag.name] = await flagDefault(flag)
+          if (flag.default) this.flags[flag.name] = await flag.default(this.cmd)
           if (!this.flags[flag.name] && (flag.optional === false || flag.required === true)) {
             throw new Error(`Missing required flag --${flag.name}`)
           }
@@ -53,11 +53,6 @@ export default class Parse {
 
     let findShortFlag = arg => {
       return flags.find(f => f.char === arg[1])
-    }
-
-    let flagDefault = (flag): Promise<string> => {
-      let val = typeof flag.default === 'function' ? flag.default(this.cmd) : flag.default
-      return Promise.resolve(val)
     }
 
     let parsingFlags = true

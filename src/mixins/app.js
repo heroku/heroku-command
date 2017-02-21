@@ -17,7 +17,7 @@ type Options = {
 }
 
 export default function (Command: Class<Command>, options: Options = {}) {
-  return class extends Command {
+  return class AppMixin extends Command {
     static flags = [APP_FLAG]
     _app: string
 
@@ -30,7 +30,7 @@ export default function (Command: Class<Command>, options: Options = {}) {
 
     get app (): string {
       if (this._app) return this._app
-      this._app = this.flags.app
+      if (typeof this.flags.app === 'string') this._app = this.flags.app
       return this._app
     }
   }

@@ -5,11 +5,11 @@
   expect
   */
 
-import Base from './command'
-import color, {CustomColors} from './color'
+import Base from '../command'
+import {CustomColors} from '.'
 import chalk from 'chalk'
 
-class Command extends color(Base) {}
+class Command extends Base {}
 
 test('shows red text', () => {
   const cmd = new Command()

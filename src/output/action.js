@@ -10,11 +10,11 @@ type Task = {
 }
 
 export default class Action {
-  cmd: Output
+  out: Output
   task: ?Task = null
 
-  constructor (cmd: Output) {
-    this.cmd = cmd
+  constructor (out: Output) {
+    this.out = out
   }
 
   start (message: string, status: string = '') {
@@ -28,9 +28,9 @@ export default class Action {
       this.task = ({message, status}: Task)
       if (this.displaySpinner) {
         const Spinner = require('./spinner')
-        this.task.spinner = new Spinner({text: msg, command: this.cmd, status})
+        this.task.spinner = new Spinner({text: msg, command: this.out, status})
         this.task.spinner.start()
-      } else this.cmd.stderr.write(`${msg} ${status}`)
+      } else this.out.stderr.write(`${msg} ${status}`)
     }
   }
 

@@ -15,7 +15,7 @@ export default (cmd: Command) => class HTTP extends http {
     this.logResponse()
   }
 
-  renderHeaders (headers) {
+  renderHeaders (headers: {[key: string]: string}) {
     return Object.keys(headers).map(key => {
       let value = key.toUpperCase() === 'AUTHORIZATION' ? 'REDACTED' : headers[key]
       return '    ' + key + '=' + value
