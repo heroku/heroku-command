@@ -10,9 +10,7 @@ import type HTTP from 'http-call'
 
 export default class Base extends Output {
   constructor (options: ConfigOptions) {
-    let config = new Config(options)
-    super(config.mock)
-    this.config = config
+    super(options)
     this.http = http(this)
   }
 
