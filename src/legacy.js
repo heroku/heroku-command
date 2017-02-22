@@ -38,11 +38,7 @@ export default (command: LegacyCommand) => {
   if (command.needsAuth) BaseCommand = api(BaseCommand)
   class NewCommand extends BaseCommand {
     async run () {
-      const ctx = new Proxy(this, { get: (ctx: any, name) => {
-        if (name === 'debug') return ctx.debugging
-        return ctx[name]
-      }})
-      await command.run(ctx)
+      await command.run(this)
     }
   }
   NewCommand.topic = command.topic
