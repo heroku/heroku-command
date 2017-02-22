@@ -27,7 +27,7 @@ export type ConfigOptions = {
   updateDisabled?: string,
   binPath?: string,
   channel?: string
-}
+} | Config
 
 function debug () {
   const HEROKU_DEBUG = process.env.HEROKU_DEBUG
@@ -47,7 +47,7 @@ class Dirs {
   get config () { return this._fetch('config') }
   get cache () {
     let def
-    if (process.platform === 'darwin') def = path.join(this._config.home, 'Library', 'Caches', this._config.name)
+    if (process.platform === 'darwin') def = path.join(this._config.home, 'Library', 'Caches')
     return this._fetch('cache', def)
   }
 
