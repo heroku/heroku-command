@@ -11,7 +11,7 @@ import app from './app'
 class Command extends app(Base) {}
 
 test('has an app', async () => {
-  const cmd = new Command(['heroku', 'foo', '--app', 'myapp'])
+  const cmd = new Command({argv: ['heroku', 'foo', '--app', 'myapp']})
   await cmd.init()
   expect(cmd.app).toEqual('myapp')
 })

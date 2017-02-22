@@ -28,13 +28,13 @@ class Topic extends Base {
   listCommandsHelp () {
     let commands = this.commands.filter(c => !c.hidden).map(c => [this.usage(c), c.description])
     if (commands.length === 0) return
-    this.log(`${this.config.argv0} ${this.constructor.topic} commands: (${this.color.cmd(this.config.argv0 + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
+    this.log(`${this.config.bin} ${this.constructor.topic} commands: (${this.color.cmd(this.config.bin + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
     this.log(this.renderList(commands))
     this.log()
   }
 
   commandHelp (command: Class<Command>) {
-    let usage = `${this.config.argv0} ${this.usage(command)}`
+    let usage = `${this.config.bin} ${this.usage(command)}`
     this.log(`Usage: ${this.color.cmd(usage)}\n`)
     if (command.description) this.log(`${command.description.trim()}\n`)
     let flags = (command.flags || []).filter(f => !f.hidden)

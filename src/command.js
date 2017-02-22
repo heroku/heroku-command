@@ -37,11 +37,20 @@ export default class Command extends Base {
   static get args () { return this._args }
   static set args (args: Arg[]) { this._args.push(...args) }
 
-  constructor (argv: string[] = [], config: ConfigOptions = {}) {
+  constructor (config: ConfigOptions = {}) {
     super(config)
-    this.argv = argv
+    this.argv = this.config.argv
     this.parser = new Parser(this)
   }
+
+  // prevent setting things that need to be static
+  topic: null
+  command: null
+  description: null
+  hidden: null
+  usage: null
+  help: null
+  aliases: null
 
   parser: Parser
   argv: string[]

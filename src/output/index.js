@@ -10,6 +10,8 @@ import {errtermwidth} from './screen'
 import Action from './action'
 import supports from 'supports-color'
 import chalk from 'chalk'
+import path from 'path'
+import Config, {type ConfigOptions} from '../config'
 
 export const CustomColors = {
   supports,
@@ -79,7 +81,7 @@ class StreamOutput {
   }
 
   write (msg: string) {
-    if (this.out.mock) this.output += msg
+    if (this.out.config.mock) this.output += msg
     this.stream.write(msg)
   }
 
@@ -87,7 +89,7 @@ class StreamOutput {
     let msg = data ? util.format(data, ...args) : ''
     msg += '\n'
     this.out.action.pause(() => {
-      if (this.out.mock) this.output += msg
+      if (this.out.config.mock) this.output += msg
       else if (arguments.length === 0) this.stream.write(msg)
       else this.stream.write(msg)
     })
@@ -95,8 +97,8 @@ class StreamOutput {
 }
 
 export default class Output {
-  constructor (mock: boolean) {
-    this.mock = mock
+  constructor (options: ConfigOptions) {
+    this.config = new Config(options)
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
@@ -109,7 +111,7 @@ export default class Output {
     })
   }
 
-  mock: boolean
+  config: Config
   action: Action
   stdout: StreamOutput
   stderr: StreamOutput
@@ -118,6 +120,8 @@ export default class Output {
   get displaySpinner (): boolean {
     return !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
   }
+
+  get fs () { return require('fs-extra') }
 
   async init () {}
 
@@ -187,11 +191,27 @@ export default class Output {
     if (this.debugging) this.action.pause(() => console.log(obj))
   }
 
-  error (err: Error | string) {
+  get errlog (): string { return path.join(this.config.dirs.cache, 'error.log') }
+
+  error (err: Error | string, exitCode?: number = 1) {
     if (typeof err === 'string') err = new Error(err)
+    this.logError(err)
     if (this.action.task) this.action.stop(this.color.bold.red('!'))
     if (this.debugging) console.error(err.stack)
     else console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
+    if (exitCode !== undefined) this.exit(exitCode)
+  }
+
+  logError (err: Error) {
+    if (!this.errlog) return
+    try {
+      this.fs.appendFileSync(this.errlog, util.inspect(err) + '\n')
+    } catch (err) { console.error(err) }
+  }
+
+  exit (code: number = 0) {
+    this.showCursor()
+    process.exit(code)
   }
 
   warn (message: Error | string) {
@@ -203,6 +223,8 @@ export default class Output {
 
   showCursor () {
     const ansi = require('ansi-escapes')
-    if (process.stderr.isTTY) process.stderr.write(ansi.cursorShow)
+    try {
+      if (process.stderr.isTTY) process.stderr.write(ansi.cursorShow)
+    } catch (err) {}
   }
 }
