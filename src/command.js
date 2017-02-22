@@ -18,22 +18,24 @@ export default class Command extends Base {
 
   static _version: pjson.version
 
-  static _flags: Flag[] = [
+  static _flags: Flag[] = []
+  static __flags: Flag[] = [
     {name: 'debug', hidden: true},
     {name: 'no-color', hidden: true}
   ]
 
   static _args: Arg[] = []
+  static __args: Arg[] = []
 
   static get id () {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static get flags () { return this._flags }
-  static set flags (flags: Flag[]) { this._flags.push(...flags) }
+  static get flags () { return this.__flags.concat(this._flags) }
+  static set flags (flags: Flag[]) { this._flags = flags }
 
-  static get args () { return this._args }
-  static set args (args: Arg[]) { this._args.push(...args) }
+  static get args () { return this.__args.concat(this._args) }
+  static set args (args: Arg[]) { this._args = args }
 
   constructor (config: ConfigOptions = {}) {
     super(config)
