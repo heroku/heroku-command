@@ -56,7 +56,7 @@
     "copy-flow": "flow-copy-source -v -i '*.test.js' src lib",
     "prepare": "npm run clean && npm run build && npm run copy-flow",
     "release": "np",
-    "test": "jest && flow && standard",
+    "test": "jest && flow && standard && npm run prepare",
     "watch": "babel --watch src -d lib --ignore '*.test.js'"
   },
   "standard": {
