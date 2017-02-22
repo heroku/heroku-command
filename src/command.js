@@ -1,6 +1,4 @@
 // @flow
-/* globals
- */
 
 import Base from './base'
 import Parser from './parser'
@@ -16,7 +14,7 @@ export default class Command extends Base {
   static hidden: ?boolean
   static usage: ?string
   static help: ?string
-  static aliases: ?string[]
+  static aliases: string[] = []
 
   static _version: pjson.version
 

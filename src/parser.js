@@ -68,6 +68,7 @@ export default class Parse {
       this.args[expected.name] = arg
     }
 
+    console.dir(args)
     let missingArg = args.find(a => a.optional !== true && a.required !== false)
     if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
 
