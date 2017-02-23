@@ -2,7 +2,6 @@
 
 import path from 'path'
 import os from 'os'
-import util from 'util'
 import {validate} from 'jest-validate'
 
 const examplePJSON: CLI = {
