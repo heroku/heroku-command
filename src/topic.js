@@ -6,12 +6,12 @@
 import {stdtermwidth} from './output/screen'
 import Base from './base'
 import type Command from './command'
-import type {ConfigOptions} from './config'
+import type Config from './config'
 import type {Arg} from './arg'
 import type {Flag} from './flag'
 
 class Topic extends Base {
-  constructor (commands: Class<Command>[], config: ConfigOptions) {
+  constructor (commands: Class<Command>[], config: Config) {
     super(config)
     this.commands = commands
   }
