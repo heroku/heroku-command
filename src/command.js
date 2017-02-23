@@ -6,6 +6,7 @@ import pjson from '../package.json'
 import {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
+import {validate} from 'jest-validate'
 
 export default class Command extends Base {
   static topic: string
@@ -39,6 +40,7 @@ export default class Command extends Base {
 
   constructor (config: ConfigOptions = {}) {
     super(config)
+    this.validate()
     this.argv = this.config.argv
     this.parser = new Parser(this)
   }
@@ -62,6 +64,28 @@ export default class Command extends Base {
     await super.init()
     this.flags = this.parser.flags
     this.args = this.parser.args
+  }
+
+  validate () {
+    validate({
+      topic: this.constructor.topic,
+      command: this.constructor.command,
+      description: this.constructor.description,
+      hidden: this.constructor.hidden,
+      usage: this.constructor.usage,
+      help: this.constructor.help,
+      aliases: this.constructor.aliases
+    }, {
+      exampleConfig: {
+        topic: 'apps',
+        command: 'info',
+        description: 'description of my command',
+        hidden: true,
+        usage: 'how to use the command',
+        help: 'long form help text',
+        aliases: ['-v', '--version']
+      }
+    })
   }
 
   /**

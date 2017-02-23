@@ -108,7 +108,7 @@ class StreamOutput {
 
 export default class Output {
   constructor (options: ConfigOptions) {
-    this.config = new Config(options)
+    this.config = options instanceof Config ? options : new Config(options)
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
