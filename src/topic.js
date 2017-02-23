@@ -20,7 +20,7 @@ class Topic extends Base {
 
   commands: Class<Command>[]
 
-  async help (args: string[], matchedCommand: Class<Command>) {
+  async help (args: string[], matchedCommand: ?Class<Command>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
     if (this.constructor.topic === args[0]) this.listCommandsHelp()
   }

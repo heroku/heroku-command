@@ -16,6 +16,7 @@ export default class Command extends Base {
   static usage: ?string
   static help: ?string
   static aliases: string[] = []
+  static variableArgs = false
 
   static _version: pjson.version
 
@@ -41,7 +42,7 @@ export default class Command extends Base {
   constructor (config: ConfigOptions = {}) {
     super(config)
     this.validate()
-    this.argv = this.config.argv
+    this.argv = this.config.argv.slice(1)
     this.parser = new Parser(this)
   }
 
@@ -60,10 +61,12 @@ export default class Command extends Base {
   args: {[arg: string]: string}
 
   async init () {
-    await this.parser.parse()
     await super.init()
+    await this.parser.parse()
     this.flags = this.parser.flags
     this.args = this.parser.args
+    this.argv = this.parser.argv
+    if (this.flags.debug) this.config.debug = 1
   }
 
   validate () {
@@ -91,6 +94,7 @@ export default class Command extends Base {
         command: 'info',
         description: 'description of my command',
         hidden: true,
+        variableArgs: false,
         usage: 'how to use the command',
         help: 'long form help text',
         aliases: ['-v', '--version'],

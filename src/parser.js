@@ -10,11 +10,13 @@ export default class Parse {
   cmd: Command
   flags: {[name: string]: string | true} = {}
   args: {[name: string]: string} = {}
+  argv: string[]
 
   async parse () {
     let args = this.cmd.constructor.args.slice(0)
     let flags = this.cmd.constructor.flags
-    let parsingArgs = this.cmd.argv.slice(2)
+    let parsingArgs = this.cmd.argv.slice(1)
+    this.argv = []
 
     async function parseFlags () {
       for (let flag of flags || []) {
@@ -62,7 +64,8 @@ export default class Parse {
         if (arg === '--') { parsingFlags = false; continue }
         if (parseFlag(arg)) continue
       }
-      // TODO: varargs
+      this.argv.push(arg)
+      if (this.cmd.constructor.variableArgs) continue
       let expected = args.shift()
       if (!expected) throw new Error(`Unexpected argument ${arg}`)
       this.args[expected.name] = arg
