@@ -11,7 +11,7 @@ class Spinner {
     }, options)
 
     this.ansi = require('ansi-escapes')
-    let spinners = require('./spinners.json')
+    let spinners = require('./spinners.js')
 
     this.command = this.options.command
     this.color = this.options.color || 'heroku'

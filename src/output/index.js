@@ -30,7 +30,7 @@ export const CustomColors = {
 
 if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) CustomColors.supports = false
 
-function wrap (msg): string {
+function wrap (msg: string): string {
   return linewrap(6,
     errtermwidth, {
       skipScheme: 'ansi-color',
@@ -47,14 +47,14 @@ function bangify (msg: string, c: string): string {
   return lines.join('\n')
 }
 
-function getErrorMessage (err: Error) {
+function getErrorMessage (err: Error): string {
   let message
   if (err.body) {
     // API error
     if (err.body.message) {
-      message = err.body.message
+      message = util.inspect(err.body.message)
     } else if (err.body.error) {
-      message = err.body.error
+      message = util.inspect(err.body.error)
     }
   }
   // Unhandled error
@@ -117,10 +117,6 @@ export default class Output {
   stdout: StreamOutput
   stderr: StreamOutput
   color: $Shape<typeof chalk & typeof CustomColors>
-
-  get displaySpinner (): boolean {
-    return !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
-  }
 
   get fs () { return require('fs-extra') }
 
@@ -195,32 +191,50 @@ export default class Output {
   get errlog (): string { return path.join(this.config.dirs.cache, 'error.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
-    if (typeof err === 'string') err = new Error(err)
-    this.logError(err)
-    if (this.action.task) this.action.stop(this.color.bold.red('!'))
-    if (this.config.debug) console.error(err.stack)
-    else console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
-    if (exitCode !== false) this.exit(exitCode)
+    try {
+      if (typeof err === 'string') err = new Error(err)
+      this.logError(err)
+      if (this.action.task) this.action.stop(this.color.bold.red('!'))
+      if (this.config.debug) {
+        console.error(err)
+        console.error(util.inspect(this.config))
+      } else {
+        console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
+      }
+      if (exitCode !== false) this.exit(exitCode)
+    } catch (e) {
+      console.error('error displaying error')
+      console.error(e)
+      console.error(err)
+    }
   }
 
-  warn (err: Error | string) {
+  warn (err: Error | string, prefix?: string) {
     this.action.pause(() => {
-      err = typeof err === 'string' ? new Error(err) : err
-      this.logError(err)
-      if (this.debug) console.trace(`WARNING: ${util.inspect(err)}`)
-      else console.error(bangify(wrap(getErrorMessage(err)), this.color.yellow(arrow)))
+      try {
+        prefix = prefix ? `${prefix} ` : ''
+        err = typeof err === 'string' ? new Error(err) : err
+        this.logError(err)
+        if (this.config.debug) process.stderr.write(`WARNING: ${prefix}`) && console.error(err)
+        else console.error(bangify(wrap(prefix + getErrorMessage(err)), this.color.yellow(arrow)))
+      } catch (e) {
+        console.error('error displaying warning')
+        console.error(e)
+        console.error(err)
+      }
     })
   }
 
   logError (err: Error | string) {
     try {
-      err = this.color.stripColor(util.inspect(err) + '\n')
-      this.fs.appendFileSync(this.errlog, err)
+      err = this.color.stripColor(util.inspect(err))
+      this.fs.appendFileSync(this.errlog, `${err}\n`)
     } catch (err) { console.error(err) }
   }
 
   exit (code: number = 0) {
     this.showCursor()
+    if (this.config.debug) console.error(`Exiting with code: ${code}`)
     process.exit(code)
   }
 
