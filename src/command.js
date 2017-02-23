@@ -67,8 +67,22 @@ export default class Command extends Base {
   }
 
   validate () {
-    const exampleFlag = {name: 'app', char: 'a', hidden: false}
-    const exampleArg = {name: 'FILE'}
+    const exampleFlag = {
+      name: 'app',
+      char: 'a',
+      hidden: false,
+      hasValue: false,
+      required: false,
+      optional: true,
+      description: 'description of flag',
+      parse: () => { },
+      default: () => { }
+    }
+    const exampleArg = {
+      name: 'FILE',
+      required: true,
+      optional: false
+    }
     const id = this.constructor.id
     validate(this.constructor, {
       comment: `${id}`,
