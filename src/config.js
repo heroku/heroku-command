@@ -103,8 +103,8 @@ export default class Config {
       : require('../package.json')
     this.debug = debug()
     this.dirs = new Dirs(this)
-    validate(this._cli, {exampleConfig: examplePJSON})
-    validate(options, {exampleConfig: exampleOptions})
+    validate(this._cli, {comment: 'pjson.cli-engine', exampleConfig: examplePJSON})
+    validate(options, {comment: 'config', exampleConfig: exampleOptions})
   }
 
   dirs: Dirs

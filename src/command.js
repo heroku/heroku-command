@@ -88,7 +88,7 @@ export default class Command extends Base {
     }
     const id = this.constructor.id
     validate(this.constructor, {
-      comment: `${id}`,
+      comment: `Command: ${id}`,
       exampleConfig: {
         topic: 'apps',
         command: 'info',
