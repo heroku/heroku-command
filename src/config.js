@@ -85,15 +85,13 @@ class Dirs {
     return d
   }
 
-  inspect (depth, options) {
-    if (depth < 0) return options.stylize('[Dirs]', 'special')
-    let dirs = {
+  toJSON () {
+    return {
       cache: this.cache,
       data: this.data,
       config: this.config,
       home: this.home
     }
-    return `Config ${util.inspect(dirs, options)}`
   }
 }
 
@@ -129,9 +127,8 @@ export default class Config {
   get _cli (): CLI { return this._pjson['cli-engine'] || {} }
   get windows (): boolean { return os.platform === 'win32' }
 
-  inspect (depth: number, options: any): any {
-    if (depth < 0) return options.stylize('[Config]', 'special')
-    let config = {
+  toJSON () {
+    return {
       name: this.name,
       version: this.version,
       channel: this.channel,
@@ -147,6 +144,5 @@ export default class Config {
       debug: this.debug,
       dirs: this.dirs
     }
-    return `Config ${util.inspect(config, options)}`
   }
 }
