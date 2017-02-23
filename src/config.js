@@ -100,7 +100,7 @@ export default class Config {
   get mock (): boolean { return this._options.mock || false }
   get updateDisabled (): ?string { return this._options.updateDisabled }
   get bin (): string { return this._cli.bin || this._pjson.name }
-  get binPath (): string { return this._options.binPath || path.join(__dirname, '..') }
+  get binPath (): ?string { return this._options.binPath }
   get root (): string { return this._options.root || path.join(__dirname, '..') }
   get defaultCommand (): string { return this._cli.defaultCommand || 'help' }
   get s3 (): S3 { return this._cli.s3 || {} }
