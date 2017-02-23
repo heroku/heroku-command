@@ -13,6 +13,15 @@ import chalk from 'chalk'
 import path from 'path'
 import Config, {type ConfigOptions} from '../config'
 
+class ExitError extends Error {
+  constructor (code: number) {
+    super(`Exited with code: ${code}`)
+    this.code = code
+  }
+
+  code: number
+}
+
 export const CustomColors = {
   supports,
   attachment: (s: string) => chalk.cyan(s),
@@ -235,7 +244,7 @@ export default class Output {
   exit (code: number = 0) {
     this.showCursor()
     if (this.config.debug) console.error(`Exiting with code: ${code}`)
-    process.exit(code)
+    if (this.config.mock) throw new ExitError(code); else process.exit(code)
   }
 
   showCursor () {
