@@ -34,6 +34,10 @@ export default class Action {
     }
   }
 
+  get displaySpinner (): boolean {
+    return !this.out.config.debug && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+  }
+
   stop (msg: string = 'done') {
     if (!this.task) return
     this.start(this.task.message, msg)
@@ -44,7 +48,7 @@ export default class Action {
 
   pause (fn: Function) {
     let spinner = this.task ? this.task.spinner : null
-    if (spinner) {
+    if (this.task) {
       if (spinner) {
         spinner.stop()
         spinner.clear()

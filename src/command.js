@@ -68,7 +68,16 @@ export default class Command extends Base {
    * actual command run code goes here
    */
   async run () {
-    throw new Error('must implement abstract class Command')
+    throw new Error('must implement run')
+  }
+
+  /**
+   * runs init/run/done lifecycle
+   */
+  async _run () {
+    await this.init()
+    await this.run()
+    await this.done()
   }
 
   async done () {

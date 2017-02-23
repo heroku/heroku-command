@@ -33,6 +33,7 @@
     "jest": "18.1.0",
     "jest-junit": "1.2.0",
     "nock": "9.0.6",
+    "nodemon": "1.11.0",
     "np": "2.12.0",
     "rimraf": "2.6.0",
     "standard": "8.6.0"
@@ -40,8 +41,9 @@
   "homepage": "https://github.com/heroku/cli-engine-command",
   "jest": {
     "testEnvironment": "node",
+    "rootDir": "./src",
     "setupFiles": [
-      "./test/init.js"
+      "../test/init.js"
     ]
   },
   "keywords": [
@@ -58,11 +60,12 @@
     "prepare": "npm run clean && npm run build && npm run copy-flow",
     "release": "np",
     "test": "jest && flow && standard && npm run prepare",
-    "watch": "babel --watch src -d lib --ignore '*.test.js'"
+    "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
   },
   "standard": {
     "parser": "babel-eslint",
     "ignore": [
+      "lib",
       "src/output/linewrap.js",
       "flow-typed"
     ]
