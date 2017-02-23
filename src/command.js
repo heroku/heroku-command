@@ -67,15 +67,11 @@ export default class Command extends Base {
   }
 
   validate () {
-    validate({
-      topic: this.constructor.topic,
-      command: this.constructor.command,
-      description: this.constructor.description,
-      hidden: this.constructor.hidden,
-      usage: this.constructor.usage,
-      help: this.constructor.help,
-      aliases: this.constructor.aliases
-    }, {
+    const exampleFlag = {name: 'app', char: 'a', hidden: false}
+    const exampleArg = {name: 'FILE'}
+    const id = this.constructor.id
+    validate(this.constructor, {
+      comment: `${id}`,
       exampleConfig: {
         topic: 'apps',
         command: 'info',
@@ -83,9 +79,27 @@ export default class Command extends Base {
         hidden: true,
         usage: 'how to use the command',
         help: 'long form help text',
-        aliases: ['-v', '--version']
+        aliases: ['-v', '--version'],
+        args: [exampleArg],
+        flags: [exampleFlag],
+        _args: [],
+        _flags: [],
+        __args: [],
+        __flags: []
       }
     })
+    for (let flag of this.constructor.flags) {
+      validate(flag, {
+        comment: `${id} flag: ${flag.name}`,
+        exampleConfig: exampleFlag
+      })
+    }
+    for (let arg of this.constructor.args) {
+      validate(arg, {
+        comment: `${id} arg: ${arg.name}`,
+        exampleConfig: exampleArg
+      })
+    }
   }
 
   /**
