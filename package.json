@@ -16,6 +16,7 @@
     "jest-validate": "19.0.0",
     "lodash.maxby": "4.6.0",
     "netrc": "0.1.4",
+    "pretty-format": "19.0.0",
     "string": "3.3.3",
     "supports-color": "3.2.3"
   },

@@ -6,11 +6,11 @@
 */
 
 import Config from './config'
-import util from 'util'
+import format from 'pretty-format'
 
 describe('inspect', () => {
   test('prints the object', () => {
     let config = new Config({argv: ['heroku', 'apps']})
-    expect(util.inspect(config)).toMatch(/^Config { /)
+    expect(format(config)).toMatch(/^Object {/)
   })
 })
