@@ -92,7 +92,7 @@ class StreamOutput {
 
   write (msg: string) {
     if (this.out.config.mock) this.output += msg
-    this.stream.write(msg)
+    else this.stream.write(msg)
   }
 
   log (data: string, ...args: any[]) {

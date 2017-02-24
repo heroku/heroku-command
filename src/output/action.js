@@ -23,7 +23,7 @@ export default class Action {
       if (this.task.spinner) {
         this.task.spinner.text = msg
         this.task.spinner.status = status
-      } else process.stderr.write(`\n${msg} ${status}`)
+      } else this.out.stderr.write(`\n${msg} ${status}`)
     } else {
       this.task = ({message, status}: Task)
       if (this.displaySpinner) {
@@ -42,7 +42,7 @@ export default class Action {
     if (!this.task) return
     this.start(this.task.message, msg)
     if (this.task && this.task.spinner) this.task.spinner.stop(msg)
-    else process.stderr.write('\n')
+    else this.out.stderr.write('\n')
     delete this.task
   }
 
@@ -54,12 +54,12 @@ export default class Action {
         spinner.clear()
       } else {
         delete this.task
-        process.stderr.write('\n')
+        this.out.stderr.write('\n')
       }
     }
     fn()
     if (spinner) {
-      process.stderr.write('\n')
+      this.out.stderr.write('\n')
       spinner.start()
     }
   }
