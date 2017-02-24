@@ -3,24 +3,52 @@
 /* globals
   test
   expect
+  describe
+  beforeEach
   */
 
 import Base, {CustomColors} from '.'
 import chalk from 'chalk'
-
-chalk.enabled = true
-CustomColors.supports = {has256: true}
+import stdmock from 'std-mocks'
 
 class Output extends Base {}
 
-test('shows red text', () => {
-  const cmd = new Output({mock: true})
-  expect(cmd.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
+beforeEach(() => {
+  chalk.enabled = false
+  CustomColors.supports = false
 })
 
-test('shows app', () => {
-  const cmd = new Output({mock: true})
-  expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
+test('outputs to stdout', () => {
+  stdmock.use()
+  const out = new Output({mock: false})
+  out.stdout.write('it works')
+  stdmock.restore()
+  expect(stdmock.flush().stdout).toEqual(['it works'])
+})
+
+test('outputs to stderr', () => {
+  stdmock.use()
+  const out = new Output({mock: false})
+  out.stderr.write('it works')
+  stdmock.restore()
+  expect(stdmock.flush().stderr).toEqual(['it works'])
+})
+
+describe('with color', () => {
+  beforeEach(() => {
+    chalk.enabled = true
+    CustomColors.supports = {has256: true}
+  })
+
+  test('shows red text', () => {
+    const cmd = new Output({mock: true})
+    expect(cmd.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
+  })
+
+  test('shows app', () => {
+    const cmd = new Output({mock: true})
+    expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
+  })
 })
 
 test('makes sure all custom options are accessible', () => {
@@ -58,4 +86,10 @@ test('error', () => {
     expect(err.code).toBe(1)
     expect(out.stderr.output).toContain('foo')
   }
+})
+
+test('styledHeader', () => {
+  const out = new Output({mock: true})
+  out.styledHeader('foobar')
+  expect(out.stdout.output).toBe('=== foobar\n')
 })
