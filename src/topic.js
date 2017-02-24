@@ -17,6 +17,8 @@ class Topic extends Base {
   }
 
   static topic: string
+  static description: ?string
+  static hidden = false
 
   commands: Class<Command>[]
 

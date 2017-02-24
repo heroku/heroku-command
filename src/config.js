@@ -31,12 +31,14 @@ type S3 = {
 type CLI = {
   defaultCommand?: string,
   bin?: string,
-  s3?: S3
+  s3?: S3,
+  plugins?: string[]
 }
 
 export type PJSON = {
   name: string,
   version: string,
+  dependencies: {[name: string]: string},
   'cli-engine'?: CLI
 }
 
