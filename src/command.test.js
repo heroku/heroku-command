@@ -9,12 +9,19 @@ import Base from './command'
 
 class Command extends Base {
   run () {
+    this.debug('debug')
     this.log('foo')
   }
 }
 
-test('runs the command', () => {
+test('runs the command', async () => {
   let cmd = new Command({mock: true})
-  cmd.run()
+  await cmd._run()
   expect(cmd.stdout.output).toEqual('foo\n')
+})
+
+test('parses args', async () => {
+  let cmd = new Command({mock: true, argv: ['heroku', 'cmd', '--debug']})
+  await cmd._run()
+  expect(cmd.flags.debug).toBeTruthy()
 })
