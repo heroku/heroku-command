@@ -105,8 +105,9 @@ export default class Config {
       : require('../package.json')
     this.debug = debug()
     this.dirs = new Dirs(this)
-    validate(this._cli, {comment: 'pjson.cli-engine', exampleConfig: examplePJSON})
-    validate(options, {comment: 'config', exampleConfig: exampleOptions})
+    // TODO: make validation work when inherited
+    // validate(this._cli, {comment: 'pjson.cli-engine', exampleConfig: examplePJSON})
+    // validate(options, {comment: 'config', exampleConfig: exampleOptions})
   }
 
   dirs: Dirs
