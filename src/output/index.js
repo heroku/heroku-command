@@ -86,9 +86,6 @@ class StreamOutput {
   constructor (stream: stream$Writable, output: Output) {
     this.out = output
     this.stream = stream
-    this.stream.on('error', err => {
-      if (err.code !== 'EPIPE') throw err
-    })
   }
 
   write (msg: string) {
