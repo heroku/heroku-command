@@ -1901,9 +1901,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.11.tgz#5a7c106651ab07c00f0a941d82e2a7fc617ca545"
+http-call@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.12.tgz#b96d3c0bccff4a819a637ec5d469a6c57c89b0ac"
   dependencies:
     babel-runtime "6.23.0"
 

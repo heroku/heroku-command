@@ -48,7 +48,8 @@ export type ConfigOptions = {
   root?: string,
   updateDisabled?: string,
   binPath?: string,
-  channel?: string
+  channel?: string,
+  debug?: number
 } | Config
 
 function debug () {
@@ -103,7 +104,7 @@ export default class Config {
         // flow$ignore
       ? require(path.join(options.root, 'package.json'))
       : require('../package.json')
-    this.debug = debug()
+    this.debug = debug() || options.debug || 0
     this.dirs = new Dirs(this)
     // TODO: make validation work when inherited
     // validate(this._cli, {comment: 'pjson.cli-engine', exampleConfig: examplePJSON})
