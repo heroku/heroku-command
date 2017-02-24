@@ -8,6 +8,11 @@ import type {Flag} from './flag'
 import type {Arg} from './arg'
 import {validate} from 'jest-validate'
 
+const BUILTIN_FLAGS: Flag[] = [
+  {name: 'debug', hidden: true},
+  {name: 'no-color', hidden: true}
+]
+
 export default class Command extends Base {
   static topic: string
   static command: ?string
@@ -21,22 +26,17 @@ export default class Command extends Base {
   static _version: pjson.version
 
   static _flags: Flag[] = []
-  static __flags: Flag[] = [
-    {name: 'debug', hidden: true},
-    {name: 'no-color', hidden: true}
-  ]
 
   static _args: Arg[] = []
-  static __args: Arg[] = []
 
   static get id () {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static get flags () { return this.__flags.concat(this._flags) }
+  static get flags () { return this._flags.concat(BUILTIN_FLAGS) }
   static set flags (flags: Flag[]) { this._flags = flags }
 
-  static get args () { return this.__args.concat(this._args) }
+  static get args () { return this._args }
   static set args (args: Arg[]) { this._args = args }
 
   constructor (config: ConfigOptions = {}) {
@@ -84,7 +84,8 @@ export default class Command extends Base {
     const exampleArg = {
       name: 'FILE',
       required: true,
-      optional: false
+      optional: false,
+      hidden: false
     }
     const id = this.constructor.id
     validate(this.constructor, {
