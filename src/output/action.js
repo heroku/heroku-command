@@ -35,7 +35,7 @@ export default class Action {
   }
 
   get displaySpinner (): boolean {
-    return !this.out.config.debug && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+    return !this.out.config.mock && !this.out.config.debug && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
   }
 
   stop (msg: string = 'done') {
