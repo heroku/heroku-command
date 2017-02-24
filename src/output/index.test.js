@@ -50,6 +50,12 @@ describe('with color', () => {
     const cmd = new Output({mock: true})
     expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
   })
+
+  test('styledJSON', () => {
+    const out = new Output({mock: true})
+    out.styledJSON({foo: 'bar'})
+    expect(out.stdout.output).toBe(`\u001b[97m{\u001b[39m\n  \u001b[94m"foo"\u001b[39m\u001b[93m:\u001b[39m \u001b[92m"bar"\u001b[39m\n\u001b[97m}\u001b[39m\n`)
+  })
 })
 
 test('makes sure all custom options are accessible', () => {
@@ -93,4 +99,39 @@ test('styledHeader', () => {
   const out = new Output({mock: true})
   out.styledHeader('foobar')
   expect(out.stdout.output).toBe('=== foobar\n')
+})
+
+test('styledJSON', () => {
+  const out = new Output({mock: true})
+  out.styledJSON({foo: 'bar'})
+  expect(out.stdout.output).toBe(`{
+  "foo": "bar"
+}
+`)
+})
+
+test('styledObject', () => {
+  const out = new Output({mock: true})
+  out.styledObject({foo: 'bar', info: {arr: ['a', 'b', 'c']}}, ['foo', 'info'])
+  expect(out.stdout.output).toBe(`foo:  bar
+info: arr: [ 'a', 'b', 'c' ]
+`)
+})
+
+test('inspect', () => {
+  const out = new Output()
+  stdmock.use()
+  out.inspect({foo: 'bar', info: {arr: ['a', 'b', 'c']}}, ['foo', 'info'])
+  stdmock.restore()
+  expect(stdmock.flush().stderr[0]).toEqual(`Object {
+  "foo": "bar",
+  "info": Object {
+    "arr": Array [
+      "a",
+      "b",
+      "c",
+    ],
+  },
+}
+`)
 })
