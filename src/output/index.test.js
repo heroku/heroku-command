@@ -22,8 +22,9 @@ test('outputs to stdout', () => {
   stdmock.use()
   const out = new Output({mock: false})
   out.stdout.write('it works')
+  out.stdout.log('it works')
   stdmock.restore()
-  expect(stdmock.flush().stdout).toEqual(['it works'])
+  expect(stdmock.flush().stdout).toEqual(['it works', 'it works\n'])
 })
 
 test('outputs to stderr', () => {
@@ -81,7 +82,7 @@ test('error', () => {
   expect.assertions(2)
   const out = new Output({mock: true})
   try {
-    out.error('foo')
+    out.error('foo\nbar')
   } catch (err) {
     expect(err.code).toBe(1)
     expect(out.stderr.output).toContain('foo')

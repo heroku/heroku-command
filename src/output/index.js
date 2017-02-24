@@ -100,7 +100,6 @@ class StreamOutput {
     msg += '\n'
     this.out.action.pause(() => {
       if (this.out.config.mock) this.output += msg
-      else if (arguments.length === 0) this.stream.write(msg)
       else this.stream.write(msg)
     })
   }
