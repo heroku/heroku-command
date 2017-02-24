@@ -4,8 +4,9 @@
  */
 
 import type Command from '../command'
+import type {Flag} from '../flag'
 
-const APP_FLAG = {
+const APP_FLAG: Flag = {
   name: 'app',
   char: 'a',
   description: 'app to run command against',
@@ -18,8 +19,10 @@ type Options = {
 
 export default function (Command: Class<Command>, options: Options = {}) {
   return class AppMixin extends Command {
-    static flags = [APP_FLAG]
     _app: string
+
+    static get flags (): Flag[] { return this._flags.concat([APP_FLAG]) }
+    static set flags (flags: Flag[]) { this._flags = flags }
 
     async init () {
       await super.init()
