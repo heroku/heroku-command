@@ -26,7 +26,10 @@ test('makes an HTTP request', async () => {
   .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
   .reply(200, {message: 'ok'})
 
-  const cmd = new Command()
+  const cmd = new Command({mock: true, debug: 2})
   let response = await cmd.http.get('https://api.heroku.com')
   expect(response).toEqual({message: 'ok'})
+  expect(cmd.stderr.output).toContain('--> GET https://api.heroku.com')
+  expect(cmd.stderr.output).toContain('<-- GET https://api.heroku.com')
+  expect(cmd.stderr.output).toContain('{ message: \'ok\' }')
 })
