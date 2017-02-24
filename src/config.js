@@ -118,7 +118,7 @@ export default class Config {
   get name ():string { return this._pjson.name }
   get version ():string { return this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
-  get argv (): string[] { return this._options.argv || process.argv }
+  get argv (): string[] { return this._options.argv || [] }
   get mock (): boolean { return this._options.mock || false }
   get updateDisabled (): ?string { return this._options.updateDisabled }
   get bin (): string { return this._cli.bin || this._pjson.name }
