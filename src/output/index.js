@@ -30,7 +30,7 @@ export const CustomColors = {
   configVar: (s: string) => chalk.green(s),
   release: (s: string) => chalk.blue.bold(s),
   cmd: (s: string) => chalk.cyan.bold(s),
-  app: (s: string) => process.platform !== 'win32' ? CustomColors.heroku(`⬢ ${s}`) : CustomColors.heroku(s),
+  app: (s: string) => CustomColors.heroku(`⬢ ${s}`),
   heroku: (s: string) => {
     if (!CustomColors.supports) return s
     let has256 = CustomColors.supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
