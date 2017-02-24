@@ -205,17 +205,17 @@ export default class Output {
       this.logError(err)
       if (this.action.task) this.action.stop(this.color.bold.red('!'))
       if (this.config.debug) {
-        console.error(err)
-        console.error(util.inspect(this.config))
+        this.stderr.log(util.inspect(err))
+        this.stderr.log(util.inspect(this.config))
       } else {
-        console.error(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
+        this.stderr.log(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
       }
-      if (exitCode !== false) this.exit(exitCode)
     } catch (e) {
       console.error('error displaying error')
       console.error(e)
       console.error(err)
     }
+    if (exitCode !== false) this.exit(exitCode)
   }
 
   warn (err: Error | string, prefix?: string) {
@@ -224,8 +224,8 @@ export default class Output {
         prefix = prefix ? `${prefix} ` : ''
         err = typeof err === 'string' ? new Error(err) : err
         this.logError(err)
-        if (this.config.debug) process.stderr.write(`WARNING: ${prefix}`) && console.error(err)
-        else console.error(bangify(wrap(prefix + getErrorMessage(err)), this.color.yellow(arrow)))
+        if (this.config.debug) process.stderr.write(`WARNING: ${prefix}`) && this.stderr.log(util.inspect(err))
+        else this.stderr.log(bangify(wrap(prefix + getErrorMessage(err)), this.color.yellow(arrow)))
       } catch (e) {
         console.error('error displaying warning')
         console.error(e)

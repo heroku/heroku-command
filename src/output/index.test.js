@@ -32,3 +32,30 @@ test('makes sure all custom options are accessible', () => {
     }
   }
 })
+
+test('exit', () => {
+  expect.assertions(1)
+  const out = new Output({mock: true})
+  try {
+    out.exit(1)
+  } catch (err) {
+    expect(err.code).toBe(1)
+  }
+})
+
+test('warn', () => {
+  const out = new Output({mock: true})
+  out.warn('foo')
+  expect(out.stderr.output).toContain('foo')
+})
+
+test('error', () => {
+  expect.assertions(2)
+  const out = new Output({mock: true})
+  try {
+    out.error('foo')
+  } catch (err) {
+    expect(err.code).toBe(1)
+    expect(out.stderr.output).toContain('foo')
+  }
+})
