@@ -12,6 +12,7 @@ import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
 import Config, {type ConfigOptions} from '../config'
+import format from 'pretty-format'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -106,7 +107,7 @@ class StreamOutput {
 }
 
 export default class Output {
-  constructor (options: ConfigOptions) {
+  constructor (options: ConfigOptions = { }) {
     this.config = options instanceof Config ? options : new Config(options)
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
@@ -186,9 +187,9 @@ export default class Output {
   /**
    * inspect an object for debugging
    */
-  i (obj: any) {
+  inspect (obj: any) {
     this.action.pause(() => {
-      console.dir(obj, {colors: true})
+      this.stderr.log(format(obj))
     })
   }
 
