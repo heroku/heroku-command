@@ -2,26 +2,26 @@
 
 import path from 'path'
 import os from 'os'
-import {validate} from 'jest-validate'
+// import {validate} from 'jest-validate'
 
-const examplePJSON: CLI = {
-  node: process.version.split('v')[1],
-  defaultCommand: 'help',
-  plugins: ['heroku-cli-debug'],
-  s3: {
-    host: 's3-host.heroku.com',
-    bucket: 'mys3bucket'
-  }
-}
+// const examplePJSON: CLI = {
+//   node: process.version.split('v')[1],
+//   defaultCommand: 'help',
+//   plugins: ['heroku-cli-debug'],
+//   s3: {
+//     host: 's3-host.heroku.com',
+//     bucket: 'mys3bucket'
+//   }
+// }
 
-const exampleOptions: ConfigOptions = {
-  mock: true,
-  argv: ['heroku', 'apps:info'],
-  root: '/path/to/cli/root',
-  updateDisabled: 'update disabled. update with `npm update -g heroku-cli`',
-  binPath: '/path/to/cli/bin/run',
-  channel: 'stable'
-}
+// const exampleOptions: ConfigOptions = {
+//   mock: true,
+//   argv: ['heroku', 'apps:info'],
+//   root: '/path/to/cli/root',
+//   updateDisabled: 'update disabled. update with `npm update -g heroku-cli`',
+//   binPath: '/path/to/cli/bin/run',
+//   channel: 'stable'
+// }
 
 type S3 = {
   host?: string,
