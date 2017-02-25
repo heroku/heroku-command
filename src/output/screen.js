@@ -2,8 +2,10 @@
 
 function termwidth (stream: any): number {
   if (!stream.isTTY) return 80
-  let width = stream.getWindowSize()[0]
-  return width < 30 ? 30 : width
+  const width = stream.getWindowSize()[0]
+  if (width < 1) return 80
+  if (width < 40) return 40
+  return width
 }
 
 export const stdtermwidth = termwidth(process.stdout)
