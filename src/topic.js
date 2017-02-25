@@ -4,15 +4,14 @@
  */
 
 import {stdtermwidth} from './output/screen'
-import Base from './base'
+import type Output from './output'
 import type Command from './command'
-import type Config from './config'
 import type {Arg} from './arg'
 import type {Flag} from './flag'
 
-class Topic extends Base {
-  constructor (commands: Class<Command>[], config: Config) {
-    super(config)
+class Topic {
+  constructor (commands: Class<Command>[], out: Output) {
+    this.out = out
     this.commands = commands
   }
 
@@ -21,8 +20,9 @@ class Topic extends Base {
   static hidden = false
 
   commands: Class<Command>[]
+  out: Output
 
-  async help (args: string[], matchedCommand: ?Class<Command>) {
+  async help (args: string[], matchedCommand?: ?Class<Command>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
     if (this.constructor.topic === args[0]) this.listCommandsHelp()
   }
@@ -30,18 +30,18 @@ class Topic extends Base {
   listCommandsHelp () {
     let commands = this.commands.filter(c => !c.hidden).map(c => [this.usage(c), c.description])
     if (commands.length === 0) return
-    this.log(`${this.config.bin} ${this.constructor.topic} commands: (${this.color.cmd(this.config.bin + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
-    this.log(this.renderList(commands))
-    this.log()
+    this.out.log(`${this.out.config.bin} ${this.constructor.topic} commands: (${this.out.color.cmd(this.out.config.bin + ' help ' + this.constructor.topic + ':COMMAND')} for details)\n`)
+    this.out.log(this.renderList(commands))
+    this.out.log()
   }
 
   commandHelp (command: Class<Command>) {
-    let usage = `${this.config.bin} ${this.usage(command)}`
-    this.log(`Usage: ${this.color.cmd(usage)}\n`)
-    if (command.description) this.log(`${command.description.trim()}\n`)
+    let usage = `${this.out.config.bin} ${this.usage(command)}`
+    this.out.log(`Usage: ${this.out.color.cmd(usage)}\n`)
+    if (command.description) this.out.log(`${command.description.trim()}\n`)
     let flags = (command.flags || []).filter(f => !f.hidden)
-    if (flags.length) this.log(`${this.renderFlags(flags)}\n`)
-    if (command.help) this.log(`${command.help.trim()}\n`)
+    if (flags.length) this.out.log(`${this.renderFlags(flags)}\n`)
+    if (command.help) this.out.log(`${command.help.trim()}\n`)
   }
 
   renderArg (arg: Arg) {
@@ -70,11 +70,11 @@ class Topic extends Base {
   }
 
   usage (command: Class<Command>) {
-    if (command.usage) return command.usage
+    if (command.usage) return command.usage.trim()
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
-    if (!command.args) return cmd
+    if (!command.args) return cmd.trim()
     let args = command.args.map(this.renderArg)
-    return `${cmd} ${args.join(' ')}`
+    return `${cmd} ${args.join(' ')}`.trim()
   }
 
   renderList (items: [string, ?string][]): string {
@@ -83,15 +83,14 @@ class Topic extends Base {
 
     let maxLength = max(items, '[0].length')[0].length + 1
     let lines = items
-      .map(i => [
-        // left side
-        ` ${S(i[0]).padRight(maxLength)}`,
-
-        // right side
-        i[1] ? this.linewrap(maxLength + 4, i[1]) : ''
-      ])
-      // join left + right side
-      .map(i => i[1] ? `${i[0]} # ${i[1]}` : i[0])
+      .map(i => {
+        let left = ` ${i[0]}`
+        let right = i[1]
+        if (!right) return left
+        left = `${S(left).padRight(maxLength)}`
+        right = this.linewrap(maxLength + 4, right)
+        return `${left} # ${right}`
+      })
     return lines.join('\n')
   }
 
