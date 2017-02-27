@@ -19,6 +19,11 @@ describe('inspect', () => {
   })
 })
 
+test('sets version from options', () => {
+  const config = new Config({version: '1.0.0-foobar'})
+  expect(config.version).toEqual('1.0.0-foobar')
+})
+
 test('props are set', () => {
   expect(config.name).toEqual('cli-engine-command')
   expect(config.version).toEqual(pjson.version)
