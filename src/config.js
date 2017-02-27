@@ -49,6 +49,7 @@ export type ConfigOptions = {
   updateDisabled?: string,
   binPath?: string,
   channel?: string,
+  version?: string,
   debug?: number
 } | Config
 
@@ -117,7 +118,7 @@ export default class Config {
   _options: ConfigOptions
 
   get name ():string { return this._pjson.name }
-  get version ():string { return this._pjson.version }
+  get version ():string { return this._options.version || this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
   get argv (): string[] { return this._options.argv || [] }
   get mock (): boolean { return this._options.mock || false }
