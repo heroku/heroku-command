@@ -19,7 +19,6 @@ import os from 'os'
 //   argv: ['heroku', 'apps:info'],
 //   root: '/path/to/cli/root',
 //   updateDisabled: 'update disabled. update with `npm update -g heroku-cli`',
-//   binPath: '/path/to/cli/bin/run',
 //   channel: 'stable'
 // }
 
@@ -47,7 +46,6 @@ export type ConfigOptions = {
   argv?: string[],
   root?: string,
   updateDisabled?: string,
-  binPath?: string,
   channel?: string,
   version?: string,
   debug?: number
@@ -124,7 +122,6 @@ export default class Config {
   get mock (): boolean { return this._options.mock || false }
   get updateDisabled (): ?string { return this._options.updateDisabled }
   get bin (): string { return this._cli.bin || this._pjson.name }
-  get binPath (): ?string { return this._options.binPath }
   get root (): string { return this._options.root || path.join(__dirname, '..') }
   get defaultCommand (): string { return this._cli.defaultCommand || 'help' }
   get s3 (): S3 { return this._cli.s3 || {} }
@@ -140,7 +137,6 @@ export default class Config {
       mock: this.mock,
       updateDisabled: this.updateDisabled,
       bin: this.bin,
-      binPath: this.binPath,
       defaultCommand: this.defaultCommand,
       root: this.root,
       s3: this.s3,
