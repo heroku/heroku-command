@@ -32,7 +32,6 @@ test('props are set', () => {
   expect(config.mock).toEqual(false)
   expect(config.updateDisabled).toEqual(undefined)
   expect(config.bin).toEqual('cli-engine-command')
-  expect(config.binPath).toEqual(undefined)
   expect(config.root).toEqual(path.join(__dirname, '..'))
   expect(config.defaultCommand).toEqual('help')
   expect(config.s3).toEqual({})
