@@ -3,6 +3,7 @@
 .envrc
 .flowconfig
 .npmignore
+appveyor.yml
 Dockerfile
 circle.yml
 coverage
