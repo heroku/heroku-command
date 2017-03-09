@@ -22,6 +22,7 @@ export default class Action {
     const msg = `${message}...`
     if (this.task) {
       if (this.task.spinner) {
+        this.task.message = message
         this.task.spinner.text = msg
         this.task.spinner.status = status
       } else this.out.stderr.write(`\n${msg} ${status}`)
