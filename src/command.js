@@ -50,9 +50,14 @@ export default class Command extends Base {
     let cmd = new this(config)
     cmd.argv = argv
     cmd.validate()
-    await cmd.init()
-    await cmd.run()
-    await cmd.done()
+    try {
+      await cmd.init()
+      await cmd.run()
+      await cmd.done()
+    } catch (err) {
+      if (config.mock) throw err
+      cmd.error(err)
+    }
     return cmd
   }
 

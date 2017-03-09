@@ -28,7 +28,8 @@ export type ConfigOptions = {
   updateDisabled?: string,
   channel?: string,
   version?: string,
-  debug?: number
+  debug?: number,
+  argv?: string[]
 }
 
 function debug () {
@@ -86,9 +87,11 @@ export default class Config {
     this.debug = debug() || options.debug || 0
     this.dirs = new Dirs(this)
     this.mock = options.mock || false
+    this.argv = options.argv || []
   }
 
   dirs: Dirs
+  argv: string[]
   debug: number
   mock: boolean
   _pjson: PJSON

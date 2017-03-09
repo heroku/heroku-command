@@ -13,7 +13,7 @@ test('has an app', async () => {
 test('errors with no app', async () => {
   expect.assertions(1)
   try {
-    await Command.run()
+    await Command.run([], {mock: true})
   } catch (err) {
     expect(err.message).toContain('No app specified')
   }
