@@ -6,7 +6,8 @@ import type Output from '.'
 type Task = {
   spinner?: Spinner,
   status: string,
-  message: string
+  message: string,
+  paused?: boolean
 }
 
 export default class Action {
@@ -49,6 +50,8 @@ export default class Action {
   pause (fn: Function) {
     let spinner = this.task ? this.task.spinner : null
     if (this.task) {
+      if (this.task.paused) return fn()
+      this.task.paused = true
       if (spinner) {
         spinner.stop()
         spinner.clear()
@@ -58,6 +61,7 @@ export default class Action {
       }
     }
     fn()
+    if (this.task) this.task.paused = false
     if (spinner) {
       this.out.stderr.write('\n')
       spinner.start()

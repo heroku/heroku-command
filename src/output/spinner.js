@@ -55,7 +55,7 @@ class Spinner {
   set status (status) {
     this._status = status
     if (this.enabled) this._render()
-    else this.command.write.error(` ${this.status}\n${this.text}`)
+    else this.command.stderr.write(` ${this.status}\n${this.text}`)
   }
 
   get text () {
@@ -74,7 +74,7 @@ class Spinner {
   }
 
   _render () {
-    if (this._output) this.clear()
+    this.clear()
     this._output = `${this.text}${this.enabled ? ' ' + this._frame() : ''} ${this.status ? this.status : ''}\n`
     this.stream.write(this._output)
   }
