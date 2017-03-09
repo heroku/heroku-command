@@ -392,7 +392,7 @@ babel-register@^6.23.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@6.23.0, babel-runtime@^6.22.0:
+babel-runtime@^6.22.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -1677,11 +1677,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.12.tgz#b96d3c0bccff4a819a637ec5d469a6c57c89b0ac"
-  dependencies:
-    babel-runtime "6.23.0"
+http-call@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.0.14.tgz#ccc1d37e78711a1f65c44a6e354c78ff29df804a"
 
 http-signature@~1.1.0:
   version "1.1.1"
