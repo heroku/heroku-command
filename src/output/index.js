@@ -1,8 +1,4 @@
 // @flow
-/* globals
-   stream$Writable
-   $Shape
- */
 
 import util from 'util'
 import linewrap from './linewrap'
@@ -11,7 +7,7 @@ import Action from './action'
 import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
-import Config, {type ConfigOptions} from '../config'
+import Config from '../config'
 import format from 'pretty-format'
 
 class ExitError extends Error {
@@ -104,8 +100,8 @@ class StreamOutput {
 }
 
 export default class Output {
-  constructor (options: ConfigOptions = { }) {
-    this.config = options instanceof Config ? options : new Config(options)
+  constructor (config: Config) {
+    this.config = config
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)

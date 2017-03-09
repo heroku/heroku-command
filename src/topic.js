@@ -1,7 +1,4 @@
 // @flow
-/* globals
-   Class
- */
 
 import {stdtermwidth} from './output/screen'
 import type Output from './output'

@@ -67,6 +67,14 @@
   },
   "standard": {
     "parser": "babel-eslint",
+    "env": [
+      "jest"
+    ],
+    "globals": [
+      "$Shape",
+      "stream$Writable",
+      "Class"
+    ],
     "ignore": [
       "lib",
       "src/output/linewrap.js",

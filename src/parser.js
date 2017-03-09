@@ -15,7 +15,7 @@ export default class Parse {
   async parse () {
     let args = this.cmd.constructor.args.slice(0)
     let flags = this.cmd.constructor.flags
-    let parsingArgs = this.cmd.argv.slice(1)
+    let parsingArgs = this.cmd.argv.slice(0)
     this.argv = []
 
     async function parseFlags () {

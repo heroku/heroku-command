@@ -1,9 +1,4 @@
 // @flow
-/* globals
-   describe
-   test
-   expect
-*/
 
 import Config from './config'
 import format from 'pretty-format'
@@ -28,7 +23,6 @@ test('props are set', () => {
   expect(config.name).toEqual('cli-engine-command')
   expect(config.version).toEqual(pjson.version)
   expect(config.channel).toEqual('stable')
-  expect(config.argv).toEqual(['heroku', 'apps'])
   expect(config.mock).toEqual(false)
   expect(config.updateDisabled).toEqual(undefined)
   expect(config.bin).toEqual('cli-engine-command')

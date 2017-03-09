@@ -1,28 +1,26 @@
 // @flow
 
-/* globals
-  test
-  expect
-  */
-
 import Base from '../command'
 import app from './app'
 
 class Command extends app(Base) {}
 
 test('has an app', async () => {
-  const cmd = new Command({argv: ['heroku', 'foo', '--app', 'myapp']})
-  await cmd.init()
+  const cmd = await Command.run(['--app', 'myapp'])
   expect(cmd.app).toEqual('myapp')
 })
 
-test.skip('errors with no app', () => {
-  const cmd = new Command()
-  expect(cmd.app).toEqual('myapp')
+test('errors with no app', async () => {
+  expect.assertions(1)
+  try {
+    await Command.run()
+  } catch (err) {
+    expect(err.message).toContain('No app specified')
+  }
 })
 
-test.skip('does not error when app is not specified', () => {
-  class Command extends app(Command, {required: false}) {}
-  const cmd = new Command()
-  expect(cmd.app).toEqual('myapp')
+test('does not error when app is not specified', async () => {
+  class Command extends app(Base, {required: false}) {}
+  const cmd = await Command.run()
+  expect(cmd.app).toBeUndefined()
 })
