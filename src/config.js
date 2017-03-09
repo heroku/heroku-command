@@ -65,7 +65,7 @@ class Dirs {
 
   _config: Config
 
-  get home () { return os.homedir() }
+  get home () { return os.homedir() || os.tmpdir() }
   get data () { return this._fetch('data') }
   get config () { return this._fetch('config') }
   get cache () {
