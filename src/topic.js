@@ -23,6 +23,7 @@ class Topic {
   out: Output
 
   async help (args: string[], matchedCommand?: ?Class<Command>) {
+    console.dir('x')
     if (matchedCommand) this.commandHelp(matchedCommand)
     if (this.constructor.topic === args[0]) this.listCommandsHelp()
   }
