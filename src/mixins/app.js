@@ -1,9 +1,6 @@
 // @flow
-/* globals
-   Class
- */
 
-import type Command from '../command'
+import Command from '../command' // eslint-disable-line
 import type {Flag} from '../flag'
 
 const APP_FLAG: Flag = {
@@ -17,8 +14,12 @@ type Options = {
   required?: boolean
 }
 
-export default function (Command: Class<Command>, options: Options = {}) {
-  return class AppMixin extends Command {
+declare class App extends Command {
+  app: string
+}
+
+export default function <T: Class<Command>> (Base: T, options: Options = {}): $Shape<Class<App>> {
+  return class AppMixin extends Base {
     _app: string
 
     static get flags (): Flag[] { return this._flags.concat([APP_FLAG]) }

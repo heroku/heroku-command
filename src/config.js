@@ -2,25 +2,6 @@
 
 import path from 'path'
 import os from 'os'
-// import {validate} from 'jest-validate'
-
-// const examplePJSON: CLI = {
-//   node: process.version.split('v')[1],
-//   defaultCommand: 'help',
-//   plugins: ['heroku-cli-debug'],
-//   s3: {
-//     host: 's3-host.heroku.com',
-//     bucket: 'mys3bucket'
-//   }
-// }
-
-// const exampleOptions: ConfigOptions = {
-//   mock: true,
-//   argv: ['heroku', 'apps:info'],
-//   root: '/path/to/cli/root',
-//   updateDisabled: 'update disabled. update with `npm update -g heroku-cli`',
-//   channel: 'stable'
-// }
 
 type S3 = {
   host?: string,
@@ -43,7 +24,6 @@ export type PJSON = {
 
 export type ConfigOptions = {
   mock?: boolean,
-  argv?: string[],
   root?: string,
   updateDisabled?: string,
   channel?: string,
@@ -65,10 +45,10 @@ class Dirs {
 
   _config: Config
 
-  get home () { return os.homedir() || os.tmpdir() }
-  get data () { return this._fetch('data') }
-  get config () { return this._fetch('config') }
-  get cache () {
+  get home (): string { return os.homedir() || os.tmpdir() }
+  get data (): string { return this._fetch('data') }
+  get config (): string { return this._fetch('config') }
+  get cache (): string {
     let def
     if (process.platform === 'darwin') def = path.join(this.home, 'Library', 'Caches')
     return this._fetch('cache', def)
@@ -97,7 +77,7 @@ class Dirs {
 }
 
 export default class Config {
-  constructor (options: (ConfigOptions | Config)) {
+  constructor (options: ConfigOptions = {}) {
     this._options = options
     this._pjson = this._options.root
         // flow$ignore
@@ -105,21 +85,18 @@ export default class Config {
       : require('../package.json')
     this.debug = debug() || options.debug || 0
     this.dirs = new Dirs(this)
-    // TODO: make validation work when inherited
-    // validate(this._cli, {comment: 'pjson.cli-engine', exampleConfig: examplePJSON})
-    // validate(options, {comment: 'config', exampleConfig: exampleOptions})
+    this.mock = options.mock || false
   }
 
   dirs: Dirs
   debug: number
+  mock: boolean
   _pjson: PJSON
-  _options: ConfigOptions | Config
+  _options: ConfigOptions
 
   get name ():string { return this._pjson.name }
   get version ():string { return this._options.version || this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
-  get argv (): string[] { return this._options.argv || [] }
-  get mock (): boolean { return this._options.mock || false }
   get updateDisabled (): ?string { return this._options.updateDisabled }
   get bin (): string { return this._cli.bin || this._pjson.name }
   get root (): string { return this._options.root || path.join(__dirname, '..') }
@@ -133,7 +110,6 @@ export default class Config {
       name: this.name,
       version: this.version,
       channel: this.channel,
-      argv: this.argv,
       mock: this.mock,
       updateDisabled: this.updateDisabled,
       bin: this.bin,

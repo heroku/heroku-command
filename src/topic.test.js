@@ -1,12 +1,9 @@
 // @flow
-/* globals
-   test
-   expect
-*/
 
 import Topic from './topic'
 import Command from './command'
 import Output from './output'
+import Config from './config'
 
 class PluginsTopic extends Topic {
   static topic = 'plugins'
@@ -24,7 +21,7 @@ const commands = [
 ]
 
 test('help()', async () => {
-  let output = new Output({mock: true})
+  let output = new Output(new Config({mock: true}))
   const topic = new PluginsTopic(commands, output)
   await topic.help(['plugins'])
   expect(output.stdout.output).toContain('plugins:install # installs a plugin')

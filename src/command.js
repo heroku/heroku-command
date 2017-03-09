@@ -3,7 +3,7 @@
 import Base from './base'
 import Parser from './parser'
 import pjson from '../package.json'
-import {type ConfigOptions} from './config'
+import Config from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 import {validate} from 'jest-validate'
@@ -12,6 +12,11 @@ const BUILTIN_FLAGS: Flag[] = [
   {name: 'debug', hidden: true},
   {name: 'no-color', hidden: true}
 ]
+
+type RunOptions = {
+  mock?: boolean,
+  config?: Config
+}
 
 export default class Command extends Base {
   static topic: string
@@ -39,11 +44,16 @@ export default class Command extends Base {
   static get args () { return this._args }
   static set args (args: Arg[]) { this._args = args }
 
-  constructor (config: ConfigOptions = {}) {
-    super(config)
-    this.validate()
-    this.argv = this.config.argv.slice(1)
-    this.parser = new Parser(this)
+  static async run (argv: string[] = [], options: RunOptions = {}): Promise<this> {
+    let config = options.config || new Config()
+    if (options.mock) config.mock = true
+    let cmd = new this(config)
+    cmd.argv = argv
+    cmd.validate()
+    await cmd.init()
+    await cmd.run()
+    await cmd.done()
+    return cmd
   }
 
   // prevent setting things that need to be static
@@ -55,19 +65,9 @@ export default class Command extends Base {
   help: null
   aliases: null
 
-  parser: Parser
   argv: string[]
   flags: {[flag: string]: string | true}
   args: {[arg: string]: string}
-
-  async init () {
-    await super.init()
-    await this.parser.parse()
-    this.flags = this.parser.flags
-    this.args = this.parser.args
-    this.argv = this.parser.argv
-    if (this.flags.debug) this.config.debug = 1
-  }
 
   validate () {
     const exampleFlag = {
@@ -121,21 +121,20 @@ export default class Command extends Base {
     }
   }
 
-  /**
-   * actual command run code goes here
-   */
-  async run () {
-    throw new Error('must implement run')
+  async init () {
+    await super.init()
+    let parser = new Parser(this)
+    await parser.parse()
+    this.flags = parser.flags
+    this.args = parser.args
+    this.argv = parser.argv
+    if (this.flags.debug) this.config.debug = 1
   }
 
   /**
-   * runs init/run/done lifecycle
+   * actual command run code goes here
    */
-  async _run () {
-    await this.init()
-    await this.run()
-    await this.done()
-  }
+  async run () { }
 
   async done () {
     await super.done()

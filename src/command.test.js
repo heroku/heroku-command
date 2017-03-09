@@ -1,10 +1,5 @@
 // @flow
 
-/* globals
-  test
-  expect
-  */
-
 import Base from './command'
 
 class Command extends Base {
@@ -19,19 +14,16 @@ class Command extends Base {
 }
 
 test('runs the command', async () => {
-  let cmd = new Command({mock: true})
-  await cmd._run()
+  let cmd = await Command.run([], {mock: true})
   expect(cmd.stdout.output).toEqual('foo\n')
 })
 
 test('parses flags', async () => {
-  let cmd = new Command({mock: true, argv: ['heroku', 'cmd', '--myarg']})
-  await cmd._run()
+  let cmd = await Command.run(['--myarg'], {mock: true})
   expect(cmd.stdout.output).toEqual('foo\nmyarg\n')
 })
 
 test('parses args', async () => {
-  let cmd = new Command({mock: true, argv: ['heroku', 'cmd', 'myarg']})
-  await cmd._run()
+  let cmd = await Command.run(['myarg'], {mock: true})
   expect(cmd.stdout.output).toEqual('foo\nmyarg\n')
 })
