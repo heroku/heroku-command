@@ -203,7 +203,6 @@ export default class Output {
       if (this.action.task) this.action.stop(this.color.bold.red('!'))
       if (this.config.debug) {
         this.stderr.log(util.inspect(err))
-        this.stderr.log(util.inspect(this.config))
       } else {
         this.stderr.log(bangify(wrap(getErrorMessage(err)), this.color.red(arrow)))
       }
