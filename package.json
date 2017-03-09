@@ -38,6 +38,9 @@
     "standard": "^9.0.1",
     "std-mocks": "1.0.1"
   },
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "homepage": "https://github.com/heroku/cli-engine-command",
   "jest": {
     "testEnvironment": "node",
