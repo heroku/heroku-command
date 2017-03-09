@@ -49,7 +49,7 @@ export type ConfigOptions = {
   channel?: string,
   version?: string,
   debug?: number
-} | Config
+}
 
 function debug () {
   const HEROKU_DEBUG = process.env.HEROKU_DEBUG
@@ -97,7 +97,7 @@ class Dirs {
 }
 
 export default class Config {
-  constructor (options: ConfigOptions) {
+  constructor (options: (ConfigOptions | Config)) {
     this._options = options
     this._pjson = this._options.root
         // flow$ignore
@@ -113,7 +113,7 @@ export default class Config {
   dirs: Dirs
   debug: number
   _pjson: PJSON
-  _options: ConfigOptions
+  _options: ConfigOptions | Config
 
   get name ():string { return this._pjson.name }
   get version ():string { return this._options.version || this._pjson.version }
