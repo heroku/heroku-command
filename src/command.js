@@ -38,7 +38,7 @@ export default class Command extends Base {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static get flags () { return this._flags.concat(BUILTIN_FLAGS) }
+  static get flags (): Flag[] { return this._flags.concat(BUILTIN_FLAGS) }
   static set flags (flags: Flag[]) { this._flags = flags }
 
   static get args () { return this._args }
