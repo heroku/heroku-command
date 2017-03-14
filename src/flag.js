@@ -10,6 +10,5 @@ export type Flag = {
   optional?: boolean,
   required?: boolean,
   // TODO: BooleanFlag etc
-  parse?: (string | boolean, cmd: Command) => string,
   default?: (cmd: Command) => Promise<string>
 }

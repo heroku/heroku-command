@@ -22,7 +22,7 @@ export default function <T: Class<Command>> (Base: T, options: Options = {}): $S
   return class AppMixin extends Base {
     _app: string
 
-    static get flags (): Flag[] { return this._flags.concat([APP_FLAG]) }
+    static get flags (): Flag[] { return super.flags.concat([APP_FLAG]) }
     static set flags (flags: Flag[]) { this._flags = flags }
 
     async init () {
@@ -35,6 +35,7 @@ export default function <T: Class<Command>> (Base: T, options: Options = {}): $S
     get app (): string {
       if (this._app) return this._app
       if (typeof this.flags.app === 'string') this._app = this.flags.app
+      // TODO: read from git remote
       return this._app
     }
   }

@@ -20,9 +20,7 @@ export default class Parse {
 
     async function parseFlags () {
       for (let flag of flags || []) {
-        if (this.flags[flag.name]) {
-          if (flag.parse) this.flags[flag.name] = flag.parse(this.flags[flag.name], this.cmd)
-        } else {
+        if (!this.flags[flag.name]) {
           if (flag.default) this.flags[flag.name] = await flag.default(this.cmd)
           if (!this.flags[flag.name] && (flag.optional === false || flag.required === true)) {
             throw new Error(`Missing required flag --${flag.name}`)
