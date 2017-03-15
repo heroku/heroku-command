@@ -10,7 +10,7 @@ export default class Parse {
   }
 
   cmd: Command
-  flags: {[name: string]: string | true} = {}
+  flags: {[name: string]: string} = {}
   args: {[name: string]: string} = {}
   argv: string[]
 
@@ -42,7 +42,7 @@ export default class Parse {
         if (!val) throw new Error(`Flag --${flag.name} expects a value.`)
         this.flags[flag.name] = val
       } else {
-        if (!cur) this.flags[flag.name] = true
+        if (!cur) this.flags[flag.name] = flag.name
         // push the rest of the short characters back on the stack
         if (!long && arg.length > 2) parsingArgs.unshift(`-${arg.slice(2)}`)
       }

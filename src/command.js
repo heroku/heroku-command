@@ -62,7 +62,7 @@ export default class Command extends Base {
   aliases: null
 
   argv: string[]
-  flags: {[flag: string]: string | true}
+  flags: {[flag: string]: string}
   args: {[arg: string]: string}
 
   validate () {
