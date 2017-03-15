@@ -105,22 +105,22 @@ export default class Output {
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
-
-    this.color = new Proxy(chalk, {
-      get: (chalk, name) => {
-        if (CustomColors[name]) return CustomColors[name]
-        return chalk[name]
-      }
-    })
   }
 
   config: Config
   action: Action
   stdout: StreamOutput
   stderr: StreamOutput
-  color: $Shape<typeof chalk & typeof CustomColors>
 
   get fs () { return require('fs-extra') }
+  get color (): $Shape<typeof chalk & typeof CustomColors> {
+    return new Proxy(chalk, {
+      get: (chalk, name) => {
+        if (CustomColors[name]) return CustomColors[name]
+        return chalk[name]
+      }
+    })
+  }
 
   async init () {}
 
