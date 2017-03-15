@@ -23,10 +23,9 @@ export default class Heroku extends http {
   get auth (): ?string {
     let auth = process.env.HEROKU_API_KEY
     if (!auth) {
-      const netrc = require('netrc')()
-      const host = netrc['api.heroku.com']
-      if (host) auth = host.password
-      auth = null
+      const Netrc = require('netrc-parser')
+      const netrc = new Netrc()
+      auth = netrc.machines['api.heroku.com'].password
     }
     if (!auth && this.options.required !== false) {
       throw new Error('Not logged in')
