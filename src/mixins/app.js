@@ -1,42 +1,31 @@
 // @flow
 
-import Command from '../command' // eslint-disable-line
+import type Command from '../command' // eslint-disable-line
 import type {Flag} from '../flag'
 
-const APP_FLAG: Flag = {
+export const AppFlag: Flag = {
   name: 'app',
   char: 'a',
   description: 'app to run command against',
   hasValue: true
 }
 
-type Options = {
+type Options = {|
   required?: boolean
-}
+|}
 
-declare class App extends Command {
-  app: string
-}
+export default class App {
+  cmd: Command
+  options: Options
 
-export default function <T: Class<Command>> (Base: T, options: Options = {}): $Shape<Class<App>> {
-  return class AppMixin extends Base {
-    _app: string
+  constructor (cmd: Command, options: Options = {required: false}) {
+    this.cmd = cmd
+    this.options = options
+  }
 
-    static get flags (): Flag[] { return super.flags.concat([APP_FLAG]) }
-    static set flags (flags: Flag[]) { this._flags = flags }
-
-    async init () {
-      await super.init()
-      if (!this.app && options.required !== false) {
-        throw new Error('No app specified')
-      }
-    }
-
-    get app (): string {
-      if (this._app) return this._app
-      if (typeof this.flags.app === 'string') this._app = this.flags.app
-      // TODO: read from git remote
-      return this._app
-    }
+  get name (): ?string {
+    if (typeof this.cmd.flags.app === 'string') return this.cmd.flags.app
+    // TODO: read from git remote
+    if (this.options.required) throw new Error('No app specified')
   }
 }
