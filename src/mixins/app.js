@@ -10,9 +10,9 @@ export const AppFlag: Flag = {
   hasValue: true
 }
 
-type Options = {|
-  required?: boolean
-|}
+type Options = {
+  required?: ?boolean
+}
 
 export default class App {
   cmd: Command
