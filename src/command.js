@@ -1,19 +1,20 @@
 // @flow
 
-import Base from './base'
+import Output from './output'
 import Parser from './parser'
 import pjson from '../package.json'
 import Config from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 import {validate} from 'jest-validate'
+import HTTP from './http'
 
 type RunOptions = {
   mock?: boolean,
   config?: Config
 }
 
-export default class Command extends Base {
+export default class Command extends Output {
   static topic: string
   static command: ?string
   static description: ?string
@@ -60,6 +61,8 @@ export default class Command extends Base {
   usage: null
   help: null
   aliases: null
+
+  http = new HTTP(this)
 
   argv: string[]
   flags: {[flag: string]: string}
