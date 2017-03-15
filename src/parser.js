@@ -1,6 +1,8 @@
 // @flow
 
 import Command from './command'
+import {type Arg} from './arg'
+import {type Flag} from './flag'
 
 export default class Parse {
   constructor (cmd: Command) {
@@ -12,10 +14,10 @@ export default class Parse {
   args: {[name: string]: string} = {}
   argv: string[]
 
-  async parse () {
-    let args = this.cmd.constructor.args.slice(0)
-    let flags = this.cmd.constructor.flags
-    let parsingArgs = this.cmd.argv.slice(0)
+  async parse (args: Arg[], flags: Flag[], argv: string[]) {
+    args = args.slice(0)
+    flags = flags.slice(0)
+    let parsingArgs = argv.slice(0)
     this.argv = []
 
     async function parseFlags () {

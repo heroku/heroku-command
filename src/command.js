@@ -8,11 +8,6 @@ import type {Flag} from './flag'
 import type {Arg} from './arg'
 import {validate} from 'jest-validate'
 
-const BUILTIN_FLAGS: Flag[] = [
-  {name: 'debug', hidden: true},
-  {name: 'no-color', hidden: true}
-]
-
 type RunOptions = {
   mock?: boolean,
   config?: Config
@@ -27,22 +22,18 @@ export default class Command extends Base {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-
+  static flags: Flag[] = []
+  static args: Arg[] = []
   static _version: pjson.version
 
-  static _flags: Flag[] = []
-
-  static _args: Arg[] = []
+  static _flags: Flag[] = [
+    {name: 'debug', hidden: true},
+    {name: 'no-color', hidden: true}
+  ]
 
   static get id () {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
-
-  static get flags (): Flag[] { return this._flags.concat(BUILTIN_FLAGS) }
-  static set flags (flags: Flag[]) { this._flags = flags }
-
-  static get args () { return this._args }
-  static set args (args: Arg[]) { this._args = args }
 
   static async run (argv: string[] = [], options: RunOptions = {}): Promise<this> {
     let config = options.config || new Config()
@@ -83,7 +74,6 @@ export default class Command extends Base {
       required: false,
       optional: true,
       description: 'description of flag',
-      parse: () => { },
       default: () => { }
     }
     const exampleArg = {
@@ -106,10 +96,7 @@ export default class Command extends Base {
         aliases: ['-v', '--version'],
         args: [exampleArg],
         flags: [exampleFlag],
-        _args: [],
-        _flags: [],
-        __args: [],
-        __flags: []
+        _flags: [exampleFlag]
       }
     })
     for (let flag of this.constructor.flags) {
@@ -129,7 +116,7 @@ export default class Command extends Base {
   async init () {
     await super.init()
     let parser = new Parser(this)
-    await parser.parse()
+    await parser.parse(this.constructor.args, this.constructor.flags, this.argv)
     this.flags = parser.flags
     this.args = parser.args
     this.argv = parser.argv
