@@ -2,7 +2,7 @@
 
 import util from 'util'
 import httpCall, {type RequestOptions} from 'http-call'
-import type Command from './command'
+import type Output from './output'
 
 function mergeRequestOptions (...options: $Shape<RequestOptions>[]): RequestOptions {
   let output: RequestOptions = {method: 'GET', headers: {}}
@@ -22,25 +22,24 @@ function renderHeaders (headers: {[key: string]: string}) {
 }
 
 export default class HTTP {
-  cmd: Command
+  out: Output
   http: Class<httpCall>
   requestOptions: RequestOptions
 
-  logRequest (http: httpCall) {
-    if (!this.cmd.config.debug) return
-    this.cmd.stderr.log(`--> ${http.method} ${http.url}`)
-    if (this.cmd.config.debug > 1) {
-      this.cmd.stderr.log(renderHeaders(http.headers))
-      // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
-    }
-  }
-
-  logResponse (http: httpCall) {
-    if (!this.cmd.config.debug) return
-    this.cmd.stderr.log(`<-- ${http.method} ${http.url} ${http.response.statusCode}`)
-    if (this.cmd.config.debug > 1) {
-      this.cmd.stderr.log(renderHeaders(http.response.headers))
-      if (http.body) this.cmd.stderr.log(`--- BODY\n${util.inspect(http.body)}\n---`)
+  constructor (output: Output) {
+    let self = this
+    this.out = output
+    this.requestOptions = mergeRequestOptions({
+      headers: {
+        'user-agent': `${this.out.config.name}/${this.out.config.version} node-${process.version}`
+      }
+    })
+    this.http = class extends httpCall {
+      async request () {
+        self._logRequest(this)
+        await super.request()
+        self._logResponse(this)
+      }
     }
   }
 
@@ -49,20 +48,26 @@ export default class HTTP {
     return this.http.get(url, options)
   }
 
-  constructor (cmd: Command) {
-    let self = this
-    this.cmd = cmd
-    this.requestOptions = mergeRequestOptions({
-      headers: {
-        'user-agent': `${this.cmd.config.name}/${this.cmd.config.version} node-${process.version}`
-      }
-    })
-    this.http = class extends httpCall {
-      async request () {
-        self.logRequest(this)
-        await super.request()
-        self.logResponse(this)
-      }
+  stream (url: string, options: $Shape<RequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    return this.http.stream(url, options)
+  }
+
+  _logRequest (http: httpCall) {
+    if (!this.out.config.debug) return
+    this.out.stderr.log(`--> ${http.method} ${http.url}`)
+    if (this.out.config.debug > 1) {
+      this.out.stderr.log(renderHeaders(http.headers))
+      // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
+    }
+  }
+
+  _logResponse (http: httpCall) {
+    if (!this.out.config.debug) return
+    this.out.stderr.log(`<-- ${http.method} ${http.url} ${http.response.statusCode}`)
+    if (this.out.config.debug > 1) {
+      this.out.stderr.log(renderHeaders(http.response.headers))
+      if (http.body) this.out.stderr.log(`--- BODY\n${util.inspect(http.body)}\n---`)
     }
   }
 }
