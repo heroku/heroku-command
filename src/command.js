@@ -6,7 +6,6 @@ import pjson from '../package.json'
 import Config, {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
-import {validate} from 'jest-validate'
 import HTTP from './http'
 
 export default class Command extends Output {
@@ -36,7 +35,6 @@ export default class Command extends Output {
     let config = new Config(options)
     let cmd = new this(config)
     cmd.argv = argv
-    cmd.validate()
     try {
       await cmd.init()
       await cmd.run()
@@ -62,55 +60,6 @@ export default class Command extends Output {
   argv: string[]
   flags: {[flag: string]: string}
   args: {[arg: string]: string}
-
-  validate () {
-    const exampleFlag = {
-      name: 'app',
-      char: 'a',
-      hidden: false,
-      hasValue: false,
-      required: false,
-      optional: true,
-      description: 'description of flag',
-      default: () => { }
-    }
-    const exampleArg = {
-      name: 'FILE',
-      required: true,
-      optional: false,
-      hidden: false
-    }
-    const id = this.constructor.id
-    validate(this.constructor, {
-      comment: `Command: ${id}`,
-      exampleConfig: {
-        topic: 'apps',
-        command: 'info',
-        description: 'description of my command',
-        hidden: true,
-        variableArgs: false,
-        usage: 'how to use the command',
-        help: 'long form help text',
-        aliases: ['-v', '--version'],
-        args: [exampleArg],
-        flags: [exampleFlag],
-        parser: Parser,
-        _flags: [exampleFlag]
-      }
-    })
-    for (let flag of this.constructor.flags) {
-      validate(flag, {
-        comment: `${id} flag: ${flag.name}`,
-        exampleConfig: exampleFlag
-      })
-    }
-    for (let arg of this.constructor.args) {
-      validate(arg, {
-        comment: `${id} arg: ${arg.name}`,
-        exampleConfig: exampleArg
-      })
-    }
-  }
 
   async init () {
     await super.init()
