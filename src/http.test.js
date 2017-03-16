@@ -27,3 +27,23 @@ test('makes an HTTP request', async () => {
   expect(out.stderr.output).toContain('<-- GET https://api.heroku.com')
   expect(out.stderr.output).toContain('{ message: \'ok\' }')
 })
+
+test('stream', async () => {
+  api.get('/')
+  .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+  .reply(200, {message: 'ok'})
+
+  const out = new Output(new Config({mock: true}))
+  const http = new HTTP(out)
+  const response = await http.stream('https://api.heroku.com')
+  const body = JSON.parse(await concat(response))
+  expect(body).toEqual({message: 'ok'})
+})
+
+function concat (stream) {
+  return new Promise(resolve => {
+    let strings = []
+    stream.on('data', data => strings.push(data))
+    stream.on('end', () => resolve(strings.join('')))
+  })
+}
