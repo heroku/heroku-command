@@ -27,7 +27,7 @@ export default class App {
     this.cmd = cmd
     this.options = options
     this.git = new Git()
-    try { this.configRemote = this.git.exec('git config heroku.remote').trim() } catch (err) { }
+    try { this.configRemote = this.git.exec('config heroku.remote').trim() } catch (err) { }
   }
 
   get name (): ?string {
