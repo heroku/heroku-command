@@ -31,6 +31,8 @@ export default class Parse {
 
   async parse (...argv: string[]): Promise<Output> {
     let options = this.options
+    options.flags = options.flags.slice(0)
+    options.args = options.args.slice(0)
     let output: Output = {
       flags: {},
       args: {},
