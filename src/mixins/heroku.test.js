@@ -3,6 +3,14 @@
 import nock from 'nock'
 import Base from '../command'
 import Heroku from './heroku'
+import Netrc from 'netrc-parser'
+
+jest.mock('netrc-parser')
+
+// flow$ignore
+Netrc.mockImplementation(() => {
+  return {machines: {'api.heroku.com': {password: 'mypass'}}}
+})
 
 class Command extends Base {
   heroku = new Heroku(this, {required: false})
@@ -18,8 +26,7 @@ afterEach(() => {
 
 test('makes an HTTP request', async () => {
   api.get('/apps')
-  // TODO: set auth header in http-call
-  // .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+  .matchHeader('authorization', ':mypass')
   .reply(200, [{name: 'myapp'}])
 
   const cmd = await Command.run([], {mock: true})
