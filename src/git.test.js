@@ -23,5 +23,8 @@ test('runs git', () => {
   childProcess.execSync = jest.fn()
   const git = new Git()
   git.exec('version')
-  expect(childProcess.execSync).toBeCalledWith('git version', {encoding: 'utf8'})
+  expect(childProcess.execSync).toBeCalledWith('git version', {
+    encoding: 'utf8',
+    stdio: [null, 'pipe', null]
+  })
 })
