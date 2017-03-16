@@ -16,11 +16,12 @@ heroku\thttps://git.heroku.com/myapp.git  (pull)
     {name: 'origin', url: 'https://github.com/foo/bar'},
     {name: 'heroku', url: 'https://git.heroku.com/myapp.git'}
   ])
+  expect(git.exec).toBeCalledWith('remote -v')
 })
 
 test('runs git', () => {
   childProcess.execSync = jest.fn()
   const git = new Git()
   git.exec('version')
-  expect(childProcess.execSync).toBeCalledWith('version', {encoding: 'utf8'})
+  expect(childProcess.execSync).toBeCalledWith('git version', {encoding: 'utf8'})
 })

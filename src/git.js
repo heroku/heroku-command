@@ -7,7 +7,7 @@ export type Remote = {
 
 export default class Git {
   get remotes (): Remote[] {
-    return this.exec('git remote -v').split('\n')
+    return this.exec('remote -v').split('\n')
       .filter(l => l.endsWith('(fetch)'))
       .map(l => {
         const [name, url] = l.split('\t')
@@ -17,6 +17,6 @@ export default class Git {
 
   exec (cmd: string): string {
     const {execSync: exec} = require('child_process')
-    return exec(cmd, {encoding: 'utf8'})
+    return exec(`git ${cmd}`, {encoding: 'utf8'})
   }
 }
