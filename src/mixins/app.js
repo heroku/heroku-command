@@ -72,7 +72,11 @@ https://devcenter.heroku.com/articles/multiple-environments`)
   get gitRemotes (): {remote: string, app: string}[] {
     if (this._gitRemotes) return this._gitRemotes
     this._gitRemotes = []
-    for (let remote of this.git.remotes) {
+    let remotes = []
+    try {
+      remotes = this.git.remotes
+    } catch (err) { }
+    for (let remote of remotes) {
       if (this.configRemote && remote.name !== this.configRemote) continue
       for (let prefix of vars.gitPrefixes) {
         const suffix = '.git'

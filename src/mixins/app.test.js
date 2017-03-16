@@ -2,13 +2,12 @@
 
 import Base from '../command'
 import App, {AppFlag, RemoteFlag} from './app'
-import {type Remote} from '../git'
 
-let mockGitRemotes: Remote[]
+let mockGitRemotes = jest.fn()
 
 jest.mock('../git', () => {
   return class {
-    remotes = mockGitRemotes
+    get remotes () { return mockGitRemotes() }
   }
 })
 
@@ -18,7 +17,7 @@ class Command extends Base {
 }
 
 beforeEach(() => {
-  mockGitRemotes = []
+  mockGitRemotes.mockReturnValue([])
 })
 
 test('has an app', async () => {
@@ -26,21 +25,30 @@ test('has an app', async () => {
   expect(cmd.app.name).toEqual('myapp')
 })
 
+test('works when git errors out', async () => {
+  expect.assertions(1)
+  mockGitRemotes.mockImplementationOnce(() => {
+    throw new Error('whoa!')
+  })
+  const cmd = await Command.run([], {mock: true})
+  expect(cmd.app.name).toBeUndefined()
+})
+
 test('gets app from --remote flag', async () => {
-  mockGitRemotes = [
+  mockGitRemotes.mockReturnValueOnce([
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
-  ]
+  ])
   const cmd = await Command.run(['-r', 'staging'], {mock: true})
   expect(cmd.app.name).toEqual('myapp-staging')
 })
 
 test('errors if --remote not found', async () => {
   expect.assertions(1)
-  mockGitRemotes = [
+  mockGitRemotes.mockReturnValueOnce([
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
-  ]
+  ])
   try {
     let cmd = await Command.run(['-r', 'foo'], {mock: true})
     cmd.log(cmd.app.name)
@@ -65,10 +73,10 @@ test('errors with no app', async () => {
 
 test('errors with 2 git remotes', async () => {
   expect.assertions(1)
-  mockGitRemotes = [
+  mockGitRemotes.mockReturnValueOnce([
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
-  ]
+  ])
   try {
     let cmd = await Command.run([], {mock: true})
     console.log(cmd.app.name) // should not get here
@@ -78,7 +86,7 @@ test('errors with 2 git remotes', async () => {
 })
 
 test('gets app from git config', async () => {
-  mockGitRemotes = [{name: 'heroku', url: 'https://git.heroku.com/myapp.git'}]
+  mockGitRemotes.mockReturnValueOnce([{name: 'heroku', url: 'https://git.heroku.com/myapp.git'}])
   const cmd = await Command.run()
   expect(cmd.app.name).toEqual('myapp')
 })
