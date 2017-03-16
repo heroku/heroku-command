@@ -2,15 +2,13 @@
 
 import Base from '../command'
 import App, {AppFlag, RemoteFlag} from './app'
-import Git, {type Remote} from '../git'
+import {type Remote} from '../git'
 
-jest.mock('../git')
+let mockGitRemotes: Remote[]
 
-let gitRemotes: Remote[]
-// flow$ignore
-Git.mockImplementation(() => {
-  return {
-    remotes: gitRemotes
+jest.mock('../git', () => {
+  return class {
+    remotes = mockGitRemotes
   }
 })
 
@@ -20,7 +18,7 @@ class Command extends Base {
 }
 
 beforeEach(() => {
-  gitRemotes = []
+  mockGitRemotes = []
 })
 
 test('has an app', async () => {
@@ -29,7 +27,7 @@ test('has an app', async () => {
 })
 
 test('gets app from --remote flag', async () => {
-  gitRemotes = [
+  mockGitRemotes = [
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
   ]
@@ -39,7 +37,7 @@ test('gets app from --remote flag', async () => {
 
 test('errors if --remote not found', async () => {
   expect.assertions(1)
-  gitRemotes = [
+  mockGitRemotes = [
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
   ]
@@ -67,7 +65,7 @@ test('errors with no app', async () => {
 
 test('errors with 2 git remotes', async () => {
   expect.assertions(1)
-  gitRemotes = [
+  mockGitRemotes = [
     {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
     {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
   ]
@@ -80,7 +78,7 @@ test('errors with 2 git remotes', async () => {
 })
 
 test('gets app from git config', async () => {
-  gitRemotes = [{name: 'heroku', url: 'https://git.heroku.com/myapp.git'}]
+  mockGitRemotes = [{name: 'heroku', url: 'https://git.heroku.com/myapp.git'}]
   const cmd = await Command.run()
   expect(cmd.app.name).toEqual('myapp')
 })

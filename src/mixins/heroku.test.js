@@ -5,7 +5,11 @@ import Base from '../command'
 import Heroku, {Vars} from './heroku'
 import Netrc from 'netrc-parser'
 
-jest.mock('netrc-parser')
+jest.mock('netrc-parser', () => {
+  return class {
+    machines = {'api.heroku.com': {password: 'mypass'}}
+  }
+})
 
 class Command extends Base {
   heroku = new Heroku(this, {required: false})
@@ -28,11 +32,6 @@ describe('vars', () => {
 })
 
 describe('api client', () => {
-  // flow$ignore
-  Netrc.mockImplementation(() => {
-    return {machines: {'api.heroku.com': {password: 'mypass'}}}
-  })
-
   let api
   beforeEach(() => {
     api = nock('https://api.heroku.com')
