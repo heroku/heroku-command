@@ -37,9 +37,8 @@ export default class Command extends Output {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static async run (argv: string[] = [], options: RunOptions = {}): Promise<this> {
-    let config = options.config || new Config()
-    if (options.mock) config.mock = true
+  static async run (argv: string[] = [], options: ConfigOptions = {}): Promise<this> {
+    let config = new Config(options)
     let cmd = new this(config)
     cmd.argv = argv
     cmd.validate()
