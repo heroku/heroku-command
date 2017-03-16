@@ -12,6 +12,13 @@ export const AppFlag: Flag = {
   hasValue: true
 }
 
+export const RemoteFlag: Flag = {
+  name: 'remote',
+  char: 'r',
+  description: 'git remote of app to use',
+  hasValue: true
+}
+
 type Options = {
   required?: ?boolean
 }
@@ -41,6 +48,12 @@ export default class App {
       if (this.configRemote) throw new Error(`No remote found for ${this.configRemote} specified in .git/config`)
       return
     }
+    let remoteFlag = this.cmd.flags.remote
+    if (remoteFlag) {
+      let remote = this.gitRemotes.find(r => r.remote === remoteFlag)
+      if (remote) return remote.app
+      throw new Error(`remote ${remoteFlag} not found in git remotes`)
+    }
     if (this.gitRemotes.length > 1) {
       throw new Error(`Multiple apps in git remotes
 Usage: --remote ${this.gitRemotes[1].remote}
@@ -53,8 +66,7 @@ ${this.gitRemotes.map(r => `${r.app} (${r.remote})`).join('\n')}
 
 https://devcenter.heroku.com/articles/multiple-environments`)
     }
-    const app = this.gitRemotes[0].app
-    return app
+    return this.gitRemotes[0].app
   }
 
   get gitRemotes (): {remote: string, app: string}[] {

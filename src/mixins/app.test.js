@@ -1,7 +1,7 @@
 // @flow
 
 import Base from '../command'
-import App, {AppFlag} from './app'
+import App, {AppFlag, RemoteFlag} from './app'
 import Git, {type Remote} from '../git'
 
 jest.mock('../git')
@@ -15,7 +15,7 @@ Git.mockImplementation(() => {
 })
 
 class Command extends Base {
-  static flags = [AppFlag]
+  static flags = [AppFlag, RemoteFlag]
   app = new App(this)
 }
 
@@ -26,6 +26,29 @@ beforeEach(() => {
 test('has an app', async () => {
   const cmd = await Command.run(['--app', 'myapp'], {mock: true})
   expect(cmd.app.name).toEqual('myapp')
+})
+
+test('gets app from --remote flag', async () => {
+  gitRemotes = [
+    {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
+    {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
+  ]
+  const cmd = await Command.run(['-r', 'staging'], {mock: true})
+  expect(cmd.app.name).toEqual('myapp-staging')
+})
+
+test('errors if --remote not found', async () => {
+  expect.assertions(1)
+  gitRemotes = [
+    {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
+    {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
+  ]
+  try {
+    let cmd = await Command.run(['-r', 'foo'], {mock: true})
+    cmd.log(cmd.app.name)
+  } catch (err) {
+    expect(err.message).toEqual('remote foo not found in git remotes')
+  }
 })
 
 test('errors with no app', async () => {
