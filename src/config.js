@@ -25,7 +25,7 @@ export type PJSON = {
 export type ConfigOptions = {
   mock?: boolean,
   root?: string,
-  updateDisabled?: string,
+  updateDisabled?: ?string,
   channel?: string,
   version?: string,
   debug?: number,
@@ -78,7 +78,7 @@ class Dirs {
 }
 
 export default class Config {
-  constructor (options: ConfigOptions = {}) {
+  constructor (options: ConfigOptions | Config = {}) {
     this._options = options
     this._pjson = this._options.root
         // flow$ignore
@@ -95,7 +95,7 @@ export default class Config {
   debug: number
   mock: boolean
   _pjson: PJSON
-  _options: ConfigOptions
+  _options: ConfigOptions | Config
 
   get name ():string { return this._pjson.name }
   get version ():string { return this._options.version || this._pjson.version }

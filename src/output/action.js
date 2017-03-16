@@ -5,7 +5,7 @@ import type Output from '.'
 
 type Task = {
   spinner?: Spinner,
-  status: string,
+  status: ?string,
   message: string,
   paused?: boolean
 }
@@ -18,21 +18,21 @@ export default class Action {
     this.out = out
   }
 
-  start (message: string, status: string = '') {
+  start (message: string, status: ?string) {
     const msg = `${message}...`
     if (this.task) {
+      this.task.message = message
       if (this.task.spinner) {
-        this.task.message = message
         this.task.spinner.text = msg
         this.task.spinner.status = status
-      } else this.out.stderr.write(`\n${msg} ${status}`)
+      } else this.out.stderr.write(`\n${msg}` + (status ? ` ${status}` : ''))
     } else {
       this.task = ({message, status}: Task)
       if (this.displaySpinner) {
         const Spinner = require('./spinner')
         this.task.spinner = new Spinner({text: msg, command: this.out, status})
         this.task.spinner.start()
-      } else this.out.stderr.write(`${msg} ${status}`)
+      } else this.out.stderr.write(`${msg}` + (status ? ` ${status}` : ''))
     }
   }
 

@@ -32,24 +32,25 @@ test('outputs to stderr', () => {
 })
 
 describe('with color', () => {
-  beforeEach(() => {
-    chalk.enabled = true
-    CustomColors.supports = {has256: true}
-  })
-
   test('shows red text', () => {
     const config = new Config({mock: true})
     const cmd = new Output(config)
+    chalk.enabled = true
+    CustomColors.supports = {has256: true}
     expect(cmd.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
   })
 
   test('shows app', () => {
     const cmd = new Output(new Config({mock: true}))
+    chalk.enabled = true
+    CustomColors.supports = {has256: true}
     expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
   })
 
   test('styledJSON', () => {
     const out = new Output(new Config({mock: true}))
+    chalk.enabled = true
+    CustomColors.supports = {has256: true}
     out.styledJSON({foo: 'bar'})
     expect(out.stdout.output).toBe(`\u001b[97m{\u001b[39m\n  \u001b[94m"foo"\u001b[39m\u001b[93m:\u001b[39m \u001b[92m"bar"\u001b[39m\n\u001b[97m}\u001b[39m\n`)
   })
