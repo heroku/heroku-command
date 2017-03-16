@@ -13,12 +13,12 @@ test('shows action', () => {
   const out = new Output(new Config({mock: true}))
   out.action.start('doing a foo')
   out.action.stop()
-  expect(out.stderr.output).toEqual('doing a foo... \ndoing a foo... done\n')
+  expect(out.stderr.output).toEqual('doing a foo...\ndoing a foo... done\n')
 })
 
 test('implicit done', async () => {
   const out = new Output(new Config({mock: true}))
   out.action.start('doing a foo')
   await out.done()
-  expect(out.stderr.output).toEqual('doing a foo... \ndoing a foo... done\n')
+  expect(out.stderr.output).toEqual('doing a foo...\ndoing a foo... done\n')
 })

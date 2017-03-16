@@ -3,16 +3,11 @@
 import Output from './output'
 import Parser from './parser'
 import pjson from '../package.json'
-import Config from './config'
+import Config, {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 import {validate} from 'jest-validate'
 import HTTP from './http'
-
-type RunOptions = {
-  mock?: boolean,
-  config?: Config
-}
 
 export default class Command extends Output {
   static topic: string
@@ -37,7 +32,7 @@ export default class Command extends Output {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static async run (argv: string[] = [], options: ConfigOptions = {}): Promise<this> {
+  static async run (argv: string[] = [], options: ConfigOptions | Config = {}): Promise<this> {
     let config = new Config(options)
     let cmd = new this(config)
     cmd.argv = argv

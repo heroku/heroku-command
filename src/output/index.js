@@ -105,6 +105,7 @@ export default class Output {
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
+    if (config.mock) chalk.enabled = CustomColors.supports = false
   }
 
   config: Config

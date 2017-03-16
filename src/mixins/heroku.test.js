@@ -3,7 +3,6 @@
 import nock from 'nock'
 import Base from '../command'
 import Heroku, {Vars} from './heroku'
-import Netrc from 'netrc-parser'
 
 jest.mock('netrc-parser', () => {
   return class {
