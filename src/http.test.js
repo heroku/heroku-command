@@ -1,11 +1,10 @@
 // @flow
 
-import Base from './command'
+import HTTP from './http'
+import Output from './output'
 import nock from 'nock'
 import Config from './config'
 import pjson from '../package.json'
-
-class Command extends Base {}
 
 let api
 beforeEach(() => {
@@ -20,10 +19,11 @@ test('makes an HTTP request', async () => {
   .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
   .reply(200, {message: 'ok'})
 
-  const cmd = await Command.run([], {mock: true, config: new Config({debug: 2})})
-  let response = await cmd.http.get('https://api.heroku.com')
+  const out = new Output(new Config({mock: true, debug: 2}))
+  const http = new HTTP(out)
+  let response = await http.get('https://api.heroku.com')
   expect(response).toEqual({message: 'ok'})
-  expect(cmd.stderr.output).toContain('--> GET https://api.heroku.com')
-  expect(cmd.stderr.output).toContain('<-- GET https://api.heroku.com')
-  expect(cmd.stderr.output).toContain('{ message: \'ok\' }')
+  expect(out.stderr.output).toContain('--> GET https://api.heroku.com')
+  expect(out.stderr.output).toContain('<-- GET https://api.heroku.com')
+  expect(out.stderr.output).toContain('{ message: \'ok\' }')
 })
