@@ -9,7 +9,7 @@ type Options = {
 }
 
 const host = process.env.HEROKU_HOST || 'heroku.com'
-const apiHost = host.startsWith('http') ? host : `https://api.${host}`
+const apiHost = host.startsWith('http') ? host : `api.${host}`
 let gitHost = process.env.HEROKU_GIT_HOST
 if (!gitHost) {
   if (host.startsWith('http')) {
