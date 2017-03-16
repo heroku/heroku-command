@@ -2,7 +2,6 @@
 
 import nock from 'nock'
 import Base from '../command'
-import Config from '../config'
 import Heroku, {Vars} from './heroku'
 import Netrc from 'netrc-parser'
 
