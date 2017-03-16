@@ -1,7 +1,5 @@
 // @flow
 
-import type Command from './command'
-
 export type Flag = {
   name: string,
   char?: string,
