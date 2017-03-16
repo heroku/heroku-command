@@ -1,6 +1,6 @@
 // @flow
 
-type Remote = {
+export type Remote = {
   name: string,
   url: string
 }
