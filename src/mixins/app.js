@@ -2,7 +2,7 @@
 
 import type Command from '../command' // eslint-disable-line
 import type {Flag} from '../flag'
-import {gitPrefixes} from './heroku'
+import {vars} from './heroku'
 import Git from '../git'
 
 export const AppFlag: Flag = {
@@ -74,7 +74,7 @@ https://devcenter.heroku.com/articles/multiple-environments`)
     this._gitRemotes = []
     for (let remote of this.git.remotes) {
       if (this.configRemote && remote.name !== this.configRemote) continue
-      for (let prefix of gitPrefixes) {
+      for (let prefix of vars.gitPrefixes) {
         const suffix = '.git'
         let match = remote.url.match(`${prefix}(.*)${suffix}`)
         if (!match) continue

@@ -1,42 +1,53 @@
 // @flow
 
 import http from '../http'
-import type Command from '../command'
 import url from 'url'
+import type Output from '../output'
 
 type Options = {
   required?: boolean
 }
 
-const host = process.env.HEROKU_HOST || 'heroku.com'
-const apiHost = host.startsWith('http') ? host : `api.${host}`
-let gitHost = process.env.HEROKU_GIT_HOST
-if (!gitHost) {
-  if (host.startsWith('http')) {
-    const u = url.parse(host)
-    if (u.host) gitHost = u.host
+export class Vars {
+  env: typeof process.env
+  constructor (env: typeof process.env) {
+    this.env = env
   }
-  if (!gitHost) gitHost = host
-}
-let httpGitHost = process.env.HEROKU_GIT_HOST
-if (!httpGitHost) {
-  if (host.startsWith('http')) {
-    const u = url.parse(host)
-    if (u.host) httpGitHost = u.host
+
+  get host (): string { return this.env.HEROKU_HOST || 'heroku.com' }
+  get apiHost (): string { return this.host.startsWith('http') ? this.host : `api.${this.host}` }
+  get gitHost (): string {
+    if (this.env.HEROKU_GIT_HOST) return this.env.HEROKU_GIT_HOST
+    if (this.host.startsWith('http')) {
+      const u = url.parse(this.host)
+      if (u.host) return u.host
+    }
+    return this.host
   }
-  httpGitHost = `git.${host}`
+  get httpGitHost (): string {
+    if (this.env.HEROKU_GIT_HOST) return this.env.HEROKU_GIT_HOST
+    if (this.host.startsWith('http')) {
+      const u = url.parse(this.host)
+      if (u.host) return u.host
+    }
+    return `git.${this.host}`
+  }
+
+  get gitPrefixes (): string[] {
+    return [
+      `git@${this.gitHost}:`,
+      `ssh://git@${this.gitHost}/`,
+      `https://${this.httpGitHost}/`
+    ]
+  }
 }
 
-export const gitPrefixes = [
-  `git@${gitHost}:`,
-  `ssh://git@${gitHost}/`,
-  `https://${httpGitHost}/`
-]
+export const vars = new Vars(process.env)
 
 export default class Heroku extends http {
   options: Options
-  constructor (cmd: Command, options: Options = {}) {
-    super(cmd)
+  constructor (output: Output, options: Options = {}) {
+    super(output)
     if (options.required === undefined) options.required = true
     this.options = options
     this.requestOptions.host = 'api.heroku.com'
@@ -51,11 +62,9 @@ export default class Heroku extends http {
     if (!auth) {
       const Netrc = require('netrc-parser')
       const netrc = new Netrc()
-      auth = netrc.machines[apiHost].password
+      auth = netrc.machines[vars.apiHost].password
     }
-    if (!auth && this.options.required !== false) {
-      throw new Error('Not logged in')
-    }
+    // TODO: handle required
     return auth
   }
 }
