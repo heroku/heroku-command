@@ -65,6 +65,20 @@ test('errors with no app', async () => {
   }
 })
 
+test('errors with 2 git remotes', async () => {
+  expect.assertions(1)
+  gitRemotes = [
+    {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
+    {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
+  ]
+  try {
+    let cmd = await Command.run([], {mock: true})
+    console.log(cmd.app.name) // should not get here
+  } catch (err) {
+    expect(err.message).toContain('Multiple apps in git remotes')
+  }
+})
+
 test('gets app from git config', async () => {
   gitRemotes = [{name: 'heroku', url: 'https://git.heroku.com/myapp.git'}]
   const cmd = await Command.run()
