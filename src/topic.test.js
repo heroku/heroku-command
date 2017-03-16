@@ -9,20 +9,40 @@ class PluginsTopic extends Topic {
   static topic = 'plugins'
 }
 
-const commands = [
-  class extends Command {
-    static topic = 'plugins'
-  },
-  class extends Command {
-    static topic = 'plugins'
-    static command = 'install'
-    static description = 'installs a plugin'
-  }
-]
+class PluginsIndex extends Command {
+  static topic = 'plugins'
+}
 
-test('help()', async () => {
+class PluginsInstall extends Command {
+  static topic = 'plugins'
+  static command = 'install'
+  static description = 'installs a plugin'
+  static args = [
+    {name: 'plugin'},
+    {name: 'channel', optional: true}
+  ]
+  static flags = [
+    {name: 'force', char: 'f', description: 'jam it'},
+    {name: 'aflag', char: 'a'},
+    {name: 'bflag', char: 'b'},
+    {name: 'cflag'},
+    {name: 'dflag'}
+  ]
+}
+
+const commands = [ PluginsIndex, PluginsInstall ]
+
+test('listCommandsHelp()', async () => {
   let output = new Output(new Config({mock: true}))
   const topic = new PluginsTopic(commands, output)
   await topic.help(['plugins'])
-  expect(output.stdout.output).toContain('plugins:install # installs a plugin')
+  expect(output.stdout.output).toContain('plugins:install PLUGIN [CHANNEL] # installs a plugin')
+})
+
+test('commandHelp()', async () => {
+  let output = new Output(new Config({mock: true}))
+  const topic = new PluginsTopic(commands, output)
+  await topic.help(['plugins'], PluginsInstall)
+  expect(output.stdout.output).toContain('cli-engine-command plugins:install PLUGIN [CHANNEL]')
+  expect(output.stdout.output).toContain('-f, --force # jam it')
 })

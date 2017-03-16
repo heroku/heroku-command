@@ -52,8 +52,7 @@ class Topic {
       if (a.char && !b.char) return -1
       if (b.char && !a.char) return 1
       if (a.name < b.name) return -1
-      if (b.name < a.name) return 1
-      return 0
+      return b.name < a.name ? 1 : 0
     })
     return this.renderList(flags.map(f => {
       let label = []
