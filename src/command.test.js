@@ -27,3 +27,13 @@ test('parses args', async () => {
   let cmd = await Command.run(['myarg'], {mock: true})
   expect(cmd.stdout.output).toEqual('foo\nmyarg\n')
 })
+
+test('handles error', async () => {
+  class Command extends Base {
+    run () { throw new Error('oops!') }
+  }
+  // flow$ignore
+  Command.prototype.error = jest.fn()
+  await Command.run([])
+  expect(Command.prototype.error.mock.calls[0][0]).toMatchObject({message: 'oops!'})
+})
