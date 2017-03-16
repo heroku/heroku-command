@@ -10,5 +10,5 @@ export type Flag = {
   optional?: boolean,
   required?: boolean,
   // TODO: BooleanFlag etc
-  default?: (cmd: Command) => Promise<string>
+  default?: () => Promise<string>
 }

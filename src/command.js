@@ -26,6 +26,7 @@ export default class Command extends Output {
   static flags: Flag[] = []
   static args: Arg[] = []
   static _version: pjson.version
+  static parser = Parser
 
   static _flags: Flag[] = [
     {name: 'debug', hidden: true},
@@ -99,6 +100,7 @@ export default class Command extends Output {
         aliases: ['-v', '--version'],
         args: [exampleArg],
         flags: [exampleFlag],
+        parser: Parser,
         _flags: [exampleFlag]
       }
     })
@@ -118,11 +120,16 @@ export default class Command extends Output {
 
   async init () {
     await super.init()
-    let parser = new Parser(this)
-    await parser.parse(this.constructor.args, this.constructor.flags, this.argv)
-    this.flags = parser.flags
-    this.args = parser.args
-    this.argv = parser.argv
+    const Parser = this.constructor.parser
+    let parser = new Parser({
+      flags: this.constructor.flags,
+      args: this.constructor.args,
+      variableArgs: this.constructor.variableArgs
+    })
+    let {flags, args, argv} = await parser.parse(...this.argv)
+    this.flags = flags
+    this.args = args
+    this.argv = argv
     if (this.flags.debug) this.config.debug = 1
   }
 
