@@ -6,8 +6,8 @@ import type Command from './command'
 import type {Arg} from './arg'
 import type {Flag} from './flag'
 
-class Topic {
-  constructor (commands: Class<Command>[], out: Output) {
+export default class Topic {
+  constructor (commands: Class<Command<*>>[], out: Output) {
     this.out = out
     this.commands = commands
   }
@@ -16,10 +16,10 @@ class Topic {
   static description: ?string
   static hidden = false
 
-  commands: Class<Command>[]
+  commands: Class<Command<*>>[]
   out: Output
 
-  async help (args: string[], matchedCommand?: ?Class<Command>) {
+  async help (args: string[], matchedCommand?: ?Class<Command<*>>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
     if (this.constructor.topic === args[0]) this.listCommandsHelp()
   }
@@ -32,11 +32,11 @@ class Topic {
     this.out.log()
   }
 
-  commandHelp (command: Class<Command>) {
+  commandHelp (command: Class<Command<*>>) {
     let usage = `${this.out.config.bin} ${this.usage(command)}`
     this.out.log(`Usage: ${this.out.color.cmd(usage)}\n`)
     if (command.description) this.out.log(`${command.description.trim()}\n`)
-    let flags = (command.flags || []).filter(f => !f.hidden)
+    let flags = Object.keys(command.flags).map(f => [f, command.flags[f]]).filter(f => !f[1].hidden)
     if (flags.length) this.out.log(`${this.renderFlags(flags)}\n`)
     if (command.help) this.out.log(`${command.help.trim()}\n`)
   }
@@ -47,25 +47,25 @@ class Topic {
     else return `[${name}]`
   }
 
-  renderFlags (flags: Flag[]) {
+  renderFlags (flags: [string, Class<Flag>][]) {
     flags.sort((a, b) => {
-      if (a.char && !b.char) return -1
-      if (b.char && !a.char) return 1
-      if (a.name < b.name) return -1
-      return b.name < a.name ? 1 : 0
+      if (a[1].char && !b[1].char) return -1
+      if (b[1].char && !a[1].char) return 1
+      if (a[0] < b[0]) return -1
+      return b[0] < a[0] ? 1 : 0
     })
-    return this.renderList(flags.map(f => {
+    return this.renderList(flags.map(([name, f]) => {
       let label = []
       if (f.char) label.push(`-${f.char}`)
-      if (f.name) label.push(` --${f.name}`)
-      let usage = f.hasValue ? ` ${f.name.toUpperCase()}` : ''
+      if (f.name) label.push(` --${name}`)
+      let usage = f.hasValue ? ` ${name.toUpperCase()}` : ''
       let description = f.description || ''
       if (f.required || f.optional === false) description = `(required) ${description}`
       return [label.join(',').trim() + usage, description]
     }))
   }
 
-  usage (command: Class<Command>) {
+  usage (command: Class<Command<*>>) {
     if (command.usage) return command.usage.trim()
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
     if (!command.args) return cmd.trim()
@@ -97,5 +97,3 @@ class Topic {
     })(s).trim()
   }
 }
-
-module.exports = Topic

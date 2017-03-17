@@ -4,6 +4,7 @@ import Topic from './topic'
 import Command from './command'
 import Output from './output'
 import Config from './config'
+import {Flag} from './flag'
 
 class PluginsTopic extends Topic {
   static topic = 'plugins'
@@ -21,13 +22,13 @@ class PluginsInstall extends Command {
     {name: 'plugin'},
     {name: 'channel', optional: true}
   ]
-  static flags = [
-    {name: 'force', char: 'f', description: 'jam it'},
-    {name: 'aflag', char: 'a'},
-    {name: 'bflag', char: 'b'},
-    {name: 'cflag'},
-    {name: 'dflag'}
-  ]
+  static flags = {
+    force: Flag.with({char: 'f', description: 'jam it'}),
+    aflag: Flag.with({char: 'a'}),
+    bflag: Flag.with({char: 'b'}),
+    cflag: Flag,
+    dflag: Flag
+  }
 }
 
 const commands = [ PluginsIndex, PluginsInstall ]

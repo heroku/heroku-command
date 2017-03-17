@@ -1,14 +1,22 @@
 // @flow
 
 import Output from './output'
-import Parser from './parser'
+import Parser, {type ArgsOutput} from './parser'
 import pjson from '../package.json'
 import Config, {type ConfigOptions} from './config'
 import type {Flag} from './flag'
 import type {Arg} from './arg'
 import HTTP from './http'
 
-export default class Command extends Output {
+type Flags <T> = {[name: string]: T}
+
+type RunOptions <TFlag> = {
+  flags: Flags<TFlag>,
+  args: {+[name: string]: string},
+  argv: string[]
+}
+
+export default class Command <TFlag: Flag> extends Output {
   static topic: string
   static command: ?string
   static description: ?string
@@ -17,27 +25,39 @@ export default class Command extends Output {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-  static flags: Flag[] = []
+  static flags: {[name: string]: Class<Flag>}
   static args: Arg[] = []
   static _version: pjson.version
-  static parser = Parser
 
-  static _flags: Flag[] = [
-    {name: 'debug', hidden: true},
-    {name: 'no-color', hidden: true}
-  ]
+  static flag: Class<TFlag>
+
+  // static _flags: Flags = [
+  //   {name: 'debug', hidden: true},
+  //   {name: 'no-color', hidden: true}
+  // ]
 
   static get id () {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
-  static async run (argv: string[] = [], options: ConfigOptions | Config = {}): Promise<this> {
+  /**
+   * instantiate and run the command setting {mock: true} in the config
+   */
+  static async mock (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]) {
+    options.mock = true
+    return this.run(argv, options)
+  }
+
+  /**
+   * instantiate and run the command
+   */
+  static async run (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]): Promise<this> {
     let config = new Config(options)
     let cmd = new this(config)
-    cmd.argv = argv
+    // if (this.flags.debug) this.config.debug = 1
     try {
-      await cmd.init()
-      await cmd.run()
+      const args = await cmd.parse(...argv)
+      await cmd.run(args)
       await cmd.done()
     } catch (err) {
       if (config.mock) throw err
@@ -45,6 +65,8 @@ export default class Command extends Output {
     }
     return cmd
   }
+
+  http = new HTTP(this)
 
   // prevent setting things that need to be static
   topic: null
@@ -55,33 +77,17 @@ export default class Command extends Output {
   help: null
   aliases: null
 
-  http = new HTTP(this)
-
-  argv: string[]
-  flags: {[flag: string]: string}
-  args: {[arg: string]: string}
-
-  async init () {
-    await super.init()
-    const Parser = this.constructor.parser
-    let parser = new Parser({
-      flags: this.constructor.flags,
+  async parse (...argv: string[]): Promise<ArgsOutput<TFlag>> {
+    const parser = new Parser({
+      flags: ({org: this.constructor.flag}: Flags<Class<TFlag>>),
       args: this.constructor.args,
       variableArgs: this.constructor.variableArgs
     })
-    let {flags, args, argv} = await parser.parse(...this.argv)
-    this.flags = flags
-    this.args = args
-    this.argv = argv
-    if (this.flags.debug) this.config.debug = 1
+    return await parser.parse(...argv)
   }
 
   /**
    * actual command run code goes here
    */
-  async run () { }
-
-  async done () {
-    await super.done()
-  }
+  async run (args: ArgsOutput<TFlag>, ...rest: void[]): Promise<void> { }
 }

@@ -1,33 +1,39 @@
 // @flow
 
 import Base from '../command'
-import Org, {OrgFlag} from './org'
+import OrgFlag from './org'
 
 class Command extends Base {
-  static flags = [OrgFlag]
-  org = new Org(this)
+  static flags = {org: OrgFlag}
+  static flag = OrgFlag
+  org: ?string
+  // async run ({flags}: {
+  //   flags: {org: OrgFlag}
+  // }) {
+  async run ({flags}) {
+    this.org = flags.org.name
+  }
 }
 
-test('has an org', async () => {
-  const cmd = await Command.run(['--org', 'myorg'], {mock: true})
-  expect(cmd.org.name).toEqual('myorg')
+test.only('has an org', async () => {
+  const cmd = await Command.mock(['--org', 'myorg'])
+  expect(cmd.org).toEqual('myorg')
 })
 
-test('errors with no org', async () => {
-  class Command extends Base {
-    static flags = [OrgFlag]
-    org = new Org(this, {required: true})
-  }
-  expect.assertions(1)
-  try {
-    let cmd = await Command.run([], {mock: true})
-    console.log(cmd.org.name) // should not get here
-  } catch (err) {
-    expect(err.message).toContain('No org specified')
-  }
-})
+// test('errors with no org', async () => {
+//   class Command extends Base {
+//     static flags = {org: OrgFlag.with({required: true})}
+//   }
+//   expect.assertions(1)
+//   try {
+//     let cmd = await Command.run([], {mock: true})
+//     console.log(cmd.flags.org.value) // should not get here
+//   } catch (err) {
+//     expect(err.message).toContain('No org specified')
+//   }
+// })
 
-test('does not error when org is not specified', async () => {
-  const cmd = await Command.run()
-  expect(cmd.org.name).toBeUndefined()
-})
+// test('does not error when org is not specified', async () => {
+//   const cmd = await Command.run()
+//   expect(cmd.flags.org.value).toBeUndefined()
+// })
