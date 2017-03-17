@@ -8,15 +8,13 @@ import type {Flag} from './flag'
 import type {Arg} from './arg'
 import HTTP from './http'
 
-type Flags <T> = {[name: string]: T}
-
 type RunOptions <TFlag> = {
-  flags: Flags<TFlag>,
+  flags: TFlag,
   args: {+[name: string]: string},
   argv: string[]
 }
 
-export default class Command <TFlag: Flag> extends Output {
+export default class Command <Options> extends Output {
   static topic: string
   static command: ?string
   static description: ?string
@@ -25,11 +23,9 @@ export default class Command <TFlag: Flag> extends Output {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-  static flags: {[name: string]: Class<Flag>}
+  static flags: InputFlags
   static args: Arg[] = []
   static _version: pjson.version
-
-  static flag: Class<TFlag>
 
   // static _flags: Flags = [
   //   {name: 'debug', hidden: true},
@@ -77,9 +73,9 @@ export default class Command <TFlag: Flag> extends Output {
   help: null
   aliases: null
 
-  async parse (...argv: string[]): Promise<ArgsOutput<TFlag>> {
+  async parse (...argv: string[]): Promise<ArgsOutput<OutputFlags>> {
     const parser = new Parser({
-      flags: ({org: this.constructor.flag}: Flags<Class<TFlag>>),
+      flags: this.constructor.flags,
       args: this.constructor.args,
       variableArgs: this.constructor.variableArgs
     })
@@ -89,5 +85,5 @@ export default class Command <TFlag: Flag> extends Output {
   /**
    * actual command run code goes here
    */
-  async run (args: ArgsOutput<TFlag>, ...rest: void[]): Promise<void> { }
+  async run (args: ArgsOutput<OutputFlags>, ...rest: void[]): Promise<void> { }
 }
