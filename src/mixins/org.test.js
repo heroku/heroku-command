@@ -2,16 +2,21 @@
 
 import Base from '../command'
 import OrgFlag from './org'
+import {Flag} from '../flag'
 
-class Command extends Base {
-  static flags = {org: OrgFlag}
-  static flag = OrgFlag
+type Flags = {
+  org: OrgFlag,
+  two: Flag
+}
+
+class Command extends Base <{flags: Flags}> {
+  static flags = {org: OrgFlag, two: Flag}
   org: ?string
   // async run ({flags}: {
   //   flags: {org: OrgFlag}
   // }) {
   async run ({flags}) {
-    this.org = flags.org.name
+    // this.org = flags.org.name
   }
 }
 

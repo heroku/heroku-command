@@ -20,13 +20,13 @@ type Options = {
 }
 
 export default class App {
-  cmd: Command<*>
+  cmd: Command<*,*>
   options: Options
   git: Git
   configRemote: ?string
   _gitRemotes: {remote: string, app: string}[]
 
-  constructor (cmd: Command<*>, options: Options = {required: false}) {
+  constructor (cmd: Command<*,*>, options: Options = {required: false}) {
     this.cmd = cmd
     this.options = options
     this.git = new Git()

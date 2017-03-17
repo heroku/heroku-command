@@ -3,23 +3,23 @@
 import {type Arg} from './arg'
 import {ValueFlag, type Flag} from './flag'
 
-type Options <TFlag: Flag> = {
-  flags: {[name: string]: Class<TFlag>},
+type Options <Flags> = {
+  flags: Flags,
   args: Arg[],
   variableArgs: boolean,
 }
 
-export type ArgsOutput <TFlag: Flag> = {
-  flags: {[name: string]: TFlag},
+export type ArgsOutput <Flags> = {
+  flags: {},
   args: {[name: string]: string},
   argv: string[]
 }
 
 const isClass = (a, b) => a === b || a.prototype instanceof b
 
-export default class Parse <TFlag: Flag> {
-  options: Options<TFlag>
-  constructor (options: $Shape<Options<TFlag>>) {
+export default class Parse <FlagsInput: {[name: string]: *}, FlagsOutput: {[name: string]: *}> {
+  options: Options<FlagsInput>
+  constructor (options: $Shape<Options<FlagsInput>>) {
     this.options = {
       flags: options.flags || {},
       args: options.args || [],
@@ -27,10 +27,10 @@ export default class Parse <TFlag: Flag> {
     }
   }
 
-  async parse (...argv: string[]): Promise<ArgsOutput<TFlag>> {
+  async parse (...argv: string[]): Promise<ArgsOutput<FlagsOutput>> {
     let options = this.options
     options.args = options.args.slice(0)
-    let output: ArgsOutput<TFlag> = {
+    let output: ArgsOutput<FlagsOutput> = {
       flags: {},
       args: {},
       argv: []
