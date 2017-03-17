@@ -123,9 +123,7 @@ export default class Output {
     })
   }
 
-  async init () {}
-
-  async done () {
+  async done (...rest: void[]): Promise<void> {
     this.showCursor()
     this.action.stop()
   }

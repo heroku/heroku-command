@@ -1,59 +1,57 @@
 // @flow
 
 import {type Arg} from './arg'
-import {type Flag} from './flag'
+import {ValueFlag, type Flag} from './flag'
 
-type Options = {
-  flags: Flag[],
+type Options <TFlag: Flag> = {
+  flags: {[name: string]: Class<TFlag>},
   args: Arg[],
   variableArgs: boolean,
 }
 
-type Output = {
-  flags: {[name: string]: string},
+export type ArgsOutput <TFlag: Flag> = {
+  flags: {[name: string]: TFlag},
   args: {[name: string]: string},
   argv: string[]
 }
 
-export default class Parse {
-  options: Options
-  constructor (options: $Shape<Options>) {
+const isClass = (a, b) => a === b || a.prototype instanceof b
+
+export default class Parse <TFlag: Flag> {
+  options: Options<TFlag>
+  constructor (options: $Shape<Options<TFlag>>) {
     this.options = {
-      flags: options.flags || [],
+      flags: options.flags || {},
       args: options.args || [],
       variableArgs: !!options.variableArgs
     }
   }
 
-  flags: {[name: string]: string} = {}
-  args: {[name: string]: string} = {}
-  argv: string[]
-
-  async parse (...argv: string[]): Promise<Output> {
+  async parse (...argv: string[]): Promise<ArgsOutput<TFlag>> {
     let options = this.options
-    options.flags = options.flags.slice(0)
     options.args = options.args.slice(0)
-    let output: Output = {
+    let output: ArgsOutput<TFlag> = {
       flags: {},
       args: {},
       argv: []
     }
 
     async function parseFlags () {
-      for (let flag of options.flags) {
-        if (!output.flags[flag.name]) {
-          if (flag.default) output.flags[flag.name] = await flag.default()
-          if (!output.flags[flag.name] && (flag.optional === false || flag.required === true)) {
-            throw new Error(`Missing required flag --${flag.name}`)
-          }
+      for (const [name, Flag] of entries(options.flags)) {
+        let flag = output.flags[name]
+        if (!flag) flag = output.flags[name] = new Flag()
+        if (!(flag instanceof ValueFlag)) return
+        await flag.parse()
+        if (!output.flags[name] && flag.constructor.required) {
+          throw new Error(`Missing required flag --${name}`)
         }
       }
     }
 
     let parseFlag = arg => {
       let long = arg.startsWith('--')
-      let flag = long ? findLongFlag(arg) : findShortFlag(arg)
-      if (!flag) {
+      let name = long ? findLongFlag(arg) : findShortFlag(arg)
+      if (!name) {
         const i = arg.indexOf('=')
         if (i !== -1) {
           argv.unshift(arg.slice(i + 1))
@@ -61,16 +59,18 @@ export default class Parse {
         }
         return false
       }
-      let cur = output.flags[flag.name]
-      if (flag.hasValue) {
-        if (cur) throw new Error(`Flag --${flag.name} already provided`)
+      let Flag = options.flags[name]
+      let cur = output.flags[name]
+      if (isClass(Flag, ValueFlag)) {
+        // TODO: handle multiple flags
+        if (cur) throw new Error(`Flag --${name} already provided`)
         let val
         if (long || arg.length < 3) val = argv.shift()
         else val = arg.slice(arg[2] === '=' ? 3 : 2)
-        if (!val) throw new Error(`Flag --${flag.name} expects a value.`)
-        output.flags[flag.name] = val
+        if (!val) throw new Error(`Flag --${name} expects a value`)
+        output.flags[name] = new Flag(val)
       } else {
-        if (!cur) output.flags[flag.name] = flag.name
+        if (!cur) output.flags[name] = new Flag()
         // push the rest of the short characters back on the stack
         if (!long && arg.length > 2) argv.unshift(`-${arg.slice(2)}`)
       }
@@ -78,11 +78,14 @@ export default class Parse {
     }
 
     let findLongFlag = arg => {
-      return options.flags.find(f => f.name === arg.slice(2))
+      let name = arg.slice(2)
+      if (options.flags[name]) return name
     }
 
     let findShortFlag = arg => {
-      return options.flags.find(f => f.char === arg[1])
+      for (let k of Object.keys(options.flags)) {
+        if (options.flags[k].char === arg[1]) return k
+      }
     }
 
     let parsingFlags = true
@@ -98,10 +101,18 @@ export default class Parse {
       else if (!options.variableArgs) throw new Error(`Unexpected argument ${arg}`)
     }
 
-    const missingArg = options.args.find(a => a.optional !== true && a.required !== false && !output[a.name])
+    const missingArg = options.args.find(a => a.required && !output.args[a.name])
     if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
 
     await parseFlags()
     return output
   }
+}
+
+function entries <T> (obj: {[k: string]: T}): [string, T][] {
+  let entries = []
+  for (let k of Object.keys(obj)) {
+    entries.push([k, obj[k]])
+  }
+  return entries
 }

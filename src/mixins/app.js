@@ -1,22 +1,18 @@
 // @flow
 
 import type Command from '../command' // eslint-disable-line
-import type {Flag} from '../flag'
+import {ValueFlag} from '../flag'
 import {vars} from './heroku'
 import Git from '../git'
 
-export const AppFlag: Flag = {
-  name: 'app',
-  char: 'a',
-  description: 'app to run command against',
-  hasValue: true
+export class AppFlag extends ValueFlag {
+  static char = 'a'
+  static description = 'app to run command against'
 }
 
-export const RemoteFlag: Flag = {
-  name: 'remote',
-  char: 'r',
-  description: 'git remote of app to use',
-  hasValue: true
+export class RemoteFlag extends ValueFlag {
+  static char = 'r'
+  static description = 'git remote of app to use'
 }
 
 type Options = {
@@ -24,13 +20,13 @@ type Options = {
 }
 
 export default class App {
-  cmd: Command
+  cmd: Command<*>
   options: Options
   git: Git
   configRemote: ?string
   _gitRemotes: {remote: string, app: string}[]
 
-  constructor (cmd: Command, options: Options = {required: false}) {
+  constructor (cmd: Command<*>, options: Options = {required: false}) {
     this.cmd = cmd
     this.options = options
     this.git = new Git()
@@ -38,9 +34,9 @@ export default class App {
   }
 
   get name (): ?string {
-    let app = this.cmd.flags.app || process.env.HEROKU_APP || this.gitRemoteApp
-    if (!app && this.options.required) throw new Error('No app specified')
-    return app
+    // let app = this.cmd.flags.app || process.env.HEROKU_APP || this.gitRemoteApp
+    // if (!app && this.options.required) throw new Error('No app specified')
+    // return app
   }
 
   get gitRemoteApp (): ?string {
@@ -48,7 +44,8 @@ export default class App {
       if (this.configRemote) throw new Error(`No remote found for ${this.configRemote} specified in .git/config`)
       return
     }
-    let remoteFlag = this.cmd.flags.remote
+    let remoteFlag = 'foobar'
+    // let remoteFlag = this.cmd.flags.remote.value
     if (remoteFlag) {
       let remote = this.gitRemotes.find(r => r.remote === remoteFlag)
       if (remote) return remote.app

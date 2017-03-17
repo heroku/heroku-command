@@ -12,7 +12,7 @@ jest.mock('../git', () => {
 })
 
 class Command extends Base {
-  static flags = [AppFlag, RemoteFlag]
+  static flags = {app: AppFlag, remote: RemoteFlag}
   app = new App(this)
 }
 
@@ -59,7 +59,7 @@ test('errors if --remote not found', async () => {
 
 test('errors with no app', async () => {
   class Command extends Base {
-    static flags = [AppFlag]
+    static flags = {app: AppFlag}
     app = new App(this, {required: true})
   }
   expect.assertions(1)

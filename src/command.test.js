@@ -1,26 +1,35 @@
 // @flow
 
 import Base from './command'
+import {Flag} from './flag'
+
+let run
 
 class Command extends Base {
-  static flags = [{name: 'myflag', required: false}]
+  static flags = {myflag: Flag}
   static args = [{name: 'myarg', required: false}]
 
-  async run () {
-    this.log('foo')
-    if (this.args.myarg) this.log('myarg')
-    if (this.flags.myflag) this.log('myflag')
-  }
+  async run (args) { run(args) }
 }
 
+beforeEach(() => { run = jest.fn() })
+
 test('runs the command', async () => {
-  let cmd = await Command.run([], {mock: true})
-  expect(cmd.stdout.output).toEqual('foo\n')
+  await Command.mock()
+  expect(run).toBeCalledWith({
+    args: {},
+    argv: [],
+    flags: {}
+  })
 })
 
 test('parses args', async () => {
-  let cmd = await Command.run(['myarg'], {mock: true})
-  expect(cmd.stdout.output).toEqual('foo\nmyarg\n')
+  await Command.mock(['one'])
+  expect(run).toBeCalledWith({
+    args: {myarg: 'one'},
+    argv: ['one'],
+    flags: {}
+  })
 })
 
 test('handles error', async () => {
