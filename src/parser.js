@@ -1,10 +1,10 @@
 // @flow
 
 import {type Arg} from './arg'
-import {type IFlag} from './flag'
+import {type Flag} from './flags'
 import type Command from './command'
 
-export type InputFlags = {[name: string]: IFlag<*>}
+export type InputFlags = {[name: string]: Flag<*>}
 export type Input <Flags: InputFlags> = {
   flags: Flags,
   args: Arg[],

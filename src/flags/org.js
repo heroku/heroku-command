@@ -1,9 +1,9 @@
 // @flow
 
-import {Flag, type IFlag} from '../flag'
+import {type Flag} from '.'
 
-type Options = $Shape<IFlag<string>>
-export default function OrgFlag (options: Options = {}, env: typeof process.env = process.env): IFlag<string> {
+type Options = $Shape<Flag<string>>
+export default function OrgFlag (options: Options = {}, env: typeof process.env = process.env): Flag<string> {
   const envOrg = env.HEROKU_ORGANIZATION
   const defaultOptions: Options = {
     char: 'o',
@@ -15,5 +15,5 @@ export default function OrgFlag (options: Options = {}, env: typeof process.env 
       if (options.required) throw new Error('No org specified')
     }
   }
-  return Flag(Object.assign(defaultOptions, options))
+  return Object.assign(defaultOptions, options)
 }

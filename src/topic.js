@@ -4,7 +4,7 @@ import {stdtermwidth} from './output/screen'
 import type Output from './output'
 import type Command from './command'
 import type {Arg} from './arg'
-import type {IFlag} from './flag'
+import type {Flag} from './flags'
 
 export default class Topic {
   constructor (commands: Class<Command<*>>[], out: Output) {
@@ -47,7 +47,7 @@ export default class Topic {
     else return `[${name}]`
   }
 
-  renderFlags (flags: [string, IFlag<*>][]) {
+  renderFlags (flags: [string, Flag<*>][]) {
     flags.sort((a, b) => {
       if (a[1].char && !b[1].char) return -1
       if (b[1].char && !a[1].char) return 1

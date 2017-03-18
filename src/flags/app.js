@@ -1,11 +1,11 @@
 // @flow
 
 import {vars} from '../heroku'
-import {Flag, type IFlag} from '../flag'
+import {type Flag} from '.'
 import Git from '../git'
 
-type Options = $Shape<IFlag<string>>
-export function AppFlag (options: Options = {}, env: typeof process.env = process.env): IFlag<string> {
+type Options = $Shape<Flag<string>>
+export function AppFlag (options: Options = {}, env: typeof process.env = process.env): Flag<string> {
   const envApp = env.HEROKU_APP
   const defaultOptions: Options = {
     char: 'a',
@@ -23,16 +23,16 @@ export function AppFlag (options: Options = {}, env: typeof process.env = proces
       if (options.required) throw new Error('No app specified')
     }
   }
-  return Flag(Object.assign(defaultOptions, options))
+  return Object.assign(defaultOptions, options)
 }
 
-export function RemoteFlag (options: Options = {}): IFlag<string> {
+export function RemoteFlag (options: Options = {}): Flag<string> {
   const defaultOptions: Options = {
     char: 'r',
     description: 'git remote of app to use',
     parse: input => input
   }
-  return Flag(Object.assign(defaultOptions, options))
+  return Object.assign(defaultOptions, options)
 }
 
 function findGitRemoteApp (remote: ?string): ?string {

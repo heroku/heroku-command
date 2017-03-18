@@ -4,7 +4,7 @@ import Topic from './topic'
 import Command from './command'
 import Output from './output'
 import Config from './config'
-import {BooleanFlag} from './flag'
+import {BooleanFlag} from './flags'
 
 class PluginsTopic extends Topic {
   static topic = 'plugins'
