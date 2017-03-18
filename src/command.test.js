@@ -1,7 +1,7 @@
 // @flow
 
 import Base from './command'
-import {BooleanFlag} from './flag'
+import {BooleanFlag} from './flags'
 
 class Command extends Base {
   static flags = {myflag: BooleanFlag()}
