@@ -27,13 +27,8 @@ export default class Parse <Flags: InputFlags> {
     this.input = input
   }
 
-  async parse (...argv: string[]): Promise<Output<Flags>> {
-    let input = this.input
-    let output: Output<Flags> = ({
-      flags: {},
-      args: {},
-      argv: []
-    })
+  async parse (output: Output<Flags>): Promise<Output<Flags>> {
+    let argv = output.argv.slice(0)
 
     let parseFlag = arg => {
       let long = arg.startsWith('--')
@@ -46,7 +41,7 @@ export default class Parse <Flags: InputFlags> {
         }
         return false
       }
-      let flag = input.flags[name]
+      let flag = this.input.flags[name]
       let cur = output.flags[name]
       if (flag.parse) {
         // TODO: handle multiple flags
@@ -66,12 +61,12 @@ export default class Parse <Flags: InputFlags> {
 
     let findLongFlag = arg => {
       let name = arg.slice(2)
-      if (input.flags[name]) return name
+      if (this.input.flags[name]) return name
     }
 
     let findShortFlag = arg => {
-      for (let k of Object.keys(input.flags)) {
-        if (input.flags[k].char === arg[1]) return k
+      for (let k of Object.keys(this.input.flags)) {
+        if (this.input.flags[k].char === arg[1]) return k
       }
     }
 
@@ -87,17 +82,17 @@ export default class Parse <Flags: InputFlags> {
       }
       // not a flag, parse as arg
       output.argv.push(arg)
-      let expected = input.args[argIndex++]
+      let expected = this.input.args[argIndex++]
       if (expected) output.args[expected.name] = arg
-      else if (!input.variableArgs) throw new Error(`Unexpected argument ${arg}`)
+      else if (!this.input.variableArgs) throw new Error(`Unexpected argument ${arg}`)
     }
 
-    const missingArg = input.args.find(a => a.required && !output.args[a.name])
+    const missingArg = this.input.args.find(a => a.required && !output.args[a.name])
     if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
 
-    for (let name of Object.keys(input.flags)) {
-      if (!output.flags[name] && input.flags[name].parse) {
-        output.flags[name] = await input.flags[name].parse()
+    for (let name of Object.keys(this.input.flags)) {
+      if (!output.flags[name] && this.input.flags[name].parse) {
+        output.flags[name] = await this.input.flags[name].parse(null, this.input.cmd)
       }
     }
     return output

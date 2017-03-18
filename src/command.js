@@ -32,7 +32,7 @@ export default class Command <Flags: InputFlags> extends Output {
   /**
    * instantiate and run the command setting {mock: true} in the config
    */
-  static async mock (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]) {
+  static async mock (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]): Promise<this> {
     options.mock = true
     return this.run(argv, options)
   }
@@ -43,9 +43,10 @@ export default class Command <Flags: InputFlags> extends Output {
   static async run (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]): Promise<this> {
     let config = new Config(options)
     let cmd = new this(config)
+    cmd.argv = argv
     // if (this.flags.debug) this.config.debug = 1
     try {
-      const args = await cmd.parse(...argv)
+      const args = await cmd.parse()
       await cmd.run(args)
       await cmd.done()
     } catch (err) {
@@ -57,21 +58,22 @@ export default class Command <Flags: InputFlags> extends Output {
 
   http = new HTTP(this)
 
-  flags: OutputFlags<Flags>
-  args: OutputArgs
+  flags: OutputFlags<Flags> = {}
+  args: OutputArgs = {}
   argv: string[]
 
-  async parse (...argv: string[]) {
+  async parse () {
     const parser = new Parser({
       flags: this.constructor.flags,
       args: this.constructor.args || [],
       variableArgs: this.constructor.variableArgs,
       cmd: this
     })
-    const parse = await parser.parse(...argv)
-    this.flags = parse.flags
-    this.args = parse.args
-    this.argv = parse.argv
+    await parser.parse({
+      flags: this.flags,
+      args: this.args,
+      argv: this.argv
+    })
   }
 
   // prevent setting things that need to be static
