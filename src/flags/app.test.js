@@ -16,7 +16,6 @@ beforeEach(() => {
 })
 
 describe('required', () => {
-
   class Command extends Base {
     static flags = {app: AppFlag({required: true}), remote: RemoteFlag()}
   }
