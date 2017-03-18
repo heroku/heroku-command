@@ -12,7 +12,7 @@ export type IFlag <T> = {
   default?: () => (Promise<?T> | ?T),
   required?: boolean,
   optional?: boolean,
-  parse?: (?string, ?Command<*>) => (Promise<?T> | ?T)
+  parse?: (?string, ?Command<*>, string) => (Promise<?T> | ?T)
 }
 
 export function Flag <T> (options: $Shape<IFlag<T>> = {}): IFlag<T> {
@@ -25,11 +25,12 @@ export function BooleanFlag (options: $Shape<IFlag<boolean>> = {}): IFlag<boolea
 }
 
 export function StringFlag (options: $Shape<IFlag<string>> = {}): IFlag<string> {
+  const required = options.optional === false || options.required
   const defaultOptions: $Shape<IFlag<string>> = {
-    parse: (input) => {
+    parse: (input, cmd, name) => {
       let value = input
       if (!value && options.default) value = options.default
-      if (!value && options.required) throw new RequiredFlagError('name goes here')
+      if (!value && required) throw new RequiredFlagError(name)
       return input
     }
   }
