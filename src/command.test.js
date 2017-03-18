@@ -10,14 +10,12 @@ class Command extends Base {
 
 test('runs the command', async () => {
   const cmd = await Command.mock()
-  expect(cmd.args).toEqual({})
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual([])
 })
 
 test('parses args', async () => {
   const cmd = await Command.mock(['one'])
-  expect(cmd.args).toEqual({myarg: 'one'})
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
 })

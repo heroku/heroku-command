@@ -59,7 +59,6 @@ export default class Command <Flags: InputFlags> extends Output {
   http = new HTTP(this)
 
   flags: OutputFlags<Flags> = {}
-  args: OutputArgs = {}
   argv: string[]
 
   async parse () {
@@ -69,11 +68,9 @@ export default class Command <Flags: InputFlags> extends Output {
       variableArgs: this.constructor.variableArgs,
       cmd: this
     })
-    await parser.parse({
-      flags: this.flags,
-      args: this.args,
-      argv: this.argv
-    })
+    const {argv, flags} = await parser.parse({flags: this.flags, argv: this.argv})
+    this.flags = flags
+    this.argv = argv
   }
 
   // prevent setting things that need to be static

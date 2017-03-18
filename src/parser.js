@@ -17,18 +17,20 @@ export type OutputArgs = {[name: string]: string}
 
 export type Output <Flags> = {
   flags: OutputFlags<Flags>,
-  args: OutputArgs,
-  argv: string[]
+  argv: Array<*>
 }
 
 export default class Parse <Flags: InputFlags> {
   input: Input<Flags>
-  constructor (input: Input<Flags>) {
+  constructor (input: $Shape<Input<Flags>>) {
     this.input = input
+    input.args = input.args || []
+    input.flags = input.flags || {}
   }
 
-  async parse (output: Output<Flags>): Promise<Output<Flags>> {
-    let argv = output.argv.slice(0)
+  async parse (output: $Shape<Output<Flags>> = {}) {
+    let argv = (output.argv || [])
+    output.flags = output.flags || {}
     output.argv = []
 
     let parseFlag = arg => {
@@ -51,7 +53,7 @@ export default class Parse <Flags: InputFlags> {
         if (long || arg.length < 3) input = argv.shift()
         else input = arg.slice(arg[2] === '=' ? 3 : 2)
         if (!input) throw new Error(`Flag --${name} expects a value`)
-        output.flags[name] = flag.parse(input, this.input.cmd)
+        output.flags[name] = input
       } else {
         if (!cur) output.flags[name] = true
         // push the rest of the short characters back on the stack
@@ -72,7 +74,8 @@ export default class Parse <Flags: InputFlags> {
     }
 
     let parsingFlags = true
-    let argIndex = 0
+    let maxArgs = this.input.args.length
+    let minArgs = this.input.args.filter(a => a.required).length
     while (argv.length) {
       let arg = argv.shift()
       if (parsingFlags && arg.startsWith('-')) {
@@ -83,19 +86,17 @@ export default class Parse <Flags: InputFlags> {
       }
       // not a flag, parse as arg
       output.argv.push(arg)
-      let expected = this.input.args[argIndex++]
-      if (expected) output.args[expected.name] = arg
-      else if (!this.input.variableArgs) throw new Error(`Unexpected argument ${arg}`)
     }
 
-    const missingArg = this.input.args.find(a => a.required && !output.args[a.name])
-    if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
+    if (!this.input.variableArgs && output.argv.length > maxArgs) throw new Error(`Unexpected argument ${output.argv[maxArgs]}`)
+    if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument missingArg.name`))
 
     for (let name of Object.keys(this.input.flags)) {
       if (!output.flags[name] && this.input.flags[name].parse) {
-        output.flags[name] = await this.input.flags[name].parse(null, this.input.cmd)
+        output.flags[name] = await this.input.flags[name].parse(null, this.input.cmd, name)
       }
     }
+
     return output
   }
 }
