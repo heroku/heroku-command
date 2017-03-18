@@ -1,60 +1,43 @@
 // @flow
 
+import type Command from './command'
+
 type AlphabetUppercase = | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'X' | 'Y' | 'Z'
 type AlphabetLowercase = | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'x' | 'y' | 'z'
 
-type FlagOptions = {
+export type IFlag <T> = {
   char?: AlphabetLowercase | AlphabetUppercase,
   description?: string,
-  hidden?: boolean
-}
-
-export class Flag {
-  static char: ?(AlphabetLowercase | AlphabetUppercase)
-  static description: ?string
-  static hidden = false
-
-  static with (options: $Shape<FlagOptions>) {
-    return class Flag extends this {
-      static char = options.char
-      static description = options.description
-      static hidden = !!options.hidden
-    }
-  }
-
-  //value = true
-}
-
-type ValueFlagOnlyOptions = {
+  hidden?: boolean,
+  default?: () => (Promise<?T> | ?T),
+  required?: boolean,
   optional?: boolean,
-  required?: boolean
+  parse?: (?string, ?Command<*>) => (Promise<?T> | ?T)
 }
 
-type ValueFlagOptions = ValueFlagOnlyOptions & FlagOptions
+export function Flag <T> (options: $Shape<IFlag<T>> = {}): IFlag<T> {
+  const defaultOptions: $Shape<IFlag<T>> = { hidden: false }
+  return Object.assign(defaultOptions, options)
+}
 
-export class ValueFlag extends Flag {
-  static default: ?() => Promise<?string>
-  static required = false
+export function BooleanFlag (options: $Shape<IFlag<boolean>> = {}): IFlag<boolean> {
+  return Flag(options)
+}
 
-  static with (options: $Shape<ValueFlagOptions>) {
-    return class ValueFlag extends this {
-      static char = options.char
-      static description = options.description
-      static hidden = !!options.hidden
-      static required = options.optional === false || !!options.required
+export function StringFlag (options: $Shape<IFlag<string>> = {}): IFlag<string> {
+  const defaultOptions: $Shape<IFlag<string>> = {
+    parse: (input) => {
+      let value = input
+      if (!value && options.default) value = options.default
+      if (!value && options.required) throw new RequiredFlagError('name goes here')
+      return input
     }
   }
+  return Flag(Object.assign(defaultOptions, options))
+}
 
-  input: ?string
-  value: ?string
-
-  constructor (input: ?string) {
-    super()
-    this.input = input
-  }
-
-  async parse () {
-    this.value = this.input
-    if (!this.value && this.constructor.default) this.value = await this.constructor.default()
+export class RequiredFlagError extends Error {
+  constructor (name: string) {
+    super(`Missing required flag --${name}`)
   }
 }
