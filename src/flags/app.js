@@ -1,6 +1,6 @@
 // @flow
 
-import {vars} from './heroku'
+import {vars} from '../heroku'
 import {Flag, type IFlag} from '../flag'
 import Git from '../git'
 
