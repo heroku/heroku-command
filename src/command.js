@@ -1,20 +1,13 @@
 // @flow
 
 import Output from './output'
-import Parser, {type ArgsOutput} from './parser'
+import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser'
 import pjson from '../package.json'
 import Config, {type ConfigOptions} from './config'
-import type {Flag} from './flag'
 import type {Arg} from './arg'
 import HTTP from './http'
 
-type RunOptions <TFlag> = {
-  flags: TFlag,
-  args: {+[name: string]: string},
-  argv: string[]
-}
-
-export default class Command <Options> extends Output {
+export default class Command <Flags: InputFlags> extends Output {
   static topic: string
   static command: ?string
   static description: ?string
@@ -23,8 +16,8 @@ export default class Command <Options> extends Output {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-  static flags: InputFlags
-  static args: Arg[] = []
+  static flags: Flags
+  static args: Arg[]
   static _version: pjson.version
 
   // static _flags: Flags = [
@@ -64,6 +57,23 @@ export default class Command <Options> extends Output {
 
   http = new HTTP(this)
 
+  flags: OutputFlags<Flags>
+  args: OutputArgs
+  argv: string[]
+
+  async parse (...argv: string[]) {
+    const parser = new Parser({
+      flags: this.constructor.flags,
+      args: this.constructor.args || [],
+      variableArgs: this.constructor.variableArgs,
+      cmd: this
+    })
+    const parse = await parser.parse(...argv)
+    this.flags = parse.flags
+    this.args = parse.args
+    this.argv = parse.argv
+  }
+
   // prevent setting things that need to be static
   topic: null
   command: null
@@ -73,17 +83,8 @@ export default class Command <Options> extends Output {
   help: null
   aliases: null
 
-  async parse (...argv: string[]): Promise<ArgsOutput<OutputFlags>> {
-    const parser = new Parser({
-      flags: this.constructor.flags,
-      args: this.constructor.args,
-      variableArgs: this.constructor.variableArgs
-    })
-    return await parser.parse(...argv)
-  }
-
   /**
    * actual command run code goes here
    */
-  async run (args: ArgsOutput<OutputFlags>, ...rest: void[]): Promise<void> { }
+  async run (...rest: void[]): Promise<void> { }
 }

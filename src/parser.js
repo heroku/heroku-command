@@ -1,52 +1,39 @@
 // @flow
 
 import {type Arg} from './arg'
-import {ValueFlag, type Flag} from './flag'
+import {type IFlag} from './flag'
+import type Command from './command'
 
-type Options <Flags> = {
+export type InputFlags = {[name: string]: IFlag<*>}
+export type Input <Flags: InputFlags> = {
   flags: Flags,
   args: Arg[],
   variableArgs: boolean,
+  cmd?: Command<Flags>
 }
 
-export type ArgsOutput <Flags> = {
-  flags: {},
-  args: {[name: string]: string},
+export type OutputFlags <Flags: InputFlags> = {[name: $Enum<Flags>]: *}
+export type OutputArgs = {[name: string]: string}
+
+export type Output <Flags> = {
+  flags: OutputFlags<Flags>,
+  args: OutputArgs,
   argv: string[]
 }
 
-const isClass = (a, b) => a === b || a.prototype instanceof b
-
-export default class Parse <FlagsInput: {[name: string]: *}, FlagsOutput: {[name: string]: *}> {
-  options: Options<FlagsInput>
-  constructor (options: $Shape<Options<FlagsInput>>) {
-    this.options = {
-      flags: options.flags || {},
-      args: options.args || [],
-      variableArgs: !!options.variableArgs
-    }
+export default class Parse <Flags: InputFlags> {
+  input: Input<Flags>
+  constructor (input: Input<Flags>) {
+    this.input = input
   }
 
-  async parse (...argv: string[]): Promise<ArgsOutput<FlagsOutput>> {
-    let options = this.options
-    options.args = options.args.slice(0)
-    let output: ArgsOutput<FlagsOutput> = {
+  async parse (...argv: string[]): Promise<Output<Flags>> {
+    let input = this.input
+    let output: Output<Flags> = ({
       flags: {},
       args: {},
       argv: []
-    }
-
-    async function parseFlags () {
-      for (const [name, Flag] of entries(options.flags)) {
-        let flag = output.flags[name]
-        if (!flag) flag = output.flags[name] = new Flag()
-        if (!(flag instanceof ValueFlag)) return
-        await flag.parse()
-        if (!output.flags[name] && flag.constructor.required) {
-          throw new Error(`Missing required flag --${name}`)
-        }
-      }
-    }
+    })
 
     let parseFlag = arg => {
       let long = arg.startsWith('--')
@@ -59,18 +46,18 @@ export default class Parse <FlagsInput: {[name: string]: *}, FlagsOutput: {[name
         }
         return false
       }
-      let Flag = options.flags[name]
+      let flag = input.flags[name]
       let cur = output.flags[name]
-      if (isClass(Flag, ValueFlag)) {
+      if (flag.parse) {
         // TODO: handle multiple flags
         if (cur) throw new Error(`Flag --${name} already provided`)
-        let val
-        if (long || arg.length < 3) val = argv.shift()
-        else val = arg.slice(arg[2] === '=' ? 3 : 2)
-        if (!val) throw new Error(`Flag --${name} expects a value`)
-        output.flags[name] = new Flag(val)
+        let input
+        if (long || arg.length < 3) input = argv.shift()
+        else input = arg.slice(arg[2] === '=' ? 3 : 2)
+        if (!input) throw new Error(`Flag --${name} expects a value`)
+        output.flags[name] = flag.parse(input, this.input.cmd)
       } else {
-        if (!cur) output.flags[name] = new Flag()
+        if (!cur) output.flags[name] = true
         // push the rest of the short characters back on the stack
         if (!long && arg.length > 2) argv.unshift(`-${arg.slice(2)}`)
       }
@@ -79,40 +66,40 @@ export default class Parse <FlagsInput: {[name: string]: *}, FlagsOutput: {[name
 
     let findLongFlag = arg => {
       let name = arg.slice(2)
-      if (options.flags[name]) return name
+      if (input.flags[name]) return name
     }
 
     let findShortFlag = arg => {
-      for (let k of Object.keys(options.flags)) {
-        if (options.flags[k].char === arg[1]) return k
+      for (let k of Object.keys(input.flags)) {
+        if (input.flags[k].char === arg[1]) return k
       }
     }
 
     let parsingFlags = true
+    let argIndex = 0
     while (argv.length) {
       let arg = argv.shift()
       if (parsingFlags && arg.startsWith('-')) {
+        // attempt to parse as flag
         if (arg === '--') { parsingFlags = false; continue }
         if (parseFlag(arg)) continue
+        // not actually a flag if it reaches here so parse as an arg
       }
+      // not a flag, parse as arg
       output.argv.push(arg)
-      let expected = options.args.shift()
+      let expected = input.args[argIndex++]
       if (expected) output.args[expected.name] = arg
-      else if (!options.variableArgs) throw new Error(`Unexpected argument ${arg}`)
+      else if (!input.variableArgs) throw new Error(`Unexpected argument ${arg}`)
     }
 
-    const missingArg = options.args.find(a => a.required && !output.args[a.name])
+    const missingArg = input.args.find(a => a.required && !output.args[a.name])
     if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
 
-    await parseFlags()
+    for (let name of Object.keys(input.flags)) {
+      if (!output.flags[name] && input.flags[name].parse) {
+        output.flags[name] = await input.flags[name].parse()
+      }
+    }
     return output
   }
-}
-
-function entries <T> (obj: {[k: string]: T}): [string, T][] {
-  let entries = []
-  for (let k of Object.keys(obj)) {
-    entries.push([k, obj[k]])
-  }
-  return entries
 }
