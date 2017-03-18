@@ -1,7 +1,7 @@
 // @flow
 
 import Output from './output'
-import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser'
+import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
 import pjson from '../package.json'
 import Config, {type ConfigOptions} from './config'
 import type {Arg} from './arg'
@@ -64,7 +64,7 @@ export default class Command <Flags: InputFlags> extends Output {
 
   async parse () {
     const parser = new Parser({
-      flags: this.constructor.flags,
+      flags: this.constructor.flags || {},
       args: this.constructor.args || [],
       variableArgs: this.constructor.variableArgs,
       cmd: this

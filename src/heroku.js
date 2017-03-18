@@ -1,8 +1,8 @@
 // @flow
 
-import http from '../http'
+import http from './http'
 import url from 'url'
-import type Output from '../output'
+import type Output from './output'
 
 type Options = {
   required?: boolean

@@ -29,6 +29,7 @@ export default class Parse <Flags: InputFlags> {
 
   async parse (output: Output<Flags>): Promise<Output<Flags>> {
     let argv = output.argv.slice(0)
+    output.argv = []
 
     let parseFlag = arg => {
       let long = arg.startsWith('--')
