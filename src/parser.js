@@ -92,8 +92,8 @@ export default class Parse <Flags: InputFlags> {
     if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument missingArg.name`))
 
     for (let name of Object.keys(this.input.flags)) {
-      if (!output.flags[name] && this.input.flags[name].parse) {
-        output.flags[name] = await this.input.flags[name].parse(null, this.input.cmd, name)
+      if (this.input.flags[name].parse) {
+        output.flags[name] = await this.input.flags[name].parse(output.flags[name], this.input.cmd, name)
       }
     }
 
