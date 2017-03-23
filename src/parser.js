@@ -3,6 +3,7 @@
 import {type Arg} from './arg'
 import {type Flag} from './flags'
 import type Command from './command'
+import HelpError from './help-error'
 
 export type InputFlags = {[name: string]: Flag<*>}
 export type Input <Flags: InputFlags> = {
@@ -37,6 +38,7 @@ export default class Parse <Flags: InputFlags> {
       let long = arg.startsWith('--')
       let name = long ? findLongFlag(arg) : findShortFlag(arg)
       if (!name) {
+        if (arg === '--help' || arg === '-h') throw new HelpError()
         const i = arg.indexOf('=')
         if (i !== -1) {
           argv.unshift(arg.slice(i + 1))

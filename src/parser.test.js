@@ -2,6 +2,7 @@
 
 import Parser from './parser'
 import {BooleanFlag, StringFlag} from './flags'
+import HelpError from './help-error'
 
 test('parses args and flags', async () => {
   const p = new Parser({
@@ -147,5 +148,23 @@ describe('variableArgs', () => {
     })
     const {argv} = await p.parse({argv: ['foo', 'bar', '--', '--myflag']})
     expect(argv).toEqual(['foo', 'bar', '--myflag'])
+  })
+})
+
+describe('help flags', () => {
+  test('raise a HelpError if --help present', async () => {
+    try {
+      await new Parser({}).parse({argv: ['--help']})
+    } catch (err) {
+      expect(err).toBeInstanceOf(HelpError)
+    }
+  })
+
+  test('raise a HelpError if -h present', async () => {
+    try {
+      await new Parser({}).parse({argv: ['-h']})
+    } catch (err) {
+      expect(err).toBeInstanceOf(HelpError)
+    }
   })
 })
