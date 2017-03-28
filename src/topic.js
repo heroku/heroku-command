@@ -21,7 +21,7 @@ export default class Topic {
 
   async help (args: string[], matchedCommand?: ?Class<Command<*>>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
-    if (this.constructor.topic === args[0]) this.listCommandsHelp()
+    if (args.slice(0, 2).includes(this.constructor.topic)) this.listCommandsHelp()
   }
 
   listCommandsHelp () {
