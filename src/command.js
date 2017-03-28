@@ -17,7 +17,7 @@ export default class Command <Flags: InputFlags> extends Output {
   static aliases: string[] = []
   static variableArgs = false
   static flags: Flags
-  static args: Arg[]
+  static args: Arg[] = []
   static _version: pjson.version
 
   // static _flags: Flags = [
