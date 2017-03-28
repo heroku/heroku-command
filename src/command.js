@@ -6,7 +6,6 @@ import pjson from '../package.json'
 import Config, {type ConfigOptions} from './config'
 import type {Arg} from './arg'
 import HTTP from './http'
-import HelpError from './help-error'
 
 export default class Command <Flags: InputFlags> extends Output {
   static topic: string
@@ -51,7 +50,7 @@ export default class Command <Flags: InputFlags> extends Output {
       await cmd.run(args)
       await cmd.done()
     } catch (err) {
-      if (config.mock || err instanceof HelpError) throw err
+      if (config.mock) throw err
       cmd.error(err)
     }
     return cmd
