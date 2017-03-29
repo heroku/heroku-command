@@ -9,6 +9,7 @@ import chalk from 'chalk'
 import path from 'path'
 import Config from '../config'
 import format from 'pretty-format'
+import LogChopper from 'log-chopper'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -227,6 +228,7 @@ export default class Output {
 
   logError (err: Error | string) {
     try {
+      LogChopper.chop(this.errlog)
       err = this.color.stripColor(util.inspect(err))
       this.fs.appendFileSync(this.errlog, `${err}\n`)
     } catch (err) { console.error(err) }
