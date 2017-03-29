@@ -13,7 +13,7 @@
     "http-call": "^1.0.15",
     "jest-validate": "^19.0.2",
     "lodash.maxby": "^4.6.0",
-    "log-chopper": "^1.0.0",
+    "log-chopper": "^0.1.0",
     "netrc-parser": "^2.0.1",
     "pretty-format": "^19.0.0",
     "string": "^3.3.3",

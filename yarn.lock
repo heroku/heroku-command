@@ -2310,6 +2310,12 @@ lodash@^4.0.0, lodash@^4.11.1, lodash@^4.11.2, lodash@^4.14.0, lodash@^4.2.0, lo
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+log-chopper@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/log-chopper/-/log-chopper-0.1.0.tgz#2ddedbe4a2740cda49cba405ce038f168950489f"
+  dependencies:
+    fs-extra "2.1.2"
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
