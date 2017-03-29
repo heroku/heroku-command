@@ -29,7 +29,7 @@ test('makes an HTTP request', async () => {
 })
 
 describe('.post', async () => {
-  test.only('it defaults to application/json', async () => {
+  test('it defaults to application/json', async () => {
     api = nock('https://api.heroku.com', {
       reqheaders: {
         'user-agent': 'cli-engine-command/2.2.6 node-v7.7.2',
@@ -42,19 +42,14 @@ describe('.post', async () => {
       'judo': 'throw',
       'jujitsu': 'strangle'
     }
-    const stringifiedBody = JSON.stringify(body)
-    api.post('/', {
-      'body': stringifiedBody
-    }).reply(200, {message: 'ok'})
+    api.post('/', body).reply(200, {message: 'ok'})
 
     const out = new Output(new Config({mock: true, debug: 2}))
     const http = new HTTP(out)
-    let response = await http.post('https://api.heroku.com', {'body': body})
-    expect(response).toEqual({message: 'ok'})
+    await http.post('https://api.heroku.com', {'body': body})
     expect(out.stderr.output).toContain('--> POST https://api.heroku.com')
     expect(out.stderr.output).toContain('<-- POST https://api.heroku.com')
     expect(out.stderr.output).toContain('{ message: \'ok\' }')
-
   })
 })
 test('stream', async () => {
