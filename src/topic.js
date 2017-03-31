@@ -21,7 +21,7 @@ export default class Topic {
 
   async help (args: string[], matchedCommand?: ?Class<Command<*>>) {
     if (matchedCommand) this.commandHelp(matchedCommand)
-    if (this.constructor.topic === args[0]) this.listCommandsHelp()
+    if (args.slice(0, 2).includes(this.constructor.topic)) this.listCommandsHelp()
   }
 
   listCommandsHelp () {
@@ -36,7 +36,7 @@ export default class Topic {
     let usage = `${this.out.config.bin} ${this.usage(command)}`
     this.out.log(`Usage: ${this.out.color.cmd(usage)}\n`)
     if (command.description) this.out.log(`${command.description.trim()}\n`)
-    let flags = Object.keys(command.flags).map(f => [f, command.flags[f]]).filter(f => !f[1].hidden)
+    let flags = Object.keys(command.flags || {}).map(f => [f, command.flags[f]]).filter(f => !f[1].hidden)
     if (flags.length) this.out.log(`${this.renderFlags(flags)}\n`)
     if (command.help) this.out.log(`${command.help.trim()}\n`)
   }
