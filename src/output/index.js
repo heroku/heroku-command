@@ -228,9 +228,9 @@ export default class Output {
 
   logError (err: Error | string) {
     try {
-      LogChopper.chop(this.errlog)
       err = this.color.stripColor(util.inspect(err))
       this.fs.appendFileSync(this.errlog, `${err}\n`)
+      LogChopper.chop(this.errlog)
     } catch (err) { console.error(err) }
   }
 
