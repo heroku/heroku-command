@@ -47,6 +47,10 @@ export default class HTTP {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.get(url, options)
   }
+  async post (url: string, options: $Shape<RequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    await this.http.post(url, options)
+  }
 
   stream (url: string, options: $Shape<RequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
