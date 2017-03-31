@@ -9,6 +9,7 @@ import pjson from '../package.json'
 let api
 beforeEach(() => {
   api = nock('https://api.heroku.com')
+  nock.disableNetConnect()
 })
 afterEach(() => {
   api.done()
@@ -16,8 +17,8 @@ afterEach(() => {
 
 test('makes an HTTP request', async () => {
   api.get('/')
-  .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
-  .reply(200, {message: 'ok'})
+    .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+    .reply(200, {message: 'ok'})
 
   const out = new Output(new Config({mock: true, debug: 2}))
   const http = new HTTP(out)
@@ -28,10 +29,28 @@ test('makes an HTTP request', async () => {
   expect(out.stderr.output).toContain('{ message: \'ok\' }')
 })
 
+describe('.post', async () => {
+  test('makes a post request with body', async () => {
+    api.post('/', {'karate': 'chop', 'judo': 'throw', 'jujitsu': 'strangle'})
+      .reply(200, {message: 'ok'})
+    const body = {
+      'karate': 'chop',
+      'judo': 'throw',
+      'jujitsu': 'strangle'
+    }
+
+    const out = new Output(new Config({mock: true, debug: 2}))
+    const http = new HTTP(out)
+    await http.post('https://api.heroku.com', {'body': body})
+    expect(out.stderr.output).toContain('--> POST https://api.heroku.com')
+    expect(out.stderr.output).toContain('<-- POST https://api.heroku.com')
+    expect(out.stderr.output).toContain('{ message: \'ok\' }')
+  })
+})
 test('stream', async () => {
   api.get('/')
-  .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
-  .reply(200, {message: 'ok'})
+    .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+    .reply(200, {message: 'ok'})
 
   const out = new Output(new Config({mock: true}))
   const http = new HTTP(out)
