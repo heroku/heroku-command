@@ -9,6 +9,7 @@ import pjson from '../package.json'
 let api
 beforeEach(() => {
   api = nock('https://api.heroku.com')
+  nock.disableNetConnect()
 })
 afterEach(() => {
   api.done()
@@ -29,20 +30,14 @@ test('makes an HTTP request', async () => {
 })
 
 describe('.post', async () => {
-  test('it defaults to application/json', async () => {
-    api = nock('https://api.heroku.com', {
-      reqheaders: {
-        'user-agent': 'cli-engine-command/2.2.6 node-v7.7.2',
-        'Content-Type': 'application/json',
-        'Content-Length': '53'
-      }
-    })
+  test('makes a post request with body', async () => {
+    api.post('/', {'karate': 'chop', 'judo': 'throw', 'jujitsu': 'strangle'})
+      .reply(200, {message: 'ok'})
     const body = {
       'karate': 'chop',
       'judo': 'throw',
       'jujitsu': 'strangle'
     }
-    api.post('/', body).reply(200, {message: 'ok'})
 
     const out = new Output(new Config({mock: true, debug: 2}))
     const http = new HTTP(out)
