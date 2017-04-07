@@ -19,21 +19,21 @@
     "supports-color": "^3.2.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-eslint": "7.1.1",
+    "babel-cli": "6.24.1",
+    "babel-eslint": "7.2.1",
     "babel-jest": "19.0.0",
-    "babel-plugin-transform-class-properties": "6.23.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-class-properties": "6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "flow-bin": "0.42.0",
+    "flow-bin": "0.43.1",
     "flow-copy-source": "1.1.0",
     "flow-typed": "2.0.0",
     "jest": "19.0.2",
     "jest-junit": "1.4.0",
-    "nock": "^9.0.9",
+    "nock": "9.0.11",
     "nodemon": "1.11.0",
     "rimraf": "2.6.1",
-    "standard": "9.0.2",
+    "standard": "10.0.1",
     "std-mocks": "1.0.1"
   },
   "engines": {
