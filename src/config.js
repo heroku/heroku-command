@@ -62,7 +62,8 @@ class Dirs {
     d = d || path.join(this.home, category === 'data' ? '.local/share' : '.' + category)
     if (this.windows) d = process.env.LOCALAPPDATA || d
     d = process.env.XDG_DATA_HOME || d
-    d = path.join(d, this._config.name)
+    let n = this._config.name === 'heroku-cli' ? 'heroku' : this._config.name
+    d = path.join(d, n)
     this._mkdirp(d)
     return d
   }
