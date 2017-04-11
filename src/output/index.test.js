@@ -3,7 +3,6 @@
 import Base, {CustomColors} from '.'
 import chalk from 'chalk'
 import stdmock from 'std-mocks'
-import Config from '../config'
 
 class Output extends Base {}
 
@@ -14,8 +13,7 @@ beforeEach(() => {
 
 test('outputs to stdout', () => {
   stdmock.use()
-  const config = new Config({mock: false})
-  const out = new Output(config)
+  const out = new Output({mock: false})
   out.stdout.write('it works')
   out.stdout.log('it works')
   stdmock.restore()
@@ -24,8 +22,7 @@ test('outputs to stdout', () => {
 
 test('outputs to stderr', () => {
   stdmock.use()
-  const config = new Config({mock: false})
-  const out = new Output(config)
+  const out = new Output({mock: false})
   out.stderr.write('it works')
   stdmock.restore()
   expect(stdmock.flush().stderr).toEqual(['it works'])
@@ -33,22 +30,21 @@ test('outputs to stderr', () => {
 
 describe('with color', () => {
   test('shows red text', () => {
-    const config = new Config({mock: true})
-    const cmd = new Output(config)
+    const cmd = new Output({mock: true})
     chalk.enabled = true
     CustomColors.supports = {has256: true}
     expect(cmd.color.red('red text')).toEqual('\u001b[31mred text\u001b[39m')
   })
 
   test('shows app', () => {
-    const cmd = new Output(new Config({mock: true}))
+    const cmd = new Output({mock: true})
     chalk.enabled = true
     CustomColors.supports = {has256: true}
     expect(cmd.color.app('myapp')).toEqual('\u001b[38;5;104m⬢ myapp\u001b[0m')
   })
 
   test('styledJSON', () => {
-    const out = new Output(new Config({mock: true}))
+    const out = new Output({mock: true})
     chalk.enabled = true
     CustomColors.supports = {has256: true}
     out.styledJSON({foo: 'bar'})
@@ -57,7 +53,7 @@ describe('with color', () => {
 })
 
 test('makes sure all custom options are accessible', () => {
-  const cmd = new Output(new Config({mock: true}))
+  const cmd = new Output({mock: true})
   chalk.enabled = true
   for (let k in CustomColors) {
     if (typeof cmd.color[k] === 'function') {
@@ -68,7 +64,7 @@ test('makes sure all custom options are accessible', () => {
 
 test('exit', () => {
   expect.assertions(1)
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   try {
     out.exit(1)
   } catch (err) {
@@ -77,14 +73,14 @@ test('exit', () => {
 })
 
 test('warn', () => {
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   out.warn('foo')
   expect(out.stderr.output).toContain('foo')
 })
 
 test('error', () => {
   expect.assertions(2)
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   try {
     out.error('foo\nbar')
   } catch (err) {
@@ -94,13 +90,13 @@ test('error', () => {
 })
 
 test('styledHeader', () => {
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   out.styledHeader('foobar')
   expect(out.stdout.output).toBe('=== foobar\n')
 })
 
 test('styledJSON', () => {
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   out.styledJSON({foo: 'bar'})
   expect(out.stdout.output).toBe(`{
   "foo": "bar"
@@ -109,7 +105,7 @@ test('styledJSON', () => {
 })
 
 test('styledObject', () => {
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   out.styledObject({foo: 'bar', info: {arr: ['a', 'b', 'c']}}, ['foo', 'info'])
   expect(out.stdout.output).toBe(`foo:  bar
 info: arr: [ 'a', 'b', 'c' ]
@@ -117,7 +113,7 @@ info: arr: [ 'a', 'b', 'c' ]
 })
 
 test('inspect', () => {
-  const out = new Output(new Config())
+  const out = new Output()
   stdmock.use()
   out.inspect({foo: 'bar', info: {arr: ['a', 'b', 'c']}}, ['foo', 'info'])
   stdmock.restore()

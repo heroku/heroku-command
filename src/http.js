@@ -3,6 +3,7 @@
 import util from 'util'
 import httpCall, {type RequestOptions} from 'http-call'
 import type Output from './output'
+import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 
 function mergeRequestOptions (...options: $Shape<RequestOptions>[]): RequestOptions {
   let output: RequestOptions = {method: 'GET', headers: {}}
@@ -23,15 +24,17 @@ function renderHeaders (headers: {[key: string]: string}) {
 
 export default class HTTP {
   out: Output
+  config: Config
   http: Class<httpCall>
   requestOptions: RequestOptions
 
-  constructor (output: Output) {
+  constructor (output: Output, config: ?ConfigOptions) {
     let self = this
     this.out = output
+    this.config = buildConfig(config || this.out.config)
     this.requestOptions = mergeRequestOptions({
       headers: {
-        'user-agent': `${this.out.config.name}/${this.out.config.version} node-${process.version}`
+        'user-agent': `${this.config.name}/${this.config.version} node-${process.version}`
       }
     })
     this.http = class extends httpCall {

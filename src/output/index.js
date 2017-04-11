@@ -7,7 +7,7 @@ import Action from './action'
 import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
-import Config from '../config'
+import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import format from 'pretty-format'
 
 class ExitError extends Error {
@@ -85,7 +85,7 @@ class StreamOutput {
   }
 
   write (msg: string) {
-    if (this.out.config.mock) this.output += msg
+    if (this.out.mock) this.output += msg
     else this.stream.write(msg)
   }
 
@@ -93,21 +93,23 @@ class StreamOutput {
     let msg = data ? util.format(data, ...args) : ''
     msg += '\n'
     this.out.action.pause(() => {
-      if (this.out.config.mock) this.output += msg
+      if (this.out.mock) this.output += msg
       else this.stream.write(msg)
     })
   }
 }
 
 export default class Output {
-  constructor (config: Config) {
-    this.config = config
+  constructor (options: {config?: ?ConfigOptions, mock?: boolean} = {}) {
+    this.mock = options.mock
+    this.config = buildConfig(options.config)
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = new Action(this)
-    if (config.mock) chalk.enabled = CustomColors.supports = false
+    if (this.mock) chalk.enabled = CustomColors.supports = false
   }
 
+  mock = false
   config: Config
   action: Action
   stdout: StreamOutput
@@ -189,9 +191,10 @@ export default class Output {
     if (this.config.debug) this.action.pause(() => console.log(obj))
   }
 
-  get errlog (): string { return path.join(this.config.dirs.cache, 'error.log') }
+  get errlog (): string { return path.join(this.config.cacheDir, 'error.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
+    if (this.mock && typeof err !== 'string') throw err
     try {
       if (typeof err === 'string') err = new Error(err)
       this.logError(err)
@@ -235,7 +238,7 @@ export default class Output {
   exit (code: number = 0) {
     this.showCursor()
     if (this.config.debug) console.error(`Exiting with code: ${code}`)
-    if (this.config.mock) throw new ExitError(code); else process.exit(code)
+    if (this.mock) throw new ExitError(code); else process.exit(code)
   }
 
   showCursor () {

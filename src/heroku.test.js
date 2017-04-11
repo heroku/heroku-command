@@ -11,7 +11,7 @@ jest.mock('netrc-parser', () => {
 })
 
 class Command extends Base {
-  heroku = new Heroku(this, {required: false})
+  heroku = new Heroku(this.out, {required: false})
 }
 
 describe('vars', () => {

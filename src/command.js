@@ -3,11 +3,18 @@
 import Output from './output'
 import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
 import pjson from '../package.json'
-import Config, {type ConfigOptions} from './config'
+import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import type {Arg} from './arg'
 import HTTP from './http'
 
-export default class Command <Flags: InputFlags> extends Output {
+type RunOptions = {
+  argv?: string[],
+  mock?: boolean,
+  output?: Output,
+  config?: ConfigOptions
+}
+
+export default class Command <Flags: InputFlags> {
   static topic: string
   static command: ?string
   static description: ?string
@@ -20,46 +27,47 @@ export default class Command <Flags: InputFlags> extends Output {
   static args: Arg[] = []
   static _version: pjson.version
 
-  // static _flags: Flags = [
-  //   {name: 'debug', hidden: true},
-  //   {name: 'no-color', hidden: true}
-  // ]
-
-  static get id () {
+  static get id (): string {
     return this.command ? `${this.topic}:${this.command}` : this.topic
   }
 
   /**
-   * instantiate and run the command setting {mock: true} in the config
+   * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
-  static async mock (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]): Promise<this> {
-    options.mock = true
-    return this.run(argv, options)
+  static async mock (...argv: string[]): Promise<this> {
+    return this.run({argv, mock: true})
   }
 
   /**
    * instantiate and run the command
    */
-  static async run (argv: string[] = [], options: ConfigOptions | Config = {}, ...rest: void[]): Promise<this> {
-    let config = new Config(options)
-    let cmd = new this(config)
-    cmd.argv = argv
+  static async run (options: RunOptions = {}): Promise<this> {
+    let config = buildConfig(options.config)
+    let output = options.output || new Output({mock: options.mock, config})
+    let cmd = new this({config, output})
+    cmd.argv = options.argv || []
     // if (this.flags.debug) this.config.debug = 1
     try {
       const args = await cmd.parse()
       await cmd.run(args)
-      await cmd.done()
+      await cmd.out.done()
     } catch (err) {
-      if (config.mock) throw err
-      cmd.error(err)
+      cmd.out.error(err)
     }
     return cmd
   }
 
-  http = new HTTP(this)
-
+  config: Config
+  http: HTTP
+  out: Output
   flags: OutputFlags<Flags> = {}
   argv: string[]
+
+  constructor (options: {config?: ConfigOptions, output?: Output} = {}) {
+    this.config = buildConfig(options.config)
+    this.out = options.output || new Output({config: this.config})
+    this.http = new HTTP(this.out)
+  }
 
   async parse () {
     const parser = new Parser({
