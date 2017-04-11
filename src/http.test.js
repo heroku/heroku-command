@@ -3,8 +3,6 @@
 import HTTP from './http'
 import Output from './output'
 import nock from 'nock'
-import pjson from '../package.json'
-
 let api
 beforeEach(() => {
   api = nock('https://api.heroku.com')
