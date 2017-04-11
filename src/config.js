@@ -17,6 +17,7 @@ type CLI = {
 
 export type PJSON = {
   name: string,
+  dirname: string,
   version: string,
   dependencies: {[name: string]: string},
   'cli-engine'?: CLI
@@ -62,8 +63,7 @@ class Dirs {
     d = d || path.join(this.home, category === 'data' ? '.local/share' : '.' + category)
     if (this.windows) d = process.env.LOCALAPPDATA || d
     d = process.env.XDG_DATA_HOME || d
-    let n = this._config.name === 'heroku-cli' ? 'heroku' : this._config.name
-    d = path.join(d, n)
+    d = path.join(d, this._config.dirname || this._config.name)
     this._mkdirp(d)
     return d
   }
@@ -99,6 +99,7 @@ export default class Config {
   _options: ConfigOptions | Config
 
   get name ():string { return this._pjson.name }
+  get dirname ():string { return this._pjson.dirname }
   get version ():string { return this._options.version || this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
   get updateDisabled (): ?string { return this._options.updateDisabled }
@@ -112,6 +113,7 @@ export default class Config {
   toJSON () {
     return {
       name: this.name,
+      dirname: this.dirname,
       version: this.version,
       channel: this.channel,
       mock: this.mock,
