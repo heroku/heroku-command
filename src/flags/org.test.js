@@ -13,12 +13,12 @@ describe('required', () => {
   }
 
   test('has an org', async () => {
-    const cmd = await OrgCommand.mock(['--org', 'myorg'])
+    const cmd = await OrgCommand.mock('--org', 'myorg')
     expect(cmd.org).toEqual('myorg')
   })
 
   test('-o', async () => {
-    const cmd = await OrgCommand.mock(['-o', 'myorg'])
+    const cmd = await OrgCommand.mock('-o', 'myorg')
     expect(cmd.org).toEqual('myorg')
   })
 
@@ -42,12 +42,12 @@ describe('optional', () => {
   }
 
   test('--org', async () => {
-    const cmd = await OrgCommand.mock(['--org', 'myorg'])
+    const cmd = await OrgCommand.mock('--org', 'myorg')
     expect(cmd.org).toEqual('myorg')
   })
 
   test('-o', async () => {
-    const cmd = await OrgCommand.mock(['-o', 'myorg'])
+    const cmd = await OrgCommand.mock('-o', 'myorg')
     expect(cmd.org).toEqual('myorg')
   })
 
