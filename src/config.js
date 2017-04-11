@@ -63,7 +63,7 @@ class Dirs {
     d = d || path.join(this.home, category === 'data' ? '.local/share' : '.' + category)
     if (this.windows) d = process.env.LOCALAPPDATA || d
     d = process.env.XDG_DATA_HOME || d
-    d = path.join(d, this._config.dirname || this._config.name)
+    d = path.join(d, this._config.dirname)
     this._mkdirp(d)
     return d
   }
@@ -99,7 +99,7 @@ export default class Config {
   _options: ConfigOptions | Config
 
   get name ():string { return this._pjson.name }
-  get dirname ():string { return this._cli.dirname }
+  get dirname ():string { return this._cli.dirname || this._pjson.name }
   get version ():string { return this._options.version || this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
   get updateDisabled (): ?string { return this._options.updateDisabled }
