@@ -3,7 +3,6 @@
 import Topic from './topic'
 import Command from './command'
 import Output from './output'
-import Config from './config'
 import {BooleanFlag} from './flags'
 
 class PluginsTopic extends Topic {
@@ -34,16 +33,16 @@ class PluginsInstall extends Command {
 const commands = [ PluginsIndex, PluginsInstall ]
 
 test('listCommandsHelp()', async () => {
-  let output = new Output(new Config({mock: true}))
+  let output = new Output({mock: true})
   const topic = new PluginsTopic(commands, output)
   await topic.help(['plugins'])
   expect(output.stdout.output).toContain('plugins:install PLUGIN [CHANNEL] # installs a plugin')
 })
 
 test('commandHelp()', async () => {
-  let output = new Output(new Config({mock: true}))
+  let output = new Output({mock: true})
   const topic = new PluginsTopic(commands, output)
   await topic.help(['plugins'], PluginsInstall)
-  expect(output.stdout.output).toContain('cli-engine-command plugins:install PLUGIN [CHANNEL]')
+  expect(output.stdout.output).toContain('cli-engine plugins:install PLUGIN [CHANNEL]')
   expect(output.stdout.output).toContain('-f, --force # jam it')
 })

@@ -21,7 +21,7 @@ describe('required', () => {
   }
 
   test('has an app', async () => {
-    const cmd = await Command.mock(['--app', 'myapp'])
+    const cmd = await Command.mock('--app', 'myapp')
     expect(cmd.flags.app).toEqual('myapp')
   })
 
@@ -30,7 +30,7 @@ describe('required', () => {
       {name: 'staging', url: 'https://git.heroku.com/myapp-staging.git'},
       {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
     ])
-    const cmd = await Command.mock(['-r', 'staging'])
+    const cmd = await Command.mock('-r', 'staging')
     expect(cmd.flags.app).toEqual('myapp-staging')
   })
 
@@ -41,8 +41,8 @@ describe('required', () => {
       {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
     ])
     try {
-      let cmd = await Command.mock(['-r', 'foo'])
-      cmd.log(cmd.flags.app)
+      let cmd = await Command.mock('-r', 'foo')
+      cmd.out.log(cmd.flags.app)
     } catch (err) {
       expect(err.message).toEqual('remote foo not found in git remotes')
     }
@@ -51,7 +51,7 @@ describe('required', () => {
   test('errors with no app', async () => {
     expect.assertions(1)
     try {
-      let cmd = await Command.mock([])
+      let cmd = await Command.mock()
       console.log(cmd.flags.app) // should not get here
     } catch (err) {
       expect(err.message).toContain('No app specified')
@@ -65,7 +65,7 @@ describe('required', () => {
       {name: 'production', url: 'https://git.heroku.com/myapp-production.git'}
     ])
     try {
-      let cmd = await Command.mock([])
+      let cmd = await Command.mock()
       console.log(cmd.flags.app) // should not get here
     } catch (err) {
       expect(err.message).toContain('Multiple apps in git remotes')
@@ -89,7 +89,7 @@ describe('optional', () => {
     mockGitRemotes.mockImplementationOnce(() => {
       throw new Error('whoa!')
     })
-    const cmd = await Command.mock([])
+    const cmd = await Command.mock()
     expect(cmd.flags.app).toBeUndefined()
   })
 

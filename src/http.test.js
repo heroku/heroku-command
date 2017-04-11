@@ -3,7 +3,6 @@
 import HTTP from './http'
 import Output from './output'
 import nock from 'nock'
-import Config from './config'
 import pjson from '../package.json'
 
 let api
@@ -17,10 +16,10 @@ afterEach(() => {
 
 test('makes an HTTP request', async () => {
   api.get('/')
-    .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+    .matchHeader('user-agent', `cli-engine/0.0.0 node-${process.version}`)
     .reply(200, {message: 'ok'})
 
-  const out = new Output(new Config({mock: true, debug: 2}))
+  const out = new Output({mock: true, config: {debug: 2}})
   const http = new HTTP(out)
   let response = await http.get('https://api.heroku.com')
   expect(response).toEqual({message: 'ok'})
@@ -39,7 +38,7 @@ describe('.post', async () => {
       'jujitsu': 'strangle'
     }
 
-    const out = new Output(new Config({mock: true, debug: 2}))
+    const out = new Output({mock: true, config: {debug: 2}})
     const http = new HTTP(out)
     await http.post('https://api.heroku.com', {'body': body})
     expect(out.stderr.output).toContain('--> POST https://api.heroku.com')
@@ -49,10 +48,10 @@ describe('.post', async () => {
 })
 test('stream', async () => {
   api.get('/')
-    .matchHeader('user-agent', `cli-engine-command/${pjson.version} node-${process.version}`)
+    .matchHeader('user-agent', `cli-engine/0.0.0 node-${process.version}`)
     .reply(200, {message: 'ok'})
 
-  const out = new Output(new Config({mock: true}))
+  const out = new Output({mock: true})
   const http = new HTTP(out)
   const response = await http.stream('https://api.heroku.com')
   const body = JSON.parse(await concat(response))
