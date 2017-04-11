@@ -610,9 +610,9 @@ cli-cursor@^1.0.1:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.0.1.tgz#82084af71876044c2f0f5bf9bbd19d040a96c94e"
+cli-engine-config@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.0.2.tgz#3ac38fb858c59ecf9ec43612def80c9801c928b3"
 
 cli-width@^2.0.0:
   version "2.1.0"
