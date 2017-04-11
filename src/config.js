@@ -9,6 +9,7 @@ type S3 = {
 }
 
 type CLI = {
+  dirname?: string,
   defaultCommand?: string,
   bin?: string,
   s3?: S3,
@@ -17,7 +18,6 @@ type CLI = {
 
 export type PJSON = {
   name: string,
-  dirname: string,
   version: string,
   dependencies: {[name: string]: string},
   'cli-engine'?: CLI
@@ -99,7 +99,7 @@ export default class Config {
   _options: ConfigOptions | Config
 
   get name ():string { return this._pjson.name }
-  get dirname ():string { return this._pjson.dirname }
+  get dirname ():string { return this._cli.dirname }
   get version ():string { return this._options.version || this._pjson.version }
   get channel ():string { return this._options.channel || 'stable' }
   get updateDisabled (): ?string { return this._options.updateDisabled }
