@@ -1,42 +1,32 @@
+---
 version: 2
-executorType: docker
-containerInfo:
-  - image: dickeyxxx/cli-engine:latest
-stages:
+jobs:
   build:
-    workDir: ~/cli-engine-command
-    environment:
-      - CIRCLE_PROJECT_USERNAME: heroku
-      - CIRCLE_PROJECT_REPONAME: cli-engine-command
+    docker:
+      - image: dickeyxxx/cli-engine-docker:v1.0.0
+    working_directory: ~/cli-engine-command
     steps:
-      - type: checkout
-      - type: cache-restore
-        key: cli-engine-command-{{checksum "package.json"}}
-      - type: shell
-        command: |
-          set -exu
-
+      - checkout
+      - restore_cache:
+          keys:
+            - cli-engine-command-{{ .Branch }}-{{checksum "package.json"}}
+            - cli-engine-command-{{ .Branch }}
+            - cli-engine-command-master
+      - run: |
           # setup yarn
           yarn --prefer-offline --pure-lockfile
 
           # test project
-          JEST_JUNIT_OUTPUT=/tmp/test-results/jest.xml ./node_modules/.bin/jest --coverage --testResultsProcessor jest-junit
+          ./node_modules/.bin/jest --coverage
           ./node_modules/.bin/flow check
           ./node_modules/.bin/standard
           bash <(curl -s https://codecov.io/bash)
-
-          # show files in npm pack
-          npm pack
-          tar xvzf cli-engine*.tgz
-          rm -rf package
-          mkdir -p /tmp/artifacts
-          mv cli-engine*.tgz /tmp/artifacts/cli-engine.tgz
-      - type: test-results-store
-        path: /tmp/test-results
-      - type: artifacts-store
-        path: /tmp/artifacts
-        destination: build
-      - type: cache-save
-        key: cli-engine-command-{{checksum "package.json"}}
-        paths:
-          - /usr/local/share/.cache/yarn
+      - save_cache:
+          key: cli-engine-command-{{ .Branch }}-{{checksum "package.json"}}
+          paths:
+            - ~/cli-engine-command/node_modules
+            - /usr/local/share/.cache/yarn
+      - save_cache:
+          key: cli-engine-command-{{ .Branch }}
+          paths:
+            - /usr/local/share/.cache/yarn
