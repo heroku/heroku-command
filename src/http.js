@@ -1,12 +1,12 @@
 // @flow
 
 import util from 'util'
-import httpCall, {type RequestOptions} from 'http-call'
+import httpCall, {type HTTPRequestOptions} from 'http-call'
 import type Output from './output'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 
-function mergeRequestOptions (...options: $Shape<RequestOptions>[]): RequestOptions {
-  let output: RequestOptions = {method: 'GET', headers: {}}
+function mergeRequestOptions (...options: $Shape<HTTPRequestOptions>[]): HTTPRequestOptions {
+  let output: HTTPRequestOptions = {method: 'GET', headers: {}}
   for (let o of options) {
     let headers = Object.assign(output.headers, o.headers)
     Object.assign(output, o)
@@ -26,7 +26,7 @@ export default class HTTP {
   out: Output
   config: Config
   http: Class<httpCall>
-  requestOptions: RequestOptions
+  requestOptions: HTTPRequestOptions
 
   constructor (output: Output, config: ?ConfigOptions) {
     let self = this
@@ -46,16 +46,16 @@ export default class HTTP {
     }
   }
 
-  get (url: string, options: $Shape<RequestOptions> = {}) {
+  get (url: string, options: $Shape<HTTPRequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.get(url, options)
   }
-  async post (url: string, options: $Shape<RequestOptions> = {}) {
+  post (url: string, options: $Shape<HTTPRequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
-    await this.http.post(url, options)
+    return this.http.post(url, options)
   }
 
-  stream (url: string, options: $Shape<RequestOptions> = {}) {
+  stream (url: string, options: $Shape<HTTPRequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.stream(url, options)
   }
