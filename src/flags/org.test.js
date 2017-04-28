@@ -6,7 +6,7 @@ import OrgFlag from './org'
 describe('required', () => {
   class OrgCommand extends Command {
     static flags = {org: OrgFlag({required: true})}
-    org: ?string
+    org: string
     async run () {
       this.org = this.flags.org
     }
