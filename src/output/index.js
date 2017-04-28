@@ -194,7 +194,7 @@ export default class Output {
   get errlog (): string { return path.join(this.config.cacheDir, 'error.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
-    if (this.mock && typeof err !== 'string') throw err
+    if (this.mock && typeof err !== 'string' && exitCode !== false) throw err
     try {
       if (typeof err === 'string') err = new Error(err)
       this.logError(err)
