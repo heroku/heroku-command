@@ -11,7 +11,7 @@ class MyCommand extends Command {
   }
 }
 
-test('has an org', async () => {
+test('has a string', async () => {
   const cmd = await MyCommand.mock('--foo', 'bar')
   expect(cmd.foo).toEqual('bar')
 })
