@@ -17,5 +17,6 @@ export type Flag <T> = {
 
 export {default as BooleanFlag} from './boolean'
 export {default as StringFlag} from './string'
+export {default as NumberFlag} from './number'
 export {AppFlag, RemoteFlag} from './app'
 export {default as OrgFlag} from './org'
