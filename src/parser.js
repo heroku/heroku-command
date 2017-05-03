@@ -75,7 +75,7 @@ export default class Parse <Flags: InputFlags> {
 
     let parsingFlags = true
     let maxArgs = this.input.args.length
-    let minArgs = this.input.args.filter(a => a.required).length
+    let minArgs = this.input.args.filter(a => a.required !== false && !a.optional).length
     while (argv.length) {
       let arg = argv.shift()
       if (parsingFlags && arg.startsWith('-')) {
@@ -89,7 +89,7 @@ export default class Parse <Flags: InputFlags> {
     }
 
     if (!this.input.variableArgs && output.argv.length > maxArgs) throw new Error(`Unexpected argument ${output.argv[maxArgs]}`)
-    if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument missingArg.name`))
+    if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument ${this.input.args[output.argv.length].name}`))
 
     for (let name of Object.keys(this.input.flags)) {
       if (this.input.flags[name].parse) {

@@ -105,11 +105,12 @@ describe('flags', () => {
 
 describe('args', () => {
   test('requires args by default', async () => {
+    expect.assertions(1)
     const p = new Parser({args: [{name: 'myarg'}, {name: 'myarg2'}]})
     try {
       await p.parse()
     } catch (err) {
-      expect(err.message).toEqual('Missing required argument myarg')
+      expect(err.message).toEqual('Error: Missing required argument myarg')
     }
   })
 
