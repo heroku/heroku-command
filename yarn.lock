@@ -608,9 +608,11 @@ cli-cursor@^1.0.1:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.1.3.tgz#dba7b10a7241e7ca7e86d3a57ba1d9824197771c"
+cli-engine-config@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.1.4.tgz#4f634cc02cb62d1f6d177736fff7fb01b866a2b1"
+  dependencies:
+    uuid "3.0.1"
 
 cli-width@^2.0.0:
   version "2.1.0"
@@ -3609,13 +3611,13 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
+uuid@3.0.1, uuid@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
+
 uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
-
-uuid@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 v8flags@^2.0.10:
   version "2.0.11"
