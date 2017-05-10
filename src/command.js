@@ -6,6 +6,7 @@ import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import type {Arg} from './arg'
 import HTTP from './http'
+import Help from './help'
 
 type RunOptions = {
   argv?: string[],
@@ -94,4 +95,14 @@ export default class Command <Flags: InputFlags> {
    * actual command run code goes here
    */
   async run (...rest: void[]): Promise<void> { }
+
+  static buildHelp (config: Config): string {
+    let help = new Help(config)
+    return help.command(this)
+  }
+
+  static buildHelpLine (config: Config): [string, ?string] {
+    let help = new Help(config)
+    return help.commandLine(this)
+  }
 }
