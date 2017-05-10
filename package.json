@@ -12,11 +12,10 @@
     "fs-extra": "3.0.0",
     "got": "^6.7.1",
     "http-call": "1.1.2",
-    "jest-validate": "^19.0.2",
-    "lodash.maxby": "^4.6.0",
-    "netrc-parser": "^2.0.1",
-    "pretty-format": "^19.0.0",
-    "string": "^3.3.3",
+    "lodash.maxby": "4.6.0",
+    "netrc-parser": "2.0.2",
+    "pretty-format": "20.0.0",
+    "string": "3.3.3",
     "supports-color": "^3.2.3"
   },
   "devDependencies": {
