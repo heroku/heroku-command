@@ -15,8 +15,8 @@ export type Flag <T> = {
   parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T)
 }
 
-export {default as BooleanFlag} from './boolean'
-export {default as StringFlag} from './string'
-export {default as NumberFlag} from './number'
-export {AppFlag, RemoteFlag} from './app'
-export {default as OrgFlag} from './org'
+export {default as boolean} from './boolean'
+export {default as string} from './string'
+export {default as number} from './number'
+export {AppFlag as app, RemoteFlag as remote} from './app'
+export {default as org} from './org'
