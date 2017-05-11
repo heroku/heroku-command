@@ -1,7 +1,7 @@
 // @flow
 
 import Base from './command'
-import type {ICommand} from 'cli-engine-config'
+import {type ICommand, buildConfig} from 'cli-engine-config'
 import {BooleanFlag} from './flags'
 import Output from './output'
 
@@ -45,4 +45,21 @@ test('passes error to output', async () => {
 
   await Command.run({output: new ErrOutput()})
   expect(mockError).toBeCalled()
+})
+
+test('has help', async () => {
+  class Command extends Base {
+    static topic = 'config'
+    static command = 'get'
+    static help = `this is
+
+some multiline help
+`
+  }
+  let config = buildConfig()
+  expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
+this is
+
+some multiline help\n`)
+  expect(Command.buildHelpLine(config)).toEqual(['config:get', undefined])
 })
