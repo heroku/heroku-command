@@ -2,7 +2,7 @@
 
 import Base from './command'
 import {type ICommand, buildConfig} from 'cli-engine-config'
-import {flags as Flags} from './index'
+import {flags as Flags} from './flags'
 import Output from './output'
 
 class Command extends Base {

@@ -1,7 +1,7 @@
 // // @flow
 
 import Parser from './parser'
-import {flags as Flags} from './index'
+import {flags as Flags} from './flags'
 
 test('parses args and flags', async () => {
   const p = new Parser({
