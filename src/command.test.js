@@ -58,6 +58,7 @@ some multiline help
   }
   let config = buildConfig()
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
+
 this is
 
 some multiline help\n`)

@@ -72,9 +72,9 @@ export default class Help {
     let usage = `Usage: ${this.config.bin} ${buildUsage(cmd)}\n`
     let flags = Object.keys(cmd.flags || {}).map(f => [f, cmd.flags[f]]).filter(f => !f[1].hidden)
     return [usage,
-      cmd.description ? `${cmd.description.trim()}\n` : '',
-      flags.length ? `${renderFlags(flags)}\n` : '',
-      cmd.help ? `${cmd.help.trim()}\n` : ''
+      cmd.description ? `\n${cmd.description.trim()}\n` : '',
+      flags.length ? `\n${renderFlags(flags)}\n` : '',
+      cmd.help ? `\n${cmd.help.trim()}\n` : ''
     ].join('')
   }
 
