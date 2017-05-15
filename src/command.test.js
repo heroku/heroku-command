@@ -2,13 +2,13 @@
 
 import Base from './command'
 import {type ICommand, buildConfig} from 'cli-engine-config'
-import {BooleanFlag} from './flags'
+import {flags as Flags} from './flags'
 import Output from './output'
 
 class Command extends Base {
   static topic = 'foo'
   static command = 'bar'
-  static flags = {myflag: BooleanFlag()}
+  static flags = {myflag: Flags.boolean()}
   static args = [{name: 'myarg', required: false}]
 }
 
