@@ -112,20 +112,21 @@ info: arr: [ 'a', 'b', 'c' ]
 `)
 })
 
-test('inspect', () => {
-  const out = new Output()
-  stdmock.use()
-  out.inspect({foo: 'bar', info: {arr: ['a', 'b', 'c']}})
-  stdmock.restore()
-  expect(stdmock.flush().stderr[0]).toEqual(`Object {
-  "foo": "bar",
-  "info": Object {
-    "arr": Array [
-      "a",
-      "b",
-      "c",
-    ],
-  },
-}
-`)
+describe('inspect', () => {
+  let dir
+
+  beforeEach(() => {
+    dir = console.dir
+    ;(console: any).dir = jest.fn()
+  })
+
+  afterEach(() => {
+    (console: any).dir = dir
+  })
+
+  test('inspects', () => {
+    const out = new Output()
+    out.inspect({foo: 'bar'})
+    expect(console.dir).toBeCalledWith({foo: 'bar'}, {colors: true})
+  })
 })
