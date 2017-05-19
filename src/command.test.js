@@ -31,6 +31,7 @@ test('parses args', async () => {
   const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
+  expect(cmd.args).toEqual({myarg: 'one'})
 })
 
 test('passes error to output', async () => {

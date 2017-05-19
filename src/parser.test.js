@@ -146,7 +146,8 @@ describe('variableArgs', () => {
       flags: {myflag: Flags.boolean()},
       args: [{name: 'argOne'}]
     })
-    const {argv} = await p.parse({argv: ['foo', 'bar', '--', '--myflag']})
+    const {argv, args} = await p.parse({argv: ['foo', 'bar', '--', '--myflag']})
     expect(argv).toEqual(['foo', 'bar', '--myflag'])
+    expect(args).toEqual({argOne: 'foo'})
   })
 })
