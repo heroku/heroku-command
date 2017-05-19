@@ -63,6 +63,7 @@ export default class Command <Flags: InputFlags> {
   out: Output
   flags: OutputFlags<Flags> = {}
   argv: string[]
+  args: {[name: string]: string} = {}
 
   constructor (options: {config?: ConfigOptions, output?: Output} = {}) {
     this.config = buildConfig(options.config)
@@ -77,9 +78,10 @@ export default class Command <Flags: InputFlags> {
       variableArgs: this.constructor.variableArgs,
       cmd: this
     })
-    const {argv, flags} = await parser.parse({flags: this.flags, argv: this.argv})
+    const {argv, flags, args} = await parser.parse({flags: this.flags, argv: this.argv})
     this.flags = flags
     this.argv = argv
+    this.args = args
   }
 
   // prevent setting things that need to be static
