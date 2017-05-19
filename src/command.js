@@ -49,7 +49,7 @@ export default class Command <Flags: InputFlags> {
     cmd.argv = options.argv || []
     // if (this.flags.debug) this.config.debug = 1
     try {
-      const args = await cmd.parse()
+      const args = await cmd.init()
       await cmd.run(args)
       await cmd.out.done()
     } catch (err) {
@@ -71,7 +71,7 @@ export default class Command <Flags: InputFlags> {
     this.http = new HTTP(this.out)
   }
 
-  async parse () {
+  async init () {
     const parser = new Parser({
       flags: this.constructor.flags || {},
       args: this.constructor.args || [],
