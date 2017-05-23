@@ -41,8 +41,14 @@ export default class Parse <Flags: InputFlags> {
       if (!name) {
         const i = arg.indexOf('=')
         if (i !== -1) {
-          argv.unshift(arg.slice(i + 1))
-          return parseFlag(arg.slice(0, i))
+          let sliced = arg.slice(i + 1)
+          argv.unshift(sliced)
+
+          let equalsParsed = parseFlag(arg.slice(0, i))
+          if (!equalsParsed) {
+            argv.shift()
+          }
+          return equalsParsed
         }
         return false
       }
