@@ -150,4 +150,12 @@ describe('variableArgs', () => {
     expect(argv).toEqual(['foo', 'bar', '--myflag'])
     expect(args).toEqual({argOne: 'foo'})
   })
+
+  test('does not repeat arguments', async () => {
+    const p = new Parser({
+      variableArgs: true
+    })
+    const {argv} = await p.parse({argv: ['foo', '--myflag=foo bar']})
+    expect(argv).toEqual(['foo', '--myflag=foo bar'])
+  })
 })
