@@ -1,6 +1,6 @@
 // @flow
 
-import type {Flag} from '.'
+import {merge, type Flag} from '.'
 
 type Options = $Shape<Flag<string>>
 
@@ -14,7 +14,7 @@ export default function StringFlag (options: Options = {}): Flag<string> {
       return input
     }
   }
-  return Object.assign(defaultOptions, options)
+  return merge(defaultOptions, options)
 }
 
 export class RequiredFlagError extends Error {
