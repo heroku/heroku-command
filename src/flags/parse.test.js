@@ -3,7 +3,7 @@
 import Base from '../command'
 import NumberFlag from './string'
 
-let flagParser = function (n: ?string) : Promise<> {
+let flagParser = function (n: ?string): Promise<> {
   let m = parseInt(n)
   return new Promise(resolve => resolve(m * m))
 }
