@@ -63,10 +63,17 @@ export default class HTTP {
   _logRequest (http: httpCall) {
     if (!this.out.config.debug) return
     this.out.stderr.log(`--> ${http.method} ${http.url}`)
-    if (this.out.config.debug > 1) {
+    if (this._debugHeaders) {
       this.out.stderr.log(renderHeaders(http.headers))
-      // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
     }
+    // TODO: conditionally add displaying of POST body
+    // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
+  }
+
+  get _debugHeaders (): boolean {
+    if (this.out.config.debug > 1) return true
+    const HEROKU_DEBUG_HEADERS = process.env.HEROKU_DEBUG_HEADERS
+    return HEROKU_DEBUG_HEADERS === 'true' || HEROKU_DEBUG_HEADERS === '1'
   }
 
   _logResponse (http: httpCall) {
