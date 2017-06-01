@@ -6,6 +6,7 @@ import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import type {Arg} from './arg'
 import HTTP from './http'
+import Help from './help'
 
 type RunOptions = {
   argv?: string[],
@@ -48,7 +49,7 @@ export default class Command <Flags: InputFlags> {
     cmd.argv = options.argv || []
     // if (this.flags.debug) this.config.debug = 1
     try {
-      const args = await cmd.parse()
+      const args = await cmd.init()
       await cmd.run(args)
       await cmd.out.done()
     } catch (err) {
@@ -62,6 +63,7 @@ export default class Command <Flags: InputFlags> {
   out: Output
   flags: OutputFlags<Flags> = {}
   argv: string[]
+  args: {[name: string]: string} = {}
 
   constructor (options: {config?: ConfigOptions, output?: Output} = {}) {
     this.config = buildConfig(options.config)
@@ -69,16 +71,17 @@ export default class Command <Flags: InputFlags> {
     this.http = new HTTP(this.out)
   }
 
-  async parse () {
+  async init () {
     const parser = new Parser({
       flags: this.constructor.flags || {},
       args: this.constructor.args || [],
       variableArgs: this.constructor.variableArgs,
       cmd: this
     })
-    const {argv, flags} = await parser.parse({flags: this.flags, argv: this.argv})
+    const {argv, flags, args} = await parser.parse({flags: this.flags, argv: this.argv})
     this.flags = flags
     this.argv = argv
+    this.args = args
   }
 
   // prevent setting things that need to be static
@@ -94,4 +97,14 @@ export default class Command <Flags: InputFlags> {
    * actual command run code goes here
    */
   async run (...rest: void[]): Promise<void> { }
+
+  static buildHelp (config: Config): string {
+    let help = new Help(config)
+    return help.command(this)
+  }
+
+  static buildHelpLine (config: Config): [string, ?string] {
+    let help = new Help(config)
+    return help.commandLine(this)
+  }
 }

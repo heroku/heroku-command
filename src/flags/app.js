@@ -1,7 +1,7 @@
 // @flow
 
 import {vars} from '../heroku'
-import {type Flag} from '.'
+import {merge, type Flag} from '.'
 import Git from '../git'
 
 type Options = $Shape<Flag<string>>
@@ -23,7 +23,7 @@ export function AppFlag (options: Options = {}, env: typeof process.env = proces
       if (options.required) throw new Error('No app specified')
     }
   }
-  return Object.assign(defaultOptions, options)
+  return merge(defaultOptions, options)
 }
 
 export function RemoteFlag (options: Options = {}): Flag<string> {
@@ -32,7 +32,7 @@ export function RemoteFlag (options: Options = {}): Flag<string> {
     description: 'git remote of app to use',
     parse: input => input
   }
-  return Object.assign(defaultOptions, options)
+  return merge(defaultOptions, options)
 }
 
 function findGitRemoteApp (remote: ?string): ?string {

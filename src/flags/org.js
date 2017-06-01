@@ -1,6 +1,6 @@
 // @flow
 
-import {type Flag} from '.'
+import {merge, type Flag} from '.'
 
 type Options = $Shape<Flag<string>>
 export default function OrgFlag (options: Options = {}, env: typeof process.env = process.env): Flag<string> {
@@ -15,5 +15,5 @@ export default function OrgFlag (options: Options = {}, env: typeof process.env 
       if (options.required) throw new Error('No org specified')
     }
   }
-  return Object.assign(defaultOptions, options)
+  return merge(defaultOptions, options)
 }

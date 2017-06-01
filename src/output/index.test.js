@@ -115,7 +115,7 @@ info: arr: [ 'a', 'b', 'c' ]
 test('inspect', () => {
   const out = new Output()
   stdmock.use()
-  out.inspect({foo: 'bar', info: {arr: ['a', 'b', 'c']}}, ['foo', 'info'])
+  out.inspect({foo: 'bar', info: {arr: ['a', 'b', 'c']}})
   stdmock.restore()
   expect(stdmock.flush().stderr[0]).toEqual(`Object {
   "foo": "bar",
