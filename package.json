@@ -14,7 +14,6 @@
     "lodash.maxby": "4.6.0",
     "lodash.merge": "4.6.0",
     "netrc-parser": "2.0.2",
-    "pretty-format": "20.0.3",
     "string": "3.3.3",
     "supports-color": "^3.2.3"
   },
