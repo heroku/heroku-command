@@ -1,14 +1,14 @@
 // @flow
 
 import Base from './command'
-import type {ICommand} from 'cli-engine-config'
-import {BooleanFlag} from './flags'
+import {type ICommand, buildConfig} from 'cli-engine-config'
+import {flags as Flags} from './flags'
 import Output from './output'
 
 class Command extends Base {
   static topic = 'foo'
   static command = 'bar'
-  static flags = {myflag: BooleanFlag()}
+  static flags = {myflag: Flags.boolean()}
   static args = [{name: 'myarg', required: false}]
 }
 
@@ -31,6 +31,7 @@ test('parses args', async () => {
   const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
+  expect(cmd.args).toEqual({myarg: 'one'})
 })
 
 test('passes error to output', async () => {
@@ -45,4 +46,22 @@ test('passes error to output', async () => {
 
   await Command.run({output: new ErrOutput()})
   expect(mockError).toBeCalled()
+})
+
+test('has help', async () => {
+  class Command extends Base {
+    static topic = 'config'
+    static command = 'get'
+    static help = `this is
+
+some multiline help
+`
+  }
+  let config = buildConfig()
+  expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
+
+this is
+
+some multiline help\n`)
+  expect(Command.buildHelpLine(config)).toEqual(['config:get', undefined])
 })

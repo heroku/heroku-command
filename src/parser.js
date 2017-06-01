@@ -17,7 +17,8 @@ export type OutputArgs = {[name: string]: string}
 
 export type Output <Flags> = {
   flags: OutputFlags<Flags>,
-  argv: Array<*>
+  argv: Array<*>,
+  args: {[name: string]: string}
 }
 
 export default class Parse <Flags: InputFlags> {
@@ -32,6 +33,7 @@ export default class Parse <Flags: InputFlags> {
     let argv = (output.argv || [])
     output.flags = output.flags || {}
     output.argv = []
+    output.args = {}
 
     let parseFlag = arg => {
       let long = arg.startsWith('--')
@@ -39,8 +41,14 @@ export default class Parse <Flags: InputFlags> {
       if (!name) {
         const i = arg.indexOf('=')
         if (i !== -1) {
-          argv.unshift(arg.slice(i + 1))
-          return parseFlag(arg.slice(0, i))
+          let sliced = arg.slice(i + 1)
+          argv.unshift(sliced)
+
+          let equalsParsed = parseFlag(arg.slice(0, i))
+          if (!equalsParsed) {
+            argv.shift()
+          }
+          return equalsParsed
         }
         return false
       }
@@ -85,6 +93,8 @@ export default class Parse <Flags: InputFlags> {
         // not actually a flag if it reaches here so parse as an arg
       }
       // not a flag, parse as arg
+      let argDefinition = this.input.args[output.argv.length]
+      if (argDefinition) output.args[argDefinition.name] = arg
       output.argv.push(arg)
     }
 
