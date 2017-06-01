@@ -8,7 +8,6 @@ import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
-import format from 'pretty-format'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -181,9 +180,9 @@ export default class Output {
   /**
    * inspect an object for debugging
    */
-  inspect (obj: any) {
+  inspect (obj: any, opts: any = {}) {
     this.action.pause(() => {
-      this.stderr.log(format(obj))
+      console.dir(obj, Object.assign({colors: true}, opts))
     })
   }
 
