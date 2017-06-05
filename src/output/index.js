@@ -3,7 +3,7 @@
 import util from 'util'
 import linewrap from './linewrap'
 import {errtermwidth} from './screen'
-import Action from './action'
+import {SimpleAction, SpinnerAction, ActionBase, shouldDisplaySpinner} from './action'
 import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
@@ -73,7 +73,7 @@ function getErrorMessage (err: Error): string {
 
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
-class StreamOutput {
+export class StreamOutput {
   output = ''
   stream: stream$Writable
   out: Output
@@ -104,13 +104,13 @@ export default class Output {
     this.config = buildConfig(options.config)
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
-    this.action = new Action(this)
+    this.action = shouldDisplaySpinner(this) ? new SpinnerAction(this) : new SimpleAction(this)
     if (this.mock) chalk.enabled = CustomColors.supports = false
   }
 
   mock = false
   config: Config
-  action: Action
+  action: ActionBase
   stdout: StreamOutput
   stderr: StreamOutput
 
@@ -125,7 +125,6 @@ export default class Output {
   }
 
   async done (...rest: void[]): Promise<void> {
-    this.showCursor()
     this.action.stop()
   }
 
@@ -224,7 +223,7 @@ export default class Output {
         console.error(e)
         console.error(err)
       }
-    })
+    }, this.color.bold.yellow('!'))
   }
 
   logError (err: Error | string) {
@@ -235,15 +234,7 @@ export default class Output {
   }
 
   exit (code: number = 0) {
-    this.showCursor()
     if (this.config.debug) console.error(`Exiting with code: ${code}`)
     if (this.mock) throw new ExitError(code); else process.exit(code)
-  }
-
-  showCursor () {
-    const ansi = require('ansi-escapes')
-    try {
-      if (process.stderr.isTTY) process.stderr.write(ansi.cursorShow)
-    } catch (err) {}
   }
 }
