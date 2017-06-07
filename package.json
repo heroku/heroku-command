@@ -12,7 +12,6 @@
     "http-call": "1.1.2",
     "lodash.maxby": "4.x",
     "lodash.merge": "4.x",
-    "netrc-parser": "2.0.2",
     "string": "3.x",
     "supports-color": "3.x"
   },
