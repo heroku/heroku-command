@@ -18,6 +18,8 @@ async function run (out) {
   await wait()
   out.action.stop('now it is done')
   await wait()
+  out.action.start('x hideme')
+  await wait()
   out.action.start('5 foo')
   await wait()
   out.action.stop()

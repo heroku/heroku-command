@@ -16,7 +16,7 @@ export class ActionBase {
   task: ?Task
 
   start (action: string, status: ?string) {
-    const task = this.task = {action, status, active: false}
+    const task = this.task = {action, status, active: this.task && this.task.active}
     this._start()
     task.active = true
   }
