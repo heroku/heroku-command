@@ -4,8 +4,6 @@ import type Command from '../command'
 import boolean from './boolean'
 import string from './string'
 import number from './number'
-import {AppFlag as app, RemoteFlag as remote} from './app'
-import org from './org'
 export {default as merge} from 'lodash.merge'
 
 type AlphabetUppercase = | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'X' | 'Y' | 'Z'
@@ -21,4 +19,4 @@ export type Flag <T> = {
   parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T)
 }
 
-export const flags = {boolean, string, number, remote, app, org}
+export const flags = {boolean, string, number}
