@@ -34,34 +34,33 @@ export class ActionBase {
   set status (status: string) {
     const task = this.task
     if (!task) return
+    if (task.status === status) return
+    this._updateStatus(status, task.status)
     task.status = status
-    this._start()
   }
 
   pause (fn: Function, icon: ?string) {
     const task = this.task
     const active = task && task.active
-    const prevStatus = task ? task.status : null
     if (task && active) {
-      if (icon) {
-        this.status = task.status ? `${icon} ${task.status}` : `${icon}`
-      }
-      this._stop()
+      this._pause(icon)
       task.active = false
     }
     fn()
     if (task && active) {
-      this.start(task.action, prevStatus)
+      this._resume()
     }
   }
 
   _start () { throw new Error('not implemented') }
   _stop () { throw new Error('not implemented') }
+  _resume () { if (this.task) this.start(this.task.action, this.task.status) }
+  _pause (icon: ?string) { throw new Error('not implemented') }
+  _updateStatus (status: string, prevStatus: ?string) { }
 }
 
 export class SimpleAction extends ActionBase {
   out: Output
-  previous: {action: string, status: ?string}
 
   constructor (out: Output) {
     super()
@@ -69,25 +68,34 @@ export class SimpleAction extends ActionBase {
   }
 
   _start () {
-    this._render()
+    const task = this.task
+    if (!task) return
+    this._render(task.action, task.status)
+  }
+
+  _pause (icon: ?string) {
+    if (icon) this._updateStatus(icon)
+    this._write('\n')
+  }
+
+  _resume () { }
+
+  _updateStatus (status: string, prevStatus: ?string) {
+    const task = this.task
+    if (!task) return
+    if (task.active && !prevStatus) this._write(` ${status}`)
+    else this._render(task.action, status)
   }
 
   _stop () {
     this._write('\n')
-    delete this.previous
   }
 
-  _render () {
+  _render (action: string, status: ?string) {
     const task = this.task
     if (!task) return
-    if (task.status && this.previous && this.previous.action === task.action && !this.previous.status) {
-      // just append status to end if there wasn't a status before
-      this._write(` ${task.status}`)
-    } else {
-      if (this.previous) this._write('\n')
-      this._write(task.status ? `${task.action}... ${task.status}` : `${task.action}...`)
-    }
-    this.previous = {action: task.action, status: task.status}
+    if (task.active) this._write('\n')
+    this._write(status ? `${action}... ${status}` : `${action}...`)
   }
 
   _write (s: string) {
@@ -116,24 +124,32 @@ export class SpinnerAction extends ActionBase {
 
   _start () {
     this._reset()
-    this.output = null
     if (this.spinner) clearInterval(this.spinner)
     this._render()
-    let interval: any = this.spinner = setInterval(this._render.bind(this), 100, true)
+    let interval: any = this.spinner = setInterval(this._render.bind(this), 100, 'spinner')
     interval.unref()
   }
 
   _stop () {
     clearInterval(this.spinner)
-    this._render(false)
+    this._render()
     this.output = null
   }
 
-  _render (spin: ?boolean) {
+  _pause (icon: ?string) {
+    clearInterval(this.spinner)
+    this._reset()
+    if (icon) this._render(` ${icon}`)
+    this.output = null
+  }
+
+  _render (icon: ?string) {
     const task = this.task
     if (!task) return
     this._reset()
-    let frame = spin ? ` ${this._frame()}` : ''
+    let frame = icon === 'spinner'
+      ? ` ${this._frame()}`
+      : icon || ''
     let status = task.status ? ` ${task.status}` : ''
     this.output = `${task.action}...${frame}${status}\n`
     this._write(this.output)
@@ -145,6 +161,7 @@ export class SpinnerAction extends ActionBase {
     this._write(this.ansi.cursorLeft +
       this.ansi.cursorUp(lines) +
       this.ansi.eraseDown)
+    this.output = null
   }
 
   _frame (): string {
