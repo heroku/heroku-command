@@ -229,6 +229,7 @@ export default class Output {
   logError (err: Error | string) {
     try {
       err = this.color.stripColor(util.inspect(err))
+      this.fs.mkdirpSync(path.dirname(this.errlog))
       this.fs.appendFileSync(this.errlog, `${err}\n`)
     } catch (err) { console.error(err) }
   }
