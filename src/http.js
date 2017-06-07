@@ -50,14 +50,36 @@ export default class HTTP {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.get(url, options)
   }
+
   post (url: string, options: $Shape<HTTPRequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.post(url, options)
   }
 
+  put (url: string, options: $Shape<HTTPRequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    return this.http.put(url, options)
+  }
+
+  patch (url: string, options: $Shape<HTTPRequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    return this.http.patch(url, options)
+  }
+
+  delete (url: string, options: $Shape<HTTPRequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    return this.http.delete(url, options)
+  }
+
   stream (url: string, options: $Shape<HTTPRequestOptions> = {}) {
     options = mergeRequestOptions(this.requestOptions, options)
     return this.http.stream(url, options)
+  }
+
+  get _debugHeaders (): boolean {
+    if (this.out.config.debug > 1) return true
+    const HEROKU_DEBUG_HEADERS = process.env.HEROKU_DEBUG_HEADERS
+    return HEROKU_DEBUG_HEADERS === 'true' || HEROKU_DEBUG_HEADERS === '1'
   }
 
   _logRequest (http: httpCall) {
@@ -68,12 +90,6 @@ export default class HTTP {
     }
     // TODO: conditionally add displaying of POST body
     // if (body) this.error(`--- BODY\n${util.inspect(body)}\n---`)
-  }
-
-  get _debugHeaders (): boolean {
-    if (this.out.config.debug > 1) return true
-    const HEROKU_DEBUG_HEADERS = process.env.HEROKU_DEBUG_HEADERS
-    return HEROKU_DEBUG_HEADERS === 'true' || HEROKU_DEBUG_HEADERS === '1'
   }
 
   _logResponse (http: httpCall) {
