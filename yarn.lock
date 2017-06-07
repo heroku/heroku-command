@@ -744,7 +744,7 @@ debug@2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.x:
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -1527,11 +1527,11 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.2.0.tgz#c933bce3b26d40cb8487b7b672e5302a3837e917"
+http-call@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.2.2.tgz#b00d55ee9d9338ad8668135f2129e4a713a23c57"
   dependencies:
-    debug "^2.x"
+    debug "^2.6.8"
     tunnel-agent "^0.6.0"
 
 http-signature@~1.1.0:
