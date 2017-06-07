@@ -597,9 +597,9 @@ cli-cursor@^1.0.1:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.3.5.tgz#dfd72673a98e8e1aa7129409164b9f1836a9c300"
+cli-engine-config@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.3.6.tgz#c5b0a2650d95a91ca91672aecba9bdac059b7a25"
   dependencies:
     uuid "3.x"
 
@@ -744,7 +744,7 @@ debug@2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@^2.1.1, debug@^2.2.0, debug@^2.6.3:
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.x:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -1527,10 +1527,11 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.1.2.tgz#bfec491443c86104451ae2764ad5307da0feea4a"
+http-call@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.2.0.tgz#c933bce3b26d40cb8487b7b672e5302a3837e917"
   dependencies:
+    debug "^2.x"
     tunnel-agent "^0.6.0"
 
 http-signature@~1.1.0:
