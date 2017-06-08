@@ -46,10 +46,11 @@ export class ActionBase {
       this._pause(icon)
       task.active = false
     }
-    fn()
+    let ret = fn()
     if (task && active) {
       this._resume()
     }
+    return ret
   }
 
   _start () { throw new Error('not implemented') }

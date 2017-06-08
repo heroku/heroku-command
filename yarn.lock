@@ -1527,9 +1527,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-1.2.2.tgz#b00d55ee9d9338ad8668135f2129e4a713a23c57"
+http-call@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.0.0.tgz#692414ec30ceba12367692816ab99d971445ecda"
   dependencies:
     debug "^2.6.8"
     tunnel-agent "^0.6.0"

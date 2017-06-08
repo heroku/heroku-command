@@ -8,6 +8,7 @@ import supports from 'supports-color'
 import chalk from 'chalk'
 import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
+import Prompter, {type PromptOptions} from './prompt'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -106,6 +107,7 @@ export default class Output {
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = shouldDisplaySpinner(this) ? new SpinnerAction(this) : new SimpleAction(this)
     if (this.mock) chalk.enabled = CustomColors.supports = false
+    this.prompter = new Prompter(this)
   }
 
   mock = false
@@ -113,6 +115,7 @@ export default class Output {
   action: ActionBase
   stdout: StreamOutput
   stderr: StreamOutput
+  prompter: Prompter
 
   get fs () { return require('fs-extra') }
   get color (): $Shape<typeof chalk & typeof CustomColors> {
@@ -232,6 +235,10 @@ export default class Output {
       this.fs.mkdirpSync(path.dirname(this.errlog))
       this.fs.appendFileSync(this.errlog, `${err}\n`)
     } catch (err) { console.error(err) }
+  }
+
+  prompt (name: string, options: PromptOptions) {
+    return this.prompter.prompt(name, options)
   }
 
   exit (code: number = 0) {

@@ -9,7 +9,7 @@
     "cardinal": "1.x",
     "chalk": "1.x",
     "fs-extra": "3.x",
-    "http-call": "^1.2.2",
+    "http-call": "2.0.0",
     "lodash.maxby": "4.x",
     "lodash.merge": "4.x",
     "string": "3.x",
