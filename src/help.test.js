@@ -5,13 +5,14 @@ import Command from './command'
 import {buildConfig} from 'cli-engine-config'
 import boolean from './flags/boolean'
 import string from './flags/string'
+import Output from './output'
 
 class AppsCreate extends Command {
   static topic = 'apps'
   static command = 'create'
   static description = 'description of apps:create'
 
-  static args = [{name: 'app_name', required: false}]
+  static args = [{name: 'app_name', description: 'app to use', required: false}]
 
   static help = `some
 
@@ -26,17 +27,22 @@ multiline help
   }
 }
 
-const help = new Help(buildConfig())
+const output = new Output({mock: true})
+const help = new Help(buildConfig(), output)
 
 describe('commandLine()', () => {
   test('has help', () => {
-    expect(help.command(AppsCreate)).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+    expect(help.command(AppsCreate)).toEqual(`
+Usage: cli-engine apps:create [APP_NAME] [flags]
 
 description of apps:create
 
- -f, --foo    # foobar
+APP_NAME  app to use
+
+Flags:
+ -f, --foo     foobar
  -r, --remote
- --force      # force it
+ --force       force it
 
 some
 
@@ -54,11 +60,13 @@ multiline help
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`Usage: cli-engine apps:create
+    })).toEqual(`
+Usage: cli-engine apps:create [flags]
 
- -f, --foo    # foobar
+Flags:
+ -f, --foo     foobar
  -r, --remote
- --force      # force it
+ --force       force it
 `)
   })
 
@@ -73,13 +81,15 @@ multiline help
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`Usage: cli-engine apps:create
+    })).toEqual(`
+Usage: cli-engine apps:create [flags]
 
 description of apps:create
 
- -f, --foo    # foobar
+Flags:
+ -f, --foo     foobar
  -r, --remote
- --force      # force it
+ --force       force it
 `)
   })
 
@@ -94,13 +104,30 @@ description of apps:create
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`Usage: cli-engine apps:create
+    })).toEqual(`
+Usage: cli-engine apps:create [flags]
 
- -f, --foo    # foobar
+Flags:
+ -f, --foo     foobar
  -r, --remote
- --force      # force it
+ --force       force it
 
 description of apps:create
+`)
+  })
+
+  test('has description + args', () => {
+    expect(help.command(class extends Command {
+      static topic = 'apps'
+      static command = 'create'
+      static description = 'description of apps:create'
+      static args = [{name: 'app_name', description: 'app to use', required: false}]
+    })).toEqual(`
+Usage: cli-engine apps:create [APP_NAME]
+
+description of apps:create
+
+APP_NAME  app to use
 `)
   })
 })
