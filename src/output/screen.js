@@ -8,5 +8,5 @@ function termwidth (stream: any): number {
   return width
 }
 
-export const stdtermwidth = termwidth(process.stdout)
-export const errtermwidth = termwidth(process.stderr)
+export const stdtermwidth = global.columns || termwidth(process.stdout)
+export const errtermwidth = global.columns || termwidth(process.stderr)
