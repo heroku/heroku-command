@@ -69,7 +69,10 @@ ${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
   }
 
   commandLine (cmd: Class<Command<*>>): [string, ?string] {
-    return [buildUsage(cmd), cmd.description]
+    return [
+      buildUsage(cmd),
+      cmd.description ? this.out.color.gray(cmd.description) : null
+    ]
   }
 
   renderArgs (args: Arg[]): string {
@@ -77,7 +80,7 @@ ${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
     return '\n' + renderList(args.map(a => {
       return [
         a.name.toUpperCase(),
-        this.out.color.gray(a.description)
+        a.description ? this.out.color.gray(a.description) : null
       ]
     })) + '\n'
   }
@@ -98,7 +101,10 @@ ${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
         let usage = f.hasValue ? ` ${name.toUpperCase()}` : ''
         let description = f.description || ''
         if (f.required || f.optional === false) description = `(required) ${description}`
-        return [` ${label.join(',').trim()}` + usage, this.out.color.gray(description)]
+        return [
+          ` ${label.join(',').trim()}` + usage,
+          description ? this.out.color.gray(description) : null
+        ]
       })) + '\n'
   }
 }
