@@ -64,5 +64,5 @@ Usage: cli-engine config:get
 this is
 
 some multiline help\n`)
-  expect(Command.buildHelpLine(config)).toEqual(['config:get', undefined])
+  expect(Command.buildHelpLine(config)).toEqual(['config:get', null])
 })
