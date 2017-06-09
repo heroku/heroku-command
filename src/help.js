@@ -25,7 +25,7 @@ function renderList (items: [string, ?string][]): string {
       let right = i[1]
       if (!right) return left
       left = `${S(left).padRight(maxLength)}`
-      right = linewrap(maxLength + 4, right)
+      right = linewrap(maxLength + 2, right)
       return `${left}  ${right}`
     })
   return lines.join('\n')
