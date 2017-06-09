@@ -32,8 +32,7 @@ const help = new Help(buildConfig(), output)
 
 describe('commandLine()', () => {
   test('has help', () => {
-    expect(help.command(AppsCreate)).toEqual(`
-Usage: cli-engine apps:create [APP_NAME] [flags]
+    expect(help.command(AppsCreate)).toEqual(`Usage: cli-engine apps:create [APP_NAME] [flags]
 
 description of apps:create
 
@@ -60,8 +59,7 @@ multiline help
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`
-Usage: cli-engine apps:create [flags]
+    })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo     foobar
@@ -81,8 +79,7 @@ Flags:
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`
-Usage: cli-engine apps:create [flags]
+    })).toEqual(`Usage: cli-engine apps:create [flags]
 
 description of apps:create
 
@@ -104,8 +101,7 @@ Flags:
         foo: string({char: 'f', description: 'foobar'}),
         remote: string({char: 'r'})
       }
-    })).toEqual(`
-Usage: cli-engine apps:create [flags]
+    })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo     foobar
@@ -122,8 +118,7 @@ description of apps:create
       static command = 'create'
       static description = 'description of apps:create'
       static args = [{name: 'app_name', description: 'app to use', required: false}]
-    })).toEqual(`
-Usage: cli-engine apps:create [APP_NAME]
+    })).toEqual(`Usage: cli-engine apps:create [APP_NAME]
 
 description of apps:create
 
