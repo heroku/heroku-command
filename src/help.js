@@ -59,8 +59,7 @@ export default class Help {
     let flags = Object.keys(cmd.flags || {}).map(f => [f, cmd.flags[f]]).filter(f => !f[1].hidden)
     let args = (cmd.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
-    let usage = `
-${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
+    let usage = `${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
     return [usage, cmd.description ? `\n${color.bold(cmd.description.trim())}\n` : '',
       this.renderArgs(args),
       this.renderFlags(flags),
