@@ -5,6 +5,7 @@ import {type Arg} from './arg'
 import {type Flag} from './flags'
 import {stdtermwidth} from './output/screen'
 import {type Config} from 'cli-engine-config'
+import Output from './output'
 
 function linewrap (length: number, s: string): string {
   const linewrap = require('./output/linewrap')
@@ -17,15 +18,15 @@ function renderList (items: [string, ?string][]): string {
   const S = require('string')
   const max = require('lodash.maxby')
 
-  let maxLength = max(items, '[0].length')[0].length + 1
+  let maxLength = max(items, '[0].length')[0].length
   let lines = items
     .map(i => {
-      let left = ` ${i[0]}`
+      let left = i[0]
       let right = i[1]
       if (!right) return left
       left = `${S(left).padRight(maxLength)}`
       right = linewrap(maxLength + 4, right)
-      return `${left} # ${right}`
+      return `${left}  ${right}`
     })
   return lines.join('\n')
 }
@@ -44,41 +45,60 @@ function renderArg (arg: Arg): string {
   else return `[${name}]`
 }
 
-function renderFlags (flags: [string, Flag<*>][]): string {
-  flags.sort((a, b) => {
-    if (a[1].char && !b[1].char) return -1
-    if (b[1].char && !a[1].char) return 1
-    if (a[0] < b[0]) return -1
-    return b[0] < a[0] ? 1 : 0
-  })
-  return renderList(flags.map(([name, f]) => {
-    let label = []
-    if (f.char) label.push(`-${f.char}`)
-    if (name) label.push(` --${name}`)
-    let usage = f.hasValue ? ` ${name.toUpperCase()}` : ''
-    let description = f.description || ''
-    if (f.required || f.optional === false) description = `(required) ${description}`
-    return [label.join(',').trim() + usage, description]
-  }))
-}
-
 export default class Help {
   config: Config
-  constructor (config: Config) {
+  out: Output
+
+  constructor (config: Config, output: ?Output) {
     this.config = config
+    this.out = output || new Output({config})
   }
 
   command (cmd: Class<Command<*>>): string {
-    let usage = `Usage: ${this.config.bin} ${buildUsage(cmd)}\n`
+    let color = this.out.color
     let flags = Object.keys(cmd.flags || {}).map(f => [f, cmd.flags[f]]).filter(f => !f[1].hidden)
-    return [usage,
-      cmd.description ? `\n${cmd.description.trim()}\n` : '',
-      flags.length ? `\n${renderFlags(flags)}\n` : '',
+    let args = (cmd.args || []).filter(a => !a.hidden)
+    let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
+    let usage = `
+${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
+    return [usage, cmd.description ? `\n${color.bold(cmd.description.trim())}\n` : '',
+      this.renderArgs(args),
+      this.renderFlags(flags),
       cmd.help ? `\n${cmd.help.trim()}\n` : ''
     ].join('')
   }
 
   commandLine (cmd: Class<Command<*>>): [string, ?string] {
     return [buildUsage(cmd), cmd.description]
+  }
+
+  renderArgs (args: Arg[]): string {
+    if (!args.find(f => f.description)) return ''
+    return '\n' + renderList(args.map(a => {
+      return [
+        a.name.toUpperCase(),
+        this.out.color.gray(a.description)
+      ]
+    })) + '\n'
+  }
+
+  renderFlags (flags: [string, Flag<*>][]): string {
+    if (!flags.length) return ''
+    flags.sort((a, b) => {
+      if (a[1].char && !b[1].char) return -1
+      if (b[1].char && !a[1].char) return 1
+      if (a[0] < b[0]) return -1
+      return b[0] < a[0] ? 1 : 0
+    })
+    return `\n${this.out.color.blue('Flags:')}\n` +
+      renderList(flags.map(([name, f]) => {
+        let label = []
+        if (f.char) label.push(`-${f.char}`)
+        if (name) label.push(` --${name}`)
+        let usage = f.hasValue ? ` ${name.toUpperCase()}` : ''
+        let description = f.description || ''
+        if (f.required || f.optional === false) description = `(required) ${description}`
+        return [` ${label.join(',').trim()}` + usage, this.out.color.gray(description)]
+      })) + '\n'
   }
 }
