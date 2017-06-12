@@ -3,7 +3,7 @@
 import type Output from '.'
 
 export function shouldDisplaySpinner (out: Output) {
-  return !out.mock && !out.config.debug && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+  return !process.env.DEBUG && !out.mock && !out.config.debug && !!process.stdin.isTTY && !!process.stderr.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
 }
 
 type Task = {
