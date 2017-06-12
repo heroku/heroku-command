@@ -9,6 +9,7 @@ import chalk from 'chalk'
 import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import Prompter, {type PromptOptions} from './prompt'
+import type {TableOptions} from './table'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -239,6 +240,11 @@ export default class Output {
 
   prompt (name: string, options: PromptOptions) {
     return this.prompter.prompt(name, options)
+  }
+
+  table <T: {height?: number}> (data: Array<T>, options: $Shape<TableOptions<T>>) {
+    let table = require('./table')
+    return table(this, data, options)
   }
 
   exit (code: number = 0) {
