@@ -127,7 +127,7 @@ export class SpinnerAction extends ActionBase {
     this._reset()
     if (this.spinner) clearInterval(this.spinner)
     this._render()
-    let interval: any = this.spinner = setInterval(this._render.bind(this), 100, 'spinner')
+    let interval: any = this.spinner = setInterval(this._render.bind(this), this.out.config.windows ? 500 : 100, 'spinner')
     interval.unref()
   }
 
