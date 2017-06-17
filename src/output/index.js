@@ -234,7 +234,7 @@ export default class Output {
     try {
       err = this.color.stripColor(util.inspect(err))
       this.fs.mkdirpSync(path.dirname(this.errlog))
-      this.fs.appendFileSync(this.errlog, `${err}\n`)
+      this.fs.appendFileSync(this.errlog, `[${new Date().toISOString()}] ${err}\n`)
     } catch (err) { console.error(err) }
   }
 
