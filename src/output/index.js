@@ -92,7 +92,7 @@ export class StreamOutput {
   }
 
   log (data: string, ...args: any[]) {
-    let timestamp = process.env.HEROKU_TIMESTAMPS ? `[${moment().format('YYYY-DD-MM HH:mm:ss Z')}] ` : ''
+    let timestamp = process.env.HEROKU_TIMESTAMPS ? `[${moment().format()}] ` : ''
     let msg = data ? util.format(`${timestamp}${data}`, ...args) : ''
     msg += '\n'
     this.out.action.pause(() => {
