@@ -92,7 +92,8 @@ export class StreamOutput {
   }
 
   log (data: string, ...args: any[]) {
-    let msg = data ? util.format(data, ...args) : ''
+    let timestamp = process.env.HEROKU_TIMESTAMPS ? `[${moment().format('YYYY-DD-MM HH:mm:ss Z')}] ` : ''
+    let msg = data ? util.format(`${timestamp}${data}`, ...args) : ''
     msg += '\n'
     this.out.action.pause(() => {
       if (this.out.mock) this.output += msg
