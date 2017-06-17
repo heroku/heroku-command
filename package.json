@@ -20,6 +20,7 @@
     "lodash.partial": "^4.2.1",
     "lodash.property": "^4.4.2",
     "lodash.result": "^4.5.2",
+    "moment": "^2.18.1",
     "string": "3.x",
     "supports-color": "3.x"
   },
