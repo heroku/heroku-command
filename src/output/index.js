@@ -10,6 +10,7 @@ import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import Prompter, {type PromptOptions} from './prompt'
 import type {TableOptions} from './table'
+import moment from 'moment'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -234,7 +235,7 @@ export default class Output {
     try {
       err = this.color.stripColor(util.inspect(err))
       this.fs.mkdirpSync(path.dirname(this.errlog))
-      this.fs.appendFileSync(this.errlog, `[${new Date().toISOString()}] ${err}\n`)
+      this.fs.appendFileSync(this.errlog, `[${moment().format('YYYY-DD-MM HH:mm:ss Z')}] ${err}\n`)
     } catch (err) { console.error(err) }
   }
 
