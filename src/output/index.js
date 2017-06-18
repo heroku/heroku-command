@@ -196,6 +196,7 @@ export default class Output {
   }
 
   get errlog (): string { return path.join(this.config.cacheDir, 'error.log') }
+  get autoupdatelog (): string { return path.join(this.config.cacheDir, 'autoupdate.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
     if (this.mock && typeof err !== 'string' && exitCode !== false) throw err
@@ -236,7 +237,15 @@ export default class Output {
     try {
       err = this.color.stripColor(util.inspect(err))
       this.fs.mkdirpSync(path.dirname(this.errlog))
-      this.fs.appendFileSync(this.errlog, `[${moment().format('YYYY-DD-MM HH:mm:ss Z')}] ${err}\n`)
+      this.fs.appendFileSync(this.errlog, `[${moment().format()}] ${err}\n`)
+    } catch (err) { console.error(err) }
+  }
+
+  logAutocomplete (msg: String) {
+    try {
+      msg = this.color.stripColor(util.inspect(msg))
+      this.fs.mkdirpSync(path.dirname(this.autoupdatelog))
+      this.fs.appendFileSync(this.autoupdatelog, `[${moment().format()}] ${msg}\n`)
     } catch (err) { console.error(err) }
   }
 
