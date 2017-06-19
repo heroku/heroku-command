@@ -34,7 +34,6 @@ export class ActionBase {
     this.status = msg
     this._stop()
     task.active = false
-    this.log({action: task.action, status: msg})
     delete this.task
   }
 
@@ -107,7 +106,7 @@ export class SimpleAction extends ActionBase {
   }
 
   _write (s: string) {
-    this.out.stderr.write(s)
+    this.out.stderr.write(s, {log: false})
   }
 }
 
@@ -184,6 +183,6 @@ export class SpinnerAction extends ActionBase {
   }
 
   _write (s: string) {
-    this.out.stderr.write(s)
+    this.out.stderr.write(s, {log: false})
   }
 }
