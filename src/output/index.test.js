@@ -30,6 +30,7 @@ test('outputs to stderr', () => {
 })
 
 describe('timestamps', () => {
+  let origFormat = moment.prototype.format
   beforeAll(() => {
     process.env.HEROKU_TIMESTAMPS = '1'
     const timestamps = jest.fn()
@@ -39,6 +40,7 @@ describe('timestamps', () => {
 
   afterAll(() => {
     delete process.env['HEROKU_TIMESTAMPS']
+    moment.prototype.format = origFormat
   })
 
   test('outputs with timestamps', () => {
