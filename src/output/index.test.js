@@ -29,11 +29,9 @@ test('outputs to stderr', () => {
   expect(stdmock.flush().stderr).toEqual(['it works'])
 })
 
-
 describe('timestamps', () => {
   beforeAll(() => {
     process.env.HEROKU_TIMESTAMPS = '1'
-    // flow$ignore
     const timestamps = jest.fn()
     timestamps.mockReturnValue('2017-06-19T07:42:57-07:00')
     moment.prototype.format = timestamps
