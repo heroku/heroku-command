@@ -11,7 +11,6 @@ export function logToFile (msg: string, logfile: string) {
   try {
     fs.mkdirpSync(path.dirname(logfile))
     fs.appendFileSync(logfile, chalk.stripColor(msg))
-    console.dir({logfile, msg})
   } catch (err) { console.error(err) }
 }
 
@@ -28,19 +27,19 @@ export default class StreamOutput {
     this.stream = stream
   }
 
-  write (msg: string) {
+  write (msg: string, options: {log?: boolean} = {}) {
     // always display timestamp in logfile
-    this.writeLogFile(msg, this.constructor.startOfLine)
+    const log = options.log !== false
+    if (log) this.writeLogFile(msg, this.constructor.startOfLine)
     // conditionally show timestamp if configured to display
-    if (this.constructor.startOfLine && process.env.HEROKU_TIMESTAMPS) msg = `${this.timestamp}${msg}`
+    if (this.constructor.startOfLine && this.displayTimestamps) msg = this.timestamp(msg)
     if (this.out.mock) this.output += msg
     else this.stream.write(msg)
     this.constructor.startOfLine = msg.endsWith('\n')
   }
 
-  get timestamp (): string {
-    // if startOfLine, prepare timestamp
-    return `[${moment().format()}] `
+  timestamp (msg: string): string {
+    return `[${moment().format()}] ${msg}`
   }
 
   log (data: string, ...args: any[]) {
@@ -51,7 +50,13 @@ export default class StreamOutput {
 
   writeLogFile (msg: string, withTimestamp: boolean) {
     if (!this.logfile) return
-    msg = withTimestamp ? `${this.timestamp}${msg}` : msg
+    msg = withTimestamp ? this.timestamp(msg) : msg
     logToFile(msg, this.logfile)
+  }
+
+  get displayTimestamps (): boolean {
+    let bin = this.out.config.bin.replace('-', '_').toUpperCase()
+    let key = `${bin}_TIMESTAMPS`
+    return ['1', 'true'].includes(process.env[key])
   }
 }
