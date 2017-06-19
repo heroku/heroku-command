@@ -234,20 +234,19 @@ export default class Output {
   }
 
   logError (err: Error | string) {
-    try {
-      err = this.color.stripColor(util.inspect(err))
-      this.fs.mkdirpSync(path.dirname(this.errlog))
-      if (process.env.HEROKU_TIMESTAMPS) err = `[${moment().format()}] ${err}`
-      this.fs.appendFileSync(this.errlog, `${err}\n`)
-    } catch (err) { console.error(err) }
+    this._log(err, this.errlog)
   }
 
   logAutocomplete (msg: string) {
+    this._log(msg, this.autoupdatelog)
+  }
+
+  _log (msg: string | Error, logfile: string) {
     try {
       msg = this.color.stripColor(util.inspect(msg))
-      this.fs.mkdirpSync(path.dirname(this.autoupdatelog))
+      this.fs.mkdirpSync(path.dirname(logfile))
       if (process.env.HEROKU_TIMESTAMPS) msg = `[${moment().format()}] ${msg}`
-      this.fs.appendFileSync(this.autoupdatelog, `${msg}\n`)
+      this.fs.appendFileSync(logfile, `${msg}\n`)
     } catch (err) { console.error(err) }
   }
 
