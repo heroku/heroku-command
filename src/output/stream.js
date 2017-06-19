@@ -28,7 +28,6 @@ export default class StreamOutput {
   }
 
   write (msg: string, options: {log?: boolean} = {}) {
-    // always display timestamp in logfile
     const log = options.log !== false
     if (log) this.writeLogFile(msg, this.constructor.startOfLine)
     // conditionally show timestamp if configured to display
