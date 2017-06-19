@@ -81,14 +81,15 @@ export class StreamOutput {
   stream: stream$Writable
   out: Output
 
+  static startOfLine = true
+
   constructor (stream: stream$Writable, output: Output) {
     this.out = output
     this.stream = stream
   }
 
-  static startOfLine = true
   write (msg: string) {
-    if (this.constructor.startOfLine) msg = `[${moment().format()}]${msg}`
+    if (this.constructor.startOfLine && process.env.HEROKU_TIMESTAMPS) msg = `[${moment().format()}] ${msg}`
     this.constructor.startOfLine = msg.endsWith('\n')
     if (this.out.mock) this.output += msg
     else this.stream.write(msg)
@@ -97,10 +98,7 @@ export class StreamOutput {
   log (data: string, ...args: any[]) {
     let msg = data ? util.format(data, ...args) : ''
     msg += '\n'
-    this.out.action.pause(() => {
-      if (this.out.mock) this.output += msg
-      else this.stream.write(msg)
-    })
+    this.out.action.pause(() => this.write(msg))
   }
 }
 
@@ -239,15 +237,17 @@ export default class Output {
     try {
       err = this.color.stripColor(util.inspect(err))
       this.fs.mkdirpSync(path.dirname(this.errlog))
-      this.fs.appendFileSync(this.errlog, `[${moment().format()}] ${err}\n`)
+      if (process.env.HEROKU_TIMESTAMPS) err = `[${moment().format()}] ${err}`
+      this.fs.appendFileSync(this.errlog, `${err}\n`)
     } catch (err) { console.error(err) }
   }
 
-  logAutocomplete (msg: String) {
+  logAutocomplete (msg: string) {
     try {
       msg = this.color.stripColor(util.inspect(msg))
       this.fs.mkdirpSync(path.dirname(this.autoupdatelog))
-      this.fs.appendFileSync(this.autoupdatelog, `[${moment().format()}] ${msg}\n`)
+      if (process.env.HEROKU_TIMESTAMPS) msg = `[${moment().format()}] ${msg}`
+      this.fs.appendFileSync(this.autoupdatelog, `${msg}\n`)
     } catch (err) { console.error(err) }
   }
 

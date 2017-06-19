@@ -3,6 +3,7 @@
 import Base, {CustomColors} from '.'
 import chalk from 'chalk'
 import stdmock from 'std-mocks'
+import moment from 'moment'
 
 class Output extends Base {}
 
@@ -26,6 +27,32 @@ test('outputs to stderr', () => {
   out.stderr.write('it works')
   stdmock.restore()
   expect(stdmock.flush().stderr).toEqual(['it works'])
+})
+
+
+describe('timestamps', () => {
+  beforeAll(() => {
+    process.env.HEROKU_TIMESTAMPS = '1'
+    // flow$ignore
+    const timestamps = jest.fn()
+    timestamps.mockReturnValue('2017-06-19T07:42:57-07:00')
+    moment.prototype.format = timestamps
+  })
+
+  afterAll(() => {
+    delete process.env['HEROKU_TIMESTAMPS']
+  })
+
+  test('outputs with timestamps', () => {
+    stdmock.use()
+    const out = new Output({mock: false})
+    out.stdout.write('\n')
+    out.stdout.write('it')
+    out.stdout.write('works\n')
+    out.stdout.log('it works')
+    stdmock.restore()
+    expect(stdmock.flush().stdout).toEqual(['\n', '[2017-06-19T07:42:57-07:00] it', 'works\n', '[2017-06-19T07:42:57-07:00] it works\n'])
+  })
 })
 
 describe('with color', () => {
