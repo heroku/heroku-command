@@ -86,14 +86,16 @@ export class StreamOutput {
     this.stream = stream
   }
 
+  static startOfLine = true
   write (msg: string) {
+    if (this.constructor.startOfLine) msg = `[${moment().format()}]${msg}`
+    this.constructor.startOfLine = msg.endsWith('\n')
     if (this.out.mock) this.output += msg
     else this.stream.write(msg)
   }
 
   log (data: string, ...args: any[]) {
-    let timestamp = process.env.HEROKU_TIMESTAMPS ? `[${moment().format()}] ` : ''
-    let msg = data ? util.format(`${timestamp}${data}`, ...args) : ''
+    let msg = data ? util.format(data, ...args) : ''
     msg += '\n'
     this.out.action.pause(() => {
       if (this.out.mock) this.output += msg
