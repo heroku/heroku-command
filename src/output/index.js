@@ -10,6 +10,7 @@ import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import Prompter, {type PromptOptions} from './prompt'
 import type {TableOptions} from './table'
+import StreamOutput, {logToFile} from './stream'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -75,31 +76,6 @@ function getErrorMessage (err: Error): string {
 
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
-export class StreamOutput {
-  output = ''
-  stream: stream$Writable
-  out: Output
-
-  constructor (stream: stream$Writable, output: Output) {
-    this.out = output
-    this.stream = stream
-  }
-
-  write (msg: string) {
-    if (this.out.mock) this.output += msg
-    else this.stream.write(msg)
-  }
-
-  log (data: string, ...args: any[]) {
-    let msg = data ? util.format(data, ...args) : ''
-    msg += '\n'
-    this.out.action.pause(() => {
-      if (this.out.mock) this.output += msg
-      else this.stream.write(msg)
-    })
-  }
-}
-
 export default class Output {
   constructor (options: {config?: ?ConfigOptions, mock?: boolean} = {}) {
     this.mock = options.mock
@@ -118,7 +94,6 @@ export default class Output {
   stderr: StreamOutput
   prompter: Prompter
 
-  get fs () { return require('fs-extra') }
   get color (): $Shape<typeof chalk & typeof CustomColors> {
     return new Proxy(chalk, {
       get: (chalk, name) => {
@@ -194,6 +169,7 @@ export default class Output {
   }
 
   get errlog (): string { return path.join(this.config.cacheDir, 'error.log') }
+  get autoupdatelog (): string { return path.join(this.config.cacheDir, 'autoupdate.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
     if (this.mock && typeof err !== 'string' && exitCode !== false) throw err
@@ -231,11 +207,7 @@ export default class Output {
   }
 
   logError (err: Error | string) {
-    try {
-      err = this.color.stripColor(util.inspect(err))
-      this.fs.mkdirpSync(path.dirname(this.errlog))
-      this.fs.appendFileSync(this.errlog, `${err}\n`)
-    } catch (err) { console.error(err) }
+    logToFile(util.inspect(err), this.errlog)
   }
 
   prompt (name: string, options: PromptOptions) {

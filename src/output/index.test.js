@@ -3,12 +3,21 @@
 import Base, {CustomColors} from '.'
 import chalk from 'chalk'
 import stdmock from 'std-mocks'
+import fs from 'fs-extra'
+
+jest.mock('fs-extra')
 
 class Output extends Base {}
 
+let env = process.env
 beforeEach(() => {
   chalk.enabled = false
   CustomColors.supports = false
+  process.env = {}
+})
+
+afterEach(() => {
+  process.env = env
 })
 
 test('outputs to stdout', () => {
@@ -78,15 +87,36 @@ test('warn', () => {
   expect(out.stderr.output).toContain('foo')
 })
 
-test('error', () => {
-  expect.assertions(2)
-  const out = new Output({mock: true})
-  try {
-    out.error('foo\nbar')
-  } catch (err) {
-    expect(err.code).toBe(1)
-    expect(out.stderr.output).toContain('foo')
-  }
+describe('error', () => {
+  test('raises when mocking', () => {
+    expect.assertions(1)
+    const out = new Output({mock: true})
+    let foo = new Error('foo')
+    try {
+      out.error(foo)
+    } catch (err) {
+      expect(err).toEqual(foo)
+    }
+  })
+
+  test('error', () => {
+    expect.assertions(2)
+    const out = new Output({mock: true})
+    try {
+      out.error('foo\nbar')
+    } catch (err) {
+      expect(err.code).toBe(1)
+      expect(out.stderr.output).toContain('foo')
+    }
+  })
+
+  test('logs error', () => {
+    const out = new Output({mock: true})
+    let err = new Error('foo')
+    out.error(err, false)
+    expect(fs.appendFileSync.mock.calls[0][0]).toEqual(out.errlog)
+    expect(fs.appendFileSync.mock.calls[0][1]).toMatch(/^Error: foo/)
+  })
 })
 
 test('styledHeader', () => {
