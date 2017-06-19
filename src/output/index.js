@@ -234,14 +234,14 @@ export default class Output {
   }
 
   logError (err: Error | string) {
-    this._log(err, this.errlog)
+    this._logToFile(err, this.errlog)
   }
 
   logAutocomplete (msg: string) {
-    this._log(msg, this.autoupdatelog)
+    this._logToFile(msg, this.autoupdatelog)
   }
 
-  _log (msg: string | Error, logfile: string) {
+  _logToFile (msg: string | Error, logfile: string) {
     try {
       msg = this.color.stripColor(util.inspect(msg))
       this.fs.mkdirpSync(path.dirname(logfile))
