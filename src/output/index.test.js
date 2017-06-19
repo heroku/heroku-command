@@ -7,9 +7,15 @@ import moment from 'moment'
 
 class Output extends Base {}
 
+let env = process.env
 beforeEach(() => {
   chalk.enabled = false
   CustomColors.supports = false
+  process.env = {}
+})
+
+afterEach(() => {
+  process.env = env
 })
 
 test('outputs to stdout', () => {
@@ -31,19 +37,15 @@ test('outputs to stderr', () => {
 
 describe('timestamps', () => {
   let origFormat = moment.prototype.format
-  beforeAll(() => {
+  beforeEach(() => {
     process.env.HEROKU_TIMESTAMPS = '1'
-    const timestamps = jest.fn()
-    timestamps.mockReturnValue('2017-06-19T07:42:57-07:00')
-    moment.prototype.format = timestamps
-  })
-
-  afterAll(() => {
-    delete process.env['HEROKU_TIMESTAMPS']
-    moment.prototype.format = origFormat
   })
 
   test('outputs with timestamps', () => {
+    const timestamps = jest.fn()
+    timestamps.mockReturnValue('2017-06-19T07:42:57-07:00')
+    moment.prototype.format = timestamps
+
     stdmock.use()
     const out = new Output({mock: false})
     out.stdout.write('\n')
@@ -52,6 +54,8 @@ describe('timestamps', () => {
     out.stdout.log('it works')
     stdmock.restore()
     expect(stdmock.flush().stdout).toEqual(['\n', '[2017-06-19T07:42:57-07:00] it', 'works\n', '[2017-06-19T07:42:57-07:00] it works\n'])
+
+    moment.prototype.format = origFormat
   })
 })
 
