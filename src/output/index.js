@@ -10,7 +10,7 @@ import path from 'path'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import Prompter, {type PromptOptions} from './prompt'
 import type {TableOptions} from './table'
-import moment from 'moment'
+import StreamOutput, {logToFile} from './stream'
 
 class ExitError extends Error {
   constructor (code: number) {
@@ -76,32 +76,6 @@ function getErrorMessage (err: Error): string {
 
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
-export class StreamOutput {
-  output = ''
-  stream: stream$Writable
-  out: Output
-
-  static startOfLine = true
-
-  constructor (stream: stream$Writable, output: Output) {
-    this.out = output
-    this.stream = stream
-  }
-
-  write (msg: string) {
-    if (this.constructor.startOfLine && process.env.HEROKU_TIMESTAMPS) msg = `[${moment().format()}] ${msg}`
-    this.constructor.startOfLine = msg.endsWith('\n')
-    if (this.out.mock) this.output += msg
-    else this.stream.write(msg)
-  }
-
-  log (data: string, ...args: any[]) {
-    let msg = data ? util.format(data, ...args) : ''
-    msg += '\n'
-    this.out.action.pause(() => this.write(msg))
-  }
-}
-
 export default class Output {
   constructor (options: {config?: ?ConfigOptions, mock?: boolean} = {}) {
     this.mock = options.mock
@@ -120,7 +94,6 @@ export default class Output {
   stderr: StreamOutput
   prompter: Prompter
 
-  get fs () { return require('fs-extra') }
   get color (): $Shape<typeof chalk & typeof CustomColors> {
     return new Proxy(chalk, {
       get: (chalk, name) => {
@@ -234,20 +207,7 @@ export default class Output {
   }
 
   logError (err: Error | string) {
-    this._logToFile(err, this.errlog)
-  }
-
-  logAutocomplete (msg: string) {
-    this._logToFile(msg, this.autoupdatelog)
-  }
-
-  _logToFile (msg: string | Error, logfile: string) {
-    try {
-      msg = this.color.stripColor(util.inspect(msg))
-      this.fs.mkdirpSync(path.dirname(logfile))
-      if (process.env.HEROKU_TIMESTAMPS) msg = `[${moment().format()}] ${msg}`
-      this.fs.appendFileSync(logfile, `${msg}\n`)
-    } catch (err) { console.error(err) }
+    logToFile(util.inspect(err), this.errlog)
   }
 
   prompt (name: string, options: PromptOptions) {

@@ -14,19 +14,27 @@ type Task = {
 
 export class ActionBase {
   task: ?Task
+  out: Output
+
+  constructor (out: Output) {
+    this.out = out
+  }
 
   start (action: string, status: ?string) {
     const task = this.task = {action, status, active: this.task && this.task.active}
     this._start()
     task.active = true
+    this.log(task)
   }
 
   stop (msg: string = 'done') {
     const task = this.task
     if (!task) return
+    // TODO: is this right?
     this.status = msg
     this._stop()
     task.active = false
+    this.log({action: task.action, status: msg})
     delete this.task
   }
 
@@ -37,6 +45,7 @@ export class ActionBase {
     if (task.status === status) return
     this._updateStatus(status, task.status)
     task.status = status
+    this.log(task)
   }
 
   pause (fn: Function, icon: ?string) {
@@ -53,6 +62,11 @@ export class ActionBase {
     return ret
   }
 
+  log ({action, status}: {action: string, status: ?string}) {
+    let msg = status ? `${action}... ${status}\n` : `${action}...\n`
+    this.out.stderr.writeLogFile(msg, true)
+  }
+
   _start () { throw new Error('not implemented') }
   _stop () { throw new Error('not implemented') }
   _resume () { if (this.task) this.start(this.task.action, this.task.status) }
@@ -61,13 +75,6 @@ export class ActionBase {
 }
 
 export class SimpleAction extends ActionBase {
-  out: Output
-
-  constructor (out: Output) {
-    super()
-    this.out = out
-  }
-
   _start () {
     const task = this.task
     if (!task) return
@@ -105,7 +112,6 @@ export class SimpleAction extends ActionBase {
 }
 
 export class SpinnerAction extends ActionBase {
-  out: Output
   spinner: number
   ansi: any
   frames: any
@@ -114,8 +120,7 @@ export class SpinnerAction extends ActionBase {
   width: number
 
   constructor (out: Output) {
-    super()
-    this.out = out
+    super(out)
     this.ansi = require('ansi-escapes')
     this.frames = require('./spinners.js')[process.platform === 'win32' ? 'line' : 'dots2'].frames
     this.frameIndex = 0
