@@ -1,7 +1,7 @@
 {
   "name": "cli-engine-command",
   "description": "base CLI command for cli-engine",
-  "version": "5.1.6",
+  "version": "5.1.7",
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
