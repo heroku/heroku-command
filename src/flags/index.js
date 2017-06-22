@@ -18,7 +18,8 @@ export type Flag <T> = {
   optional?: ?boolean,
   parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T),
   completion: ?{
-    cacheDuration: ?number,
+    cacheDuration?: ?number,
+    cacheKey?: ?string,
     options: () => Promise<string[]>
   }
 }
