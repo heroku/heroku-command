@@ -16,7 +16,12 @@ export type Flag <T> = {
   default?: ?() => (Promise<?T> | ?T),
   required?: ?boolean,
   optional?: ?boolean,
-  parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T)
+  parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T),
+  completion: ?{
+    cacheDuration?: ?number,
+    cacheKey?: ?string,
+    options: () => Promise<string[]>
+  }
 }
 
 export const flags = {boolean, string, number}
