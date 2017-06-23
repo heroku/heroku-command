@@ -20,7 +20,7 @@ export type Flag <T> = {
   completion?: ?{
     cacheDuration?: ?number,
     cacheKey?: ?string,
-    options: () => Promise<string[]>
+    options: (?any) => Promise<string[]>
   }
 }
 
