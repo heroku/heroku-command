@@ -1,6 +1,7 @@
 // @flow
 
 import type Command from '../command'
+import type Ouput from '../Output'
 import boolean from './boolean'
 import string from './string'
 import number from './number'
@@ -20,7 +21,7 @@ export type Flag <T> = {
   completion?: ?{
     cacheDuration?: ?number,
     cacheKey?: ?string,
-    options: (?any) => Promise<string[]>
+    options: (?Ouput) => Promise<string[]>
   }
 }
 
