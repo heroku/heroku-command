@@ -70,7 +70,7 @@ export default class Help {
   commandLine (cmd: Class<Command<*>>): [string, ?string] {
     return [
       buildUsage(cmd),
-      cmd.description ? this.out.color.gray(cmd.description) : null
+      cmd.description ? this.out.color.dim(cmd.description) : null
     ]
   }
 
@@ -79,7 +79,7 @@ export default class Help {
     return '\n' + renderList(args.map(a => {
       return [
         a.name.toUpperCase(),
-        a.description ? this.out.color.gray(a.description) : null
+        a.description ? this.out.color.dim(a.description) : null
       ]
     })) + '\n'
   }
@@ -102,7 +102,7 @@ export default class Help {
         if (f.required || f.optional === false) description = `(required) ${description}`
         return [
           ` ${label.join(',').trim()}` + usage,
-          description ? this.out.color.gray(description) : null
+          description ? this.out.color.dim(description) : null
         ]
       })) + '\n'
   }
