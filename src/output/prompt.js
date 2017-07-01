@@ -21,7 +21,7 @@ export default class Prompter {
   prompt (name: string, options: PromptOptions): Promise<string> {
     options = options || {}
     options.name = name
-    options.prompt = name ? this.out.color.gray(`${name}: `) : this.out.color.gray('> ')
+    options.prompt = name ? this.out.color.dim(`${name}: `) : this.out.color.dim('> ')
     let isTTY = process.env.TERM !== 'dumb' && (process.stdin: any).isTTY
     return this.out.action.pause(() => {
       if (options.mask || options.hide) {

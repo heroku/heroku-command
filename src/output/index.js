@@ -121,7 +121,7 @@ export default class Output {
   }
 
   styledHeader (header: string) {
-    this.log(this.color.gray('=== ') + this.color.bold(header))
+    this.log(this.color.dim('=== ') + this.color.bold(header))
   }
 
   styledObject (obj: any, keys: string[]) {
@@ -138,7 +138,7 @@ export default class Output {
       }
     }
     let logKeyValue = (key, value) => {
-      this.log(`${key}:` + ' '.repeat(maxKeyLength - key.length - 1) + pp(value))
+      this.log(`${this.color.blue(key)}:` + ' '.repeat(maxKeyLength - key.length - 1) + pp(value))
     }
     for (var key of (keys || Object.keys(obj).sort())) {
       let value = obj[key]
