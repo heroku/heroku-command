@@ -23,6 +23,9 @@ class ExitError extends Error {
 
 export const CustomColors = {
   supports,
+  // map gray -> dim because it's not solarized compatible
+  gray: (s: string) => chalk.dim(s),
+  grey: (s: string) => chalk.dim(s),
   attachment: (s: string) => chalk.cyan(s),
   addon: (s: string) => chalk.yellow(s),
   configVar: (s: string) => chalk.green(s),
