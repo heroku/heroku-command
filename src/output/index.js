@@ -210,7 +210,7 @@ export default class Output {
   }
 
   logError (err: Error | string) {
-    logToFile(util.inspect(err), this.errlog)
+    logToFile(util.inspect(err) + '\n', this.errlog)
   }
 
   prompt (name: string, options: PromptOptions) {

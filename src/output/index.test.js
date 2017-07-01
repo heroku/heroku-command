@@ -115,7 +115,7 @@ describe('error', () => {
     let err = new Error('foo')
     out.error(err, false)
     expect(fs.appendFileSync.mock.calls[0][0]).toEqual(out.errlog)
-    expect(fs.appendFileSync.mock.calls[0][1]).toMatch(/^Error: foo/)
+    expect(fs.appendFileSync.mock.calls[0][1]).toMatch(/^Error: foo.*\n$/)
   })
 })
 
