@@ -76,6 +76,11 @@ export default class HTTP {
     return this.http.stream(url, options)
   }
 
+  request (url: string, options: $Shape<HTTPRequestOptions> = {}) {
+    options = mergeRequestOptions(this.requestOptions, options)
+    return this.http.request(url, options)
+  }
+
   get _debugHeaders (): boolean {
     if (this.out.config.debug > 1) return true
     const HEROKU_DEBUG_HEADERS = process.env.HEROKU_DEBUG_HEADERS
