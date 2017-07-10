@@ -125,6 +125,25 @@ description of apps:create
 APP_NAME  app to use
 `)
   })
+
+  test('has aliases', () => {
+    expect(help.command(class extends Command {
+      static topic = 'apps'
+      static command = 'create'
+      static description = 'description of apps:create'
+      static aliases = ['foo', 'bar']
+      static args = [{name: 'app_name', description: 'app to use', required: false}]
+    })).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+
+description of apps:create
+
+Aliases:
+  $ cli-engine foo
+  $ cli-engine bar
+
+APP_NAME  app to use
+`)
+  })
 })
 
 describe('command()', () => {
