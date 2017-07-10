@@ -61,6 +61,7 @@ export default class Help {
     let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
     let usage = `${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
     return [usage, cmd.description ? `\n${color.bold(cmd.description.trim())}\n` : '',
+      this.renderAliases(cmd.aliases),
       this.renderArgs(args),
       this.renderFlags(flags),
       cmd.help ? `\n${cmd.help.trim()}\n` : ''
@@ -72,6 +73,12 @@ export default class Help {
       buildUsage(cmd),
       cmd.description ? this.out.color.dim(cmd.description) : null
     ]
+  }
+
+  renderAliases (aliases: ?string[]): string {
+    if (!aliases || !aliases.length) return ''
+    let a = aliases.map(a => `  $ ${this.config.bin} ${a}`).join('\n')
+    return `\n${this.out.color.blue('Aliases:')}\n${a}\n`
   }
 
   renderArgs (args: Arg[]): string {
