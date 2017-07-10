@@ -1,10 +1,10 @@
 // @flow
 
 import {type Arg} from './arg'
-import {type Flag} from './flags'
+import {type Flag, type BooleanFlag} from './flags'
 import type Command from './command'
 
-export type InputFlags = {[name: string]: Flag<*>}
+export type InputFlags = {[name: string]: Flag<*> | BooleanFlag}
 export type Input <Flags: InputFlags> = {
   flags: Flags,
   args: Arg[],
@@ -102,8 +102,9 @@ export default class Parse <Flags: InputFlags> {
     if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument ${this.input.args[output.argv.length].name}`))
 
     for (let name of Object.keys(this.input.flags)) {
-      if (this.input.flags[name].parse) {
-        output.flags[name] = await this.input.flags[name].parse(output.flags[name], this.input.cmd, name)
+      const flag = this.input.flags[name]
+      if (flag.parse) {
+        output.flags[name] = await flag.parse(output.flags[name], this.input.cmd, name)
       }
     }
 

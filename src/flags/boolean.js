@@ -1,8 +1,8 @@
 // @flow
 
-import type {Flag} from '.'
+import {type BooleanFlag} from '.'
 
-type Options = $Shape<Flag<boolean>>
-export default function BooleanFlag (options: Options = {}): Flag<boolean> {
+type Options = $Shape<BooleanFlag>
+export default function boolean (options: Options = {}): BooleanFlag {
   return options
 }
