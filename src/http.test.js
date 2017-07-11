@@ -13,15 +13,15 @@ afterEach(() => {
 })
 
 test('makes an HTTP request', async () => {
+  api = nock('https://api.heroku.com', {
+    reqheaders: {
+      'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
+    }
+  })
   api.get('/')
-    .matchHeader('user-agent', () => {
-      console.warn('TODO: add matchHeader back in when https://github.com/node-nock/nock/issues/925 is resolved')
-      return true
-    })
-    // .matchHeader('user-agent', `cli-engine/0.0.0 node-${process.version}`)
     .reply(200, {message: 'ok'})
 
-  const out = new Output({mock: true, config: {debug: 2}})
+  const out = new Output({mock: true, config: {platform: 'darwin', arch: 'x64', debug: 2}})
   const http = new HTTP(out)
   let response = await http.get('https://api.heroku.com')
   expect(response).toEqual({message: 'ok'})
@@ -49,15 +49,15 @@ describe('.post', async () => {
   })
 })
 test('stream', async () => {
+  api = nock('https://api.heroku.com', {
+    reqheaders: {
+      'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
+    }
+  })
   api.get('/')
-    .matchHeader('user-agent', () => {
-      console.warn('TODO: add matchHeader back in when https://github.com/node-nock/nock/issues/925 is resolved')
-      return true
-    })
-    // .matchHeader('user-agent', `cli-engine/0.0.0 node-${process.version}`)
     .reply(200, {message: 'ok'})
 
-  const out = new Output({mock: true})
+  const out = new Output({mock: true, config: {platform: 'darwin', arch: 'x64'}})
   const http = new HTTP(out)
   const response = await http.stream('https://api.heroku.com')
   const body = JSON.parse(await concat(response))

@@ -34,7 +34,7 @@ export default class HTTP {
     this.config = buildConfig(config || this.out.config)
     this.requestOptions = mergeRequestOptions({
       headers: {
-        'user-agent': `${this.config.name}/${this.config.version} node-${process.version}`
+        'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
       }
     })
     this.http = class extends httpCall {
