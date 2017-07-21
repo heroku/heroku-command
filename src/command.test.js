@@ -27,6 +27,30 @@ test('runs the command', async () => {
   expect(cmd.argv).toEqual([])
 })
 
+test('has stdout', async () => {
+  class Command extends Base {
+    static flags = {print: Flags.string()}
+    async run () {
+      this.out.stdout.log(this.flags.print)
+    }
+  }
+
+  const {stdout} = await Command.mock('--print=foo')
+  expect(stdout).toEqual('foo\n')
+})
+
+test('has stderr', async () => {
+  class Command extends Base {
+    static flags = {print: Flags.string()}
+    async run () {
+      this.out.stderr.log(this.flags.print)
+    }
+  }
+
+  const {stderr} = await Command.mock('--print=foo')
+  expect(stderr).toEqual('foo\n')
+})
+
 test('parses args', async () => {
   const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})

@@ -98,6 +98,14 @@ export default class Command <Flags: InputFlags> {
    */
   async run (...rest: void[]): Promise<void> { }
 
+  get stdout (): string {
+    return this.out.stdout.output
+  }
+
+  get stderr (): string {
+    return this.out.stderr.output
+  }
+
   static buildHelp (config: Config): string {
     let help = new Help(config)
     return help.command(this)
