@@ -9,6 +9,7 @@ export default class Topic {
     this.commands = commands
   }
 
+  static namespace?: ?string
   static topic: string
   static description: ?string
   static hidden = false
