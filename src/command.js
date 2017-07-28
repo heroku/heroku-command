@@ -16,7 +16,7 @@ type RunOptions = {
 }
 
 export default class Command <Flags: InputFlags> {
-  static namespace?: ?string
+  static namespace: ?string
   static topic: string
   static command: ?string
   static description: ?string
