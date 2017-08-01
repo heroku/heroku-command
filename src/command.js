@@ -29,7 +29,10 @@ export default class Command <Flags: InputFlags> {
   static _version: pjson.version
 
   static get id (): string {
-    return this.command ? `${this.topic}:${this.command}` : this.topic
+    return require('util').deprecate(function(){
+      return this.command ? `${this.topic}:${this.command}` : this.topic},
+      'Command.id is deprecated'
+    )()
   }
 
   /**
