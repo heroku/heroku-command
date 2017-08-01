@@ -16,7 +16,6 @@ type RunOptions = {
 }
 
 export default class Command <Flags: InputFlags> {
-  static namespace: ?string
   static topic: string
   static command: ?string
   static description: ?string
@@ -30,7 +29,12 @@ export default class Command <Flags: InputFlags> {
   static _version: pjson.version
 
   static get id (): string {
-    return this.command ? `${this.topic}:${this.command}` : this.topic
+    const command = this.command
+    const topic = this.topic
+    return require('util').deprecate(function(){
+        return command ? `${topic}:${command}` : topic
+      }, 'Command.id is deprecated'
+    )()
   }
 
   /**
