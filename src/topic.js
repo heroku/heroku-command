@@ -16,4 +16,8 @@ export default class Topic {
 
   commands: Class<Command<*>>[]
   out: Output
+
+  static get id (): string {
+    return this.namespace ? `${this.namespace}:${this.topic}` : this.topic
+  }
 }
