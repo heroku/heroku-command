@@ -33,7 +33,7 @@ function renderList (items: [string, ?string][]): string {
 
 function buildUsage (command: Class<Command<*>>): string {
   if (command.usage) return command.usage.trim()
-  let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
+  let cmd = command.id
   if (!command.args) return cmd.trim()
   let args = command.args.map(renderArg)
   return `${cmd} ${args.join(' ')}`.trim()
