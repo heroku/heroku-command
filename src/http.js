@@ -38,9 +38,9 @@ export default class HTTP {
       }
     })
     this.http = class extends httpCall {
-      async _request () {
+      async _request (...args) {
         self._logRequest(this)
-        await super._request()
+        await super._request(...args)
         self._logResponse(this)
       }
     }
