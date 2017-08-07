@@ -13,5 +13,5 @@ export type Completion = {
   cacheDuration?: ?number,
   cacheKey?: ?string,
   cacheContext?: (CompletionContext) => Promise<string>,
-  options: (Output) => Promise<string[]>
+  options: (CompletionContext) => Promise<string[]>
 }
