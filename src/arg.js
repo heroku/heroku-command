@@ -1,6 +1,5 @@
 // @flow
 
-import type Output from './output'
 import type {Completion} from './completion'
 
 export type Arg = {
