@@ -1,6 +1,7 @@
 // @flow
 
 import type Output from './output'
+import type {Completion} from './completion'
 
 export type Arg = {
   name: string,
@@ -8,9 +9,5 @@ export type Arg = {
   required?: boolean,
   optional?: boolean,
   hidden?: boolean,
-  completion?: ?{
-    cacheDuration?: ?number,
-    cacheKey?: ?string,
-    options: (Output) => Promise<string[]>
-  }
+  completion?: ?Completion
 }

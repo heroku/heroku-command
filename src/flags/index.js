@@ -5,6 +5,7 @@ import type Output from '../output'
 import boolean from './boolean'
 import string from './string'
 import number from './number'
+import type {Completion} from '../completion'
 export {default as merge} from 'lodash.merge'
 
 type AlphabetUppercase = | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'X' | 'Y' | 'Z'
@@ -25,11 +26,7 @@ export type Flag <T> = {
   required?: ?boolean,
   optional?: ?boolean,
   parse?: ?(?string, ?Command<*>, string) => (Promise<?T> | ?T),
-  completion?: ?{
-    cacheDuration?: ?number,
-    cacheKey?: ?string,
-    options: (Output) => Promise<string[]>
-  }
+  completion?: ?Completion
 }
 
 export const flags = {boolean, string, number}
