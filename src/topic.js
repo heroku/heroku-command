@@ -9,7 +9,6 @@ export default class Topic {
     this.commands = commands
   }
 
-  static namespace: ?string
   static topic: string
   static description: ?string
   static hidden = false
@@ -18,6 +17,6 @@ export default class Topic {
   out: Output
 
   static get id (): string {
-    return this.namespace ? `${this.namespace}:${this.topic}` : this.topic
+    return this.topic
   }
 }
