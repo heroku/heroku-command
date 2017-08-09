@@ -3,9 +3,9 @@
 import type Output from './output'
 
 type CompletionContext = {
-  args: ?{[name: string]: string},
-  flags: ?{[name: string]: string},
-  argv: ?string[],
+  args?: ?{[name: string]: string},
+  flags?: ?{[name: string]: string},
+  argv?: ?string[],
   out: Output
 }
 
