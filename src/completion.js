@@ -3,15 +3,14 @@
 import type Output from './output'
 
 type CompletionContext = {
-  args: ?{string: ?string}[],
-  flags: ?{string: ?string}[],
-  argv: string[],
-  output: Output
+  args: ?{[name: string]: string},
+  flag: ?{[name: string]: string},
+  argv: ?string[],
+  out: Output
 }
 
 export type Completion = {
   cacheDuration?: ?number,
-  cacheKey?: ?string,
-  cacheContext?: (CompletionContext) => Promise<string>,
+  cacheKey?: ?(CompletionContext) => Promise<string>,
   options: (CompletionContext) => Promise<string[]>
 }
