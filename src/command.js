@@ -29,7 +29,7 @@ export default class Command <Flags: InputFlags> {
   static _version: pjson.version
 
   static get id (): string {
-    return this.topic ? `${this.topic}:${this.command}` : this.command
+    return [this.topic, this.command].filter(s => s).join(':')
   }
 
   /**
