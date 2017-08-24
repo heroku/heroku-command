@@ -16,7 +16,6 @@ type RunOptions = {
 }
 
 export default class Command <Flags: InputFlags> {
-  static namespace: ?string
   static topic: string
   static command: ?string
   static description: ?string
@@ -31,7 +30,6 @@ export default class Command <Flags: InputFlags> {
 
   static get id (): string {
     let cmd = this.command ? `${this.topic}:${this.command}` : this.topic
-    if (this.namespace) cmd = `${this.namespace}:${cmd}`
     return cmd
   }
 
