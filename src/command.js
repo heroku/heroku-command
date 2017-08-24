@@ -16,8 +16,8 @@ type RunOptions = {
 }
 
 export default class Command <Flags: InputFlags> {
-  static topic: ?string
-  static command: string
+  static topic: string
+  static command: ?string
   static description: ?string
   static hidden: ?boolean
   static usage: ?string
@@ -29,7 +29,8 @@ export default class Command <Flags: InputFlags> {
   static _version: pjson.version
 
   static get id (): string {
-    return [this.topic, this.command].filter(s => s).join(':')
+    let cmd = this.command ? `${this.topic}:${this.command}` : this.topic
+    return cmd
   }
 
   /**
