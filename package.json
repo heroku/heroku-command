@@ -9,7 +9,7 @@
     "cardinal": "1.x",
     "chalk": "^1.0.0",
     "fs-extra": "^4.0.1",
-    "http-call": "^2.1.4",
+    "http-call": "^2.1.5",
     "lodash.ary": "^4.1.1",
     "lodash.defaults": "^4.2.0",
     "lodash.get": "^4.4.2",
