@@ -52,6 +52,7 @@ function table <T: {height?: number}> (out: Output, data: Array<T>, options: $Sh
     colSep: '  ',
     after: () => {},
     headerAnsi: identity,
+    printLine: s => out.log(s),
     printRow: function (cells) {
       this.printLine(cells.join(this.colSep).trimRight())
     },

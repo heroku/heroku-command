@@ -161,3 +161,15 @@ describe('inspect', () => {
     expect(console.dir).toBeCalledWith({foo: 'bar'}, {colors: true})
   })
 })
+
+test('table', () => {
+  const out = new Output({mock: true})
+  out.table([{name: 'a'}, {name: 'b'}], {
+    columns: [{key: 'name'}]
+  })
+  expect(out.stdout.output).toBe(`name
+────
+a
+b
+`)
+})
