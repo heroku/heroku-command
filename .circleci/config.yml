@@ -13,6 +13,7 @@ jobs:
             - v1-yarn-master
       - run: git submodule sync && git submodule update --init --recursive --remote
       - run: yarn
+      - run: pwd
       - run: |
           npx jest --coverage --runInBand
           bash <(curl -s https://codecov.io/bash)
