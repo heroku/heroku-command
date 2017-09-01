@@ -16,7 +16,6 @@ jobs:
       - run: |
           npx jest --coverage --runInBand
           bash <(curl -s https://codecov.io/bash)
-      - run: {command: "./bin/run version", when: always}
       - run: {command: "npx eslint .", when: always}
       - run: {command: "npx flow check", when: always}
       - save_cache:
