@@ -4,6 +4,7 @@ import Base from './command'
 import {type ICommand, buildConfig} from 'cli-engine-config'
 import {flags as Flags} from './flags'
 import Output from './output'
+import nock from 'nock'
 
 class Command extends Base {
   static topic = 'foo'
@@ -88,4 +89,68 @@ this is
 
 some multiline help\n`)
   expect(Command.buildHelpLine(config)).toEqual(['config:get', null])
+})
+
+describe('http', () => {
+  let api
+  let command
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com')
+    nock.disableNetConnect()
+    command = new Command()
+  })
+  afterEach(() => {
+    api.done()
+  })
+
+  test('makes an HTTP request', async () => {
+    api = nock('https://api.heroku.com', {
+      reqheaders: {
+        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
+      }
+    })
+    api.get('/')
+      .reply(200, {message: 'ok'})
+
+    let command = new Command({config: {platform: 'darwin', arch: 'x64'}})
+    let {body} = await command.http.get('https://api.heroku.com')
+    expect(body).toEqual({message: 'ok'})
+  })
+
+  describe('.post', async () => {
+    test('makes a post request with body', async () => {
+      api.post('/', {'karate': 'chop', 'judo': 'throw', 'jujitsu': 'strangle'})
+        .reply(200, {message: 'ok'})
+      const body = {
+        'karate': 'chop',
+        'judo': 'throw',
+        'jujitsu': 'strangle'
+      }
+
+      await command.http.post('https://api.heroku.com', {'body': body})
+    })
+  })
+  test('stream', async () => {
+    api = nock('https://api.heroku.com', {
+      reqheaders: {
+        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
+      }
+    })
+    api.get('/')
+      .reply(200, {message: 'ok'})
+
+    let command = new Command({config: {platform: 'darwin', arch: 'x64'}})
+    const {response} = await command.http.stream('https://api.heroku.com')
+    const body = JSON.parse(await concat(response))
+    expect(body).toEqual({message: 'ok'})
+  })
+
+  function concat (stream) {
+    return new Promise(resolve => {
+      let strings = []
+      stream.on('data', data => strings.push(data))
+      stream.on('end', () => resolve(strings.join('')))
+    })
+  }
 })

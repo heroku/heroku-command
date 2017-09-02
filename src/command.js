@@ -5,7 +5,7 @@ import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './pars
 import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
 import type {Arg} from './arg'
-import HTTP from './http'
+import HTTP from 'http-call'
 import Help from './help'
 
 type RunOptions = {
@@ -15,7 +15,7 @@ type RunOptions = {
   config?: ConfigOptions
 }
 
-export default class Command <Flags: InputFlags> {
+export default class Command {
   static topic: string
   static command: ?string
   static description: ?string
@@ -24,7 +24,7 @@ export default class Command <Flags: InputFlags> {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-  static flags: Flags
+  static flags: InputFlags
   static args: Arg[] = []
   static _version: pjson.version
 
@@ -60,16 +60,20 @@ export default class Command <Flags: InputFlags> {
   }
 
   config: Config
-  http: HTTP
+  http: Class<HTTP>
   out: Output
-  flags: OutputFlags<Flags> = {}
+  flags: OutputFlags = {}
   argv: string[]
   args: {[name: string]: string} = {}
 
   constructor (options: {config?: ConfigOptions, output?: Output} = {}) {
     this.config = buildConfig(options.config)
     this.out = options.output || new Output({config: this.config})
-    this.http = new HTTP(this.out)
+    this.http = HTTP.defaults({
+      headers: {
+        'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
+      }
+    })
   }
 
   async init () {

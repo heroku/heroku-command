@@ -1,35 +1,35 @@
 // @flow
 
 import {type Arg} from './arg'
-import {type Flag, type BooleanFlag} from './flags'
+import {type BooleanFlag, type OptionFlag} from './flags'
 import type Command from './command'
 
-export type InputFlags = {[name: string]: Flag<*> | BooleanFlag}
-export type Input <Flags: InputFlags> = {
-  flags: Flags,
+export type InputFlags = {[name: string]: BooleanFlag | OptionFlag<*>}
+export type Input = {
+  flags: InputFlags,
   args: Arg[],
   variableArgs: boolean,
-  cmd?: Command<Flags>
+  cmd?: Command
 }
 
-export type OutputFlags <Flags: InputFlags> = {[name: $Enum<Flags>]: *}
+export type OutputFlags = {[name: string]: any}
 export type OutputArgs = {[name: string]: string}
 
-export type Output <Flags> = {
-  flags: OutputFlags<Flags>,
+export type Output = {
+  flags: OutputFlags,
   argv: Array<*>,
   args: {[name: string]: string}
 }
 
-export default class Parse <Flags: InputFlags> {
-  input: Input<Flags>
-  constructor (input: $Shape<Input<Flags>>) {
+export default class Parse {
+  input: Input
+  constructor (input: $Shape<Input>) {
     this.input = input
     input.args = input.args || []
     input.flags = input.flags || {}
   }
 
-  async parse (output: $Shape<Output<Flags>> = {}) {
+  async parse (output: $Shape<Output> = {}) {
     let argv = (output.argv || [])
     output.flags = output.flags || {}
     output.argv = []
@@ -105,9 +105,17 @@ export default class Parse <Flags: InputFlags> {
       const flag = this.input.flags[name]
       if (flag.parse) {
         output.flags[name] = await flag.parse(output.flags[name], this.input.cmd, name)
+        flag.required = flag.required || flag.optional === false
+        if (flag.required && !output.flags[name]) throw new RequiredFlagError(name)
       }
     }
 
     return output
+  }
+}
+
+export class RequiredFlagError extends Error {
+  constructor (name: string) {
+    super(`Missing required flag --${name}`)
   }
 }

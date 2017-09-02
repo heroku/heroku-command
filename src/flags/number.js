@@ -1,19 +1,12 @@
 // @flow
 
-import type {Flag} from '.'
-import {RequiredFlagError} from './string'
+import type {OptionFlag} from '.'
 
-type Options = $Shape<Flag<number>>
+type Options = $Shape<OptionFlag<number>>
 
-export default function NumberFlag (options: Options = {}): Flag<number> {
-  const required = options.optional === false || options.required
-  const defaultOptions: Options = {
-    parse: (input, cmd, name) => {
-      let value = input
-      if (!value && options.default) return options.default()
-      if (!value && required) throw new RequiredFlagError(name)
-      if (value) return parseInt(input)
-    }
+export default function StringFlag (options: Options = {}): OptionFlag<number> {
+  return {
+    parse: (input, cmd, name) => parseInt(input),
+    ...options
   }
-  return Object.assign(defaultOptions, options)
 }
