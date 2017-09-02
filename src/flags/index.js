@@ -23,7 +23,7 @@ export type OptionFlag <T> = Flag & {
   default?: ?() => Promise<?T>,
   required?: ?boolean,
   optional?: ?boolean,
-  parse: (?string, ?Command, string) => (Promise<?T> | ?T),
+  parse: (?string, ?Command | void, string | void) => (Promise<?T> | ?T),
   completion?: ?Completion
 }
 
