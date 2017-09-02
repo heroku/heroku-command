@@ -12,7 +12,7 @@ type AlphabetLowercase = | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' |
 export type Flag = {
   char?: (AlphabetLowercase | AlphabetUppercase),
   description?: string,
-  hidden?: ?boolean,
+  hidden?: boolean,
 }
 
 export type BooleanFlag = Flag & {
