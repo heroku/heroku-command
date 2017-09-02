@@ -15,7 +15,7 @@ type RunOptions = {
   config?: ConfigOptions
 }
 
-export default class Command {
+export default class Command <Flags: InputFlags> {
   static topic: string
   static command: ?string
   static description: ?string
@@ -24,7 +24,7 @@ export default class Command {
   static help: ?string
   static aliases: string[] = []
   static variableArgs = false
-  static flags: InputFlags
+  static flags: Flags
   static args: Arg[] = []
   static _version: pjson.version
 

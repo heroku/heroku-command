@@ -9,7 +9,7 @@ export type Input = {
   flags: InputFlags,
   args: Arg[],
   variableArgs: boolean,
-  cmd?: Command
+  cmd?: Command<any>
 }
 
 export type OutputFlags = {[name: string]: any}

@@ -1756,9 +1756,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-3.0.0.tgz#4ee926fdaf87ab3e25642ee9617a5143111a7ee1"
+http-call@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-3.0.1.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
   dependencies:
     debug "^3.0.1"
     is-retry-allowed "^1.1.0"

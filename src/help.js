@@ -31,7 +31,7 @@ function renderList (items: [string, ?string][]): string {
   return lines.join('\n')
 }
 
-function buildUsage (command: Class<Command>): string {
+function buildUsage (command: Class<Command<*>>): string {
   if (command.usage) return command.usage.trim()
   let cmd = command.id
   if (!command.args) return cmd.trim()
@@ -54,7 +54,7 @@ export default class Help {
     this.out = output || new Output({config})
   }
 
-  command (cmd: Class<Command>): string {
+  command (cmd: Class<Command<*>>): string {
     let color = this.out.color
     let flags = Object.keys(cmd.flags || {}).map(f => [f, cmd.flags[f]]).filter(f => !f[1].hidden)
     let args = (cmd.args || []).filter(a => !a.hidden)
@@ -68,7 +68,7 @@ export default class Help {
     ].join('')
   }
 
-  commandLine (cmd: Class<Command>): [string, ?string] {
+  commandLine (cmd: Class<Command<*>>): [string, ?string] {
     return [
       buildUsage(cmd),
       cmd.description ? this.out.color.dim(cmd.description) : null

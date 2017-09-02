@@ -7,7 +7,7 @@ import boolean from './flags/boolean'
 import string from './flags/string'
 import Output from './output'
 
-class AppsCreate extends Command {
+class AppsCreate extends Command<*> {
   static topic = 'apps'
   static command = 'create'
   static description = 'description of apps:create'
@@ -50,7 +50,7 @@ multiline help
   })
 
   test('has just flags', () => {
-    expect(help.command(class extends Command {
+    expect(help.command(class extends Command<*> {
       static topic = 'apps'
       static command = 'create'
       static flags = {
@@ -69,7 +69,7 @@ Flags:
   })
 
   test('has flags + description', () => {
-    expect(help.command(class extends Command {
+    expect(help.command(class extends Command<*> {
       static topic = 'apps'
       static command = 'create'
       static description = 'description of apps:create'
@@ -91,7 +91,7 @@ Flags:
   })
 
   test('has description + help', () => {
-    expect(help.command(class extends Command {
+    expect(help.command(class extends Command<*> {
       static topic = 'apps'
       static command = 'create'
       static help = 'description of apps:create'
@@ -113,7 +113,7 @@ description of apps:create
   })
 
   test('has description + args', () => {
-    expect(help.command(class extends Command {
+    expect(help.command(class extends Command<*> {
       static topic = 'apps'
       static command = 'create'
       static description = 'description of apps:create'
@@ -127,7 +127,7 @@ APP_NAME  app to use
   })
 
   test('has aliases', () => {
-    expect(help.command(class extends Command {
+    expect(help.command(class extends Command<*> {
       static topic = 'apps'
       static command = 'create'
       static description = 'description of apps:create'

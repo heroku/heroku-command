@@ -3,7 +3,7 @@
 import Command from '../command'
 import StringFlag from './string'
 
-class MyCommand extends Command {
+class MyCommand extends Command<*> {
   static flags = {foo: StringFlag()}
   foo: ?string
   async run () {

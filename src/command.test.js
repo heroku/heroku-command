@@ -6,7 +6,7 @@ import {flags as Flags} from './flags'
 import Output from './output'
 import nock from 'nock'
 
-class Command extends Base {
+class Command extends Base<*> {
   static topic = 'foo'
   static command = 'bar'
   static flags = {myflag: Flags.boolean()}
@@ -29,8 +29,11 @@ test('runs the command', async () => {
 })
 
 test('has stdout', async () => {
-  class Command extends Base {
-    static flags = {print: Flags.string()}
+  class Command extends Base<*> {
+    static flags = {
+      print: Flags.string(),
+      bool: Flags.boolean()
+    }
     async run () {
       this.out.stdout.log(this.flags.print)
     }
@@ -41,7 +44,7 @@ test('has stdout', async () => {
 })
 
 test('has stderr', async () => {
-  class Command extends Base {
+  class Command extends Base<*> {
     static flags = {print: Flags.string()}
     async run () {
       this.out.stderr.log(this.flags.print)
@@ -60,7 +63,7 @@ test('parses args', async () => {
 })
 
 test('passes error to output', async () => {
-  class Command extends Base {
+  class Command extends Base<*> {
     run () { throw new Error('oops!') }
   }
 
@@ -74,7 +77,7 @@ test('passes error to output', async () => {
 })
 
 test('has help', async () => {
-  class Command extends Base {
+  class Command extends Base<*> {
     static topic = 'config'
     static command = 'get'
     static help = `this is

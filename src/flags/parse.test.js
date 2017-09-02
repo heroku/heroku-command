@@ -12,7 +12,7 @@ let stringParser = function (s: ?string): ?string {
   if (s) return s + '_bar'
 }
 
-class Command extends Base {
+class Command extends Base<*> {
   static flags = {
     foo: flags.number({required: true, parse: numParser}),
     bar: flags.string({required: true, parse: stringParser})

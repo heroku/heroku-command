@@ -10,7 +10,7 @@ type CompletionContext = {
 }
 
 export type Completion = {
-  cacheDuration?: ?number,
-  cacheKey?: ?(CompletionContext) => Promise<string>,
+  cacheDuration?: number,
+  cacheKey?: (CompletionContext) => Promise<string>,
   options: (CompletionContext) => Promise<string[]>
 }

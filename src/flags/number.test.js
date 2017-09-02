@@ -3,7 +3,7 @@
 import Command from '../command'
 import NumberFlag from './number'
 
-class MyCommand extends Command {
+class MyCommand extends Command<*> {
   static flags = {foo: NumberFlag()}
   foo: ?number
   async run () {
