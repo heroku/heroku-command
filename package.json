@@ -27,17 +27,17 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "7.2.3",
-    "babel-jest": "20.0.3",
+    "babel-jest": "^21.0.0",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "cli-engine-config": "^2.0.0",
-    "eslint": "^4.6.0",
+    "eslint": "^4.6.1",
     "eslint-config-standard": "10.2.1",
     "eslint-plugin-flowtype": "^2.35.1",
     "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jest": "20.0.3",
+    "eslint-plugin-jest": "^21.0.0",
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "3.5.0",
     "eslint-plugin-standard": "3.0.1",
@@ -45,9 +45,8 @@
     "flow-copy-source": "^1.2.1",
     "flow-typed": "^2.1.5",
     "husky": "^0.14.3",
-    "jest": "20.0.4",
+    "jest": "^21.0.1",
     "jest-junit": "^3.0.0",
-    "lint-staged": "^4.0.4",
     "nock": "^9.0.14",
     "nodemon": "1.11.0",
     "rimraf": "2.6.1",
@@ -75,12 +74,6 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "main": "lib/index.js",
   "peerDependencies": {
     "cli-engine-config": "^2.0.0"
@@ -90,7 +83,7 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "copy-flow": "flow-copy-source -v -i '**/*.test.js' src lib",
-    "precommit": "lint-staged",
+    "precommit": "eslint .",
     "prepare": "npm run clean && npm run build && npm run copy-flow",
     "test": "jest && flow && eslint .",
     "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
