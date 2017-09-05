@@ -47,6 +47,7 @@
     "husky": "^0.14.3",
     "jest": "^21.0.1",
     "jest-junit": "^3.0.0",
+    "lint-staged": "^4.1.0",
     "nock": "^9.0.14",
     "nodemon": "1.11.0",
     "rimraf": "2.6.1",
@@ -74,6 +75,9 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
+  "lint-staged": {
+    "src/**/*.js": "eslint"
+  },
   "main": "lib/index.js",
   "peerDependencies": {
     "cli-engine-config": "^2.0.0"
@@ -83,7 +87,7 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "copy-flow": "flow-copy-source -v -i '**/*.test.js' src lib",
-    "precommit": "eslint .",
+    "precommit": "lint-staged",
     "prepare": "npm run clean && npm run build && npm run copy-flow",
     "test": "jest && flow && eslint .",
     "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
