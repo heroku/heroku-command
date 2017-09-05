@@ -5,11 +5,12 @@
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
-    "ansi-escapes": "2.x",
+    "ansi-escapes": "^3.0.0",
     "cardinal": "1.x",
     "chalk": "^1.0.0",
+    "cli-engine-config": "^3.0.0",
     "fs-extra": "^4.0.1",
-    "http-call": "^3.0.1",
+    "http-call": "^3.0.2",
     "lodash.ary": "^4.1.1",
     "lodash.defaults": "^4.2.0",
     "lodash.get": "^4.4.2",
@@ -32,7 +33,6 @@
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "cli-engine-config": "^2.0.0",
     "eslint": "^4.6.1",
     "eslint-config-standard": "10.2.1",
     "eslint-plugin-flowtype": "^2.35.1",
@@ -49,7 +49,7 @@
     "jest-junit": "^3.0.0",
     "lint-staged": "^4.1.0",
     "nock": "^9.0.14",
-    "nodemon": "1.11.0",
+    "nodemon": "^1.12.0",
     "rimraf": "2.6.1",
     "std-mocks": "1.0.1"
   },
@@ -79,9 +79,6 @@
     "src/**/*.js": "eslint"
   },
   "main": "lib/index.js",
-  "peerDependencies": {
-    "cli-engine-config": "^2.0.0"
-  },
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "build": "babel src -d lib --ignore '*.test.js'",

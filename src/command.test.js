@@ -3,7 +3,6 @@
 import Base from './command'
 import {type ICommand, buildConfig} from 'cli-engine-config'
 import {flags as Flags} from './flags'
-import Output from './output'
 import nock from 'nock'
 
 class Command extends Base<*> {
@@ -62,20 +61,6 @@ test('parses args', async () => {
   expect(cmd.args).toEqual({myarg: 'one'})
 })
 
-test('passes error to output', async () => {
-  class Command extends Base<*> {
-    run () { throw new Error('oops!') }
-  }
-
-  let mockError = jest.fn()
-  class ErrOutput extends Output {
-    error = mockError
-  }
-
-  await Command.run({output: new ErrOutput()})
-  expect(mockError).toBeCalled()
-})
-
 test('has help', async () => {
   class Command extends Base<*> {
     static topic = 'config'
@@ -85,7 +70,7 @@ test('has help', async () => {
 some multiline help
 `
   }
-  let config = buildConfig()
+  let config = buildConfig({mock: true})
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
 
 this is

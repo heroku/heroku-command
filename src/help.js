@@ -51,7 +51,7 @@ export default class Help {
 
   constructor (config: Config, output: ?Output) {
     this.config = config
-    this.out = output || new Output({config})
+    this.out = output || new Output(config)
   }
 
   command (cmd: Class<Command<*>>): string {

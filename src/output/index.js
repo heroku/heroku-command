@@ -80,9 +80,9 @@ function getErrorMessage (err: Error): string {
 const arrow = process.platform === 'win32' ? '!' : '▸'
 
 export default class Output {
-  constructor (options: {config?: ?ConfigOptions, mock?: boolean} = {}) {
-    this.mock = options.mock
-    this.config = buildConfig(options.config)
+  constructor (config?: ?ConfigOptions = {}) {
+    this.config = buildConfig(config)
+    this.mock = this.config.mock
     this.stdout = new StreamOutput(process.stdout, this)
     this.stderr = new StreamOutput(process.stderr, this)
     this.action = shouldDisplaySpinner(this) ? new SpinnerAction(this) : new SimpleAction(this)

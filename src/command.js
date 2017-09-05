@@ -8,13 +8,6 @@ import type {Arg} from './arg'
 import HTTP from 'http-call'
 import Help from './help'
 
-type RunOptions = {
-  argv?: string[],
-  mock?: boolean,
-  output?: Output,
-  config?: ConfigOptions
-}
-
 export default class Command <Flags: InputFlags> {
   static topic: string
   static command: ?string
@@ -43,15 +36,11 @@ export default class Command <Flags: InputFlags> {
   /**
    * instantiate and run the command
    */
-  static async run (options: RunOptions = {}): Promise<this> {
-    let config = buildConfig(options.config)
-    let output = options.output || new Output({mock: options.mock, config})
-    let cmd = new this({config, output})
-    cmd.argv = options.argv || []
-    // if (this.flags.debug) this.config.debug = 1
+  static async run (config: ?ConfigOptions): Promise<this> {
+    const cmd = new this({config})
     try {
-      const args = await cmd.init()
-      await cmd.run(args)
+      await cmd.init()
+      await cmd.run()
       await cmd.out.done()
     } catch (err) {
       cmd.out.error(err)
@@ -66,9 +55,10 @@ export default class Command <Flags: InputFlags> {
   argv: string[]
   args: {[name: string]: string} = {}
 
-  constructor (options: {config?: ConfigOptions, output?: Output} = {}) {
+  constructor (options: {config?: ConfigOptions} = {}) {
     this.config = buildConfig(options.config)
-    this.out = options.output || new Output({config: this.config})
+    this.argv = this.config.argv
+    this.out = new Output(this.config)
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
