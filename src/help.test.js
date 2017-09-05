@@ -39,9 +39,9 @@ description of apps:create
 APP_NAME  app to use
 
 Flags:
- -f, --foo     foobar
- -r, --remote
- --force       force it
+ -f, --foo FOO        foobar
+ -r, --remote REMOTE
+ --force              force it
 
 some
 
@@ -62,9 +62,9 @@ multiline help
     })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
- -f, --foo     foobar
- -r, --remote
- --force       force it
+ -f, --foo FOO        foobar
+ -r, --remote REMOTE
+ --force              force it
 `)
   })
 
@@ -84,9 +84,9 @@ Flags:
 description of apps:create
 
 Flags:
- -f, --foo     foobar
- -r, --remote
- --force       force it
+ -f, --foo FOO        foobar
+ -r, --remote REMOTE
+ --force              force it
 `)
   })
 
@@ -104,9 +104,9 @@ Flags:
     })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
- -f, --foo     foobar
- -r, --remote
- --force       force it
+ -f, --foo FOO        foobar
+ -r, --remote REMOTE
+ --force              force it
 
 description of apps:create
 `)

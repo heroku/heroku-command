@@ -104,7 +104,7 @@ export default class Help {
         let label = []
         if (f.char) label.push(`-${f.char}`)
         if (name) label.push(` --${name}`)
-        let usage = f.hasValue ? ` ${name.toUpperCase()}` : ''
+        let usage = f.parse ? ` ${name.toUpperCase()}` : ''
         let description = f.description || ''
         if (f.required || f.optional === false) description = `(required) ${description}`
         return [
