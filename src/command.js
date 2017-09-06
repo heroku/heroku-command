@@ -30,7 +30,7 @@ export default class Command <Flags: InputFlags> {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static async mock (...argv: string[]): Promise<this> {
-    argv.unshift('argv0')
+    argv.unshift('argv0', 'cmd')
     return this.run({argv, mock: true})
   }
 
@@ -74,7 +74,7 @@ export default class Command <Flags: InputFlags> {
       variableArgs: this.constructor.variableArgs,
       cmd: this
     })
-    const {argv, flags, args} = await parser.parse({flags: this.flags, argv: this.argv.slice(1)})
+    const {argv, flags, args} = await parser.parse({flags: this.flags, argv: this.argv.slice(2)})
     this.flags = flags
     this.argv = argv
     this.args = args
