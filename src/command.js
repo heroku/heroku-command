@@ -19,7 +19,7 @@ export default class Command <Flags: InputFlags> {
   static variableArgs = false
   static flags: Flags
   static args: Arg[] = []
-  static _version: pjson.version
+  static _version = pjson.version
 
   static get id (): string {
     let cmd = this.command ? `${this.topic}:${this.command}` : this.topic
