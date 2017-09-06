@@ -789,9 +789,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-config@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.0.0.tgz#599a3e6d042c519ef2fff3df97b473eb1fb64f0b"
+cli-engine-config@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.1.0.tgz#04bf34ca9f81ae9046ef858836a59aa7e4594035"
   dependencies:
     fs-extra "^4.0.1"
     uuid "^3.1.0"
@@ -1456,9 +1456,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flow-bin@^0.54.0:
-  version "0.54.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.54.0.tgz#f2fb0478e9e99702b623c9ed84079a39903bba77"
+flow-bin@^0.54.1:
+  version "0.54.1"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.54.1.tgz#7101bcccf006dc0652714a8aef0c72078a760510"
 
 flow-copy-source@^1.2.1:
   version "1.2.1"
@@ -2563,9 +2563,9 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lint-staged@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-4.1.0.tgz#5d983361566aa5974cd58f0a64afa5acbd9d6118"
+lint-staged@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-4.1.2.tgz#d49caa518032eba51a45a5ce9a13d8641c0cf0c0"
   dependencies:
     app-root-path "^2.0.0"
     chalk "^2.1.0"
