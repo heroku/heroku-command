@@ -8,7 +8,7 @@ import {type Config} from 'cli-engine-config'
 import Output from './output'
 
 function linewrap (length: number, s: string): string {
-  const linewrap = require('./output/linewrap')
+  const linewrap = require('@heroku/linewrap')
   return linewrap(length, stdtermwidth, {
     skipScheme: 'ansi-color'
   })(s).trim()

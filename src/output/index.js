@@ -1,7 +1,6 @@
 // @flow
 
 import util from 'util'
-import linewrap from './linewrap'
 import {errtermwidth} from './screen'
 import {SimpleAction, SpinnerAction, ActionBase, shouldDisplaySpinner} from './action'
 import supports from 'supports-color'
@@ -42,6 +41,7 @@ export const CustomColors = {
 if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) CustomColors.supports = false
 
 function wrap (msg: string): string {
+  const linewrap = require('@heroku/linewrap')
   return linewrap(6,
     errtermwidth, {
       skipScheme: 'ansi-color',

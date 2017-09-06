@@ -5,6 +5,7 @@
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
+    "@heroku/linewrap": "^1.0.0",
     "ansi-escapes": "^3.0.0",
     "cardinal": "1.x",
     "chalk": "^1.0.0",
@@ -63,9 +64,6 @@
   "jest": {
     "testEnvironment": "node",
     "rootDir": "./src",
-    "coveragePathIgnorePatterns": [
-      "src/output/linewrap.js"
-    ],
     "setupFiles": [
       "../test/init.js"
     ]
