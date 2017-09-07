@@ -11,7 +11,7 @@ import Prompter, {type PromptOptions} from './prompt'
 import type {TableOptions} from './table'
 import StreamOutput, {logToFile} from './stream'
 
-class ExitError extends Error {
+export class ExitError extends Error {
   constructor (code: number) {
     super(`Exited with code: ${code}`)
     this.code = code
@@ -175,7 +175,7 @@ export default class Output {
   get autoupdatelog (): string { return path.join(this.config.cacheDir, 'autoupdate.log') }
 
   error (err: Error | string, exitCode?: number | false = 1) {
-    if (this.mock && typeof err !== 'string' && exitCode !== false) throw err
+    if (err instanceof ExitError) throw err
     try {
       if (typeof err === 'string') err = new Error(err)
       this.logError(err)
@@ -224,6 +224,6 @@ export default class Output {
 
   exit (code: number = 0) {
     if (this.config.debug) console.error(`Exiting with code: ${code}`)
-    if (this.mock) throw new ExitError(code); else process.exit(code)
+    throw new ExitError(code)
   }
 }

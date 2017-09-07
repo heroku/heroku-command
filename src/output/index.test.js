@@ -88,17 +88,6 @@ test('warn', () => {
 })
 
 describe('error', () => {
-  test('raises when mocking', () => {
-    expect.assertions(1)
-    const out = new Output({mock: true})
-    let foo = new Error('foo')
-    try {
-      out.error(foo)
-    } catch (err) {
-      expect(err).toEqual(foo)
-    }
-  })
-
   test('error', () => {
     expect.assertions(2)
     const out = new Output({mock: true})
