@@ -1,10 +1,7 @@
 // @flow
 
-import type Command from './command'
-import {type Arg} from './arg'
-import {type Flag} from './flags'
 import {stdtermwidth} from './output/screen'
-import {type Config} from 'cli-engine-config'
+import type {Config, ICommand, Arg, Flag} from 'cli-engine-config'
 import Output from './output'
 
 function linewrap (length: number, s: string): string {
@@ -31,7 +28,7 @@ function renderList (items: [string, ?string][]): string {
   return lines.join('\n')
 }
 
-function buildUsage (command: Class<Command<*>>): string {
+function buildUsage (command: ICommand): string {
   if (command.usage) return command.usage.trim()
   let cmd = command.id
   if (!command.args) return cmd.trim()
@@ -54,9 +51,9 @@ export default class Help {
     this.out = output || new Output(config)
   }
 
-  command (cmd: Class<Command<*>>): string {
+  command (cmd: ICommand): string {
     let color = this.out.color
-    let flags = Object.keys(cmd.flags || {}).map(f => [f, cmd.flags[f]]).filter(f => !f[1].hidden)
+    let flags: any = Object.entries(cmd.flags || {}).filter(([name, flag]) => !(flag: any).hidden)
     let args = (cmd.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
     let usage = `${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
@@ -68,7 +65,7 @@ export default class Help {
     ].join('')
   }
 
-  commandLine (cmd: Class<Command<*>>): [string, ?string] {
+  commandLine (cmd: ICommand): [string, ?string] {
     return [
       buildUsage(cmd),
       cmd.description ? this.out.color.dim(cmd.description) : null

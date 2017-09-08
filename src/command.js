@@ -3,8 +3,7 @@
 import Output from './output'
 import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
 import pjson from '../package.json'
-import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
-import type {Arg} from './arg'
+import {buildConfig, type Config, type ConfigOptions, type Arg} from 'cli-engine-config'
 import HTTP from 'http-call'
 import Help from './help'
 

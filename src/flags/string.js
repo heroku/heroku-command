@@ -1,6 +1,6 @@
 // @flow
 
-import {type OptionFlag} from '.'
+import {type OptionFlag} from 'cli-engine-config'
 
 type Options = $Shape<OptionFlag<string>>
 

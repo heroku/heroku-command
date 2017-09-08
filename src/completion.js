@@ -1,6 +1,7 @@
 // @flow
 
 import type Output from './output'
+import type {Completion as CompletionBase} from 'cli-engine-config'
 
 type CompletionContext = {
   args?: ?{[name: string]: string},
@@ -9,8 +10,4 @@ type CompletionContext = {
   out: Output
 }
 
-export type Completion = {
-  cacheDuration?: number,
-  cacheKey?: (CompletionContext) => Promise<string>,
-  options: (CompletionContext) => Promise<string[]>
-}
+export type Completion = CompletionBase<CompletionContext>

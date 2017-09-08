@@ -1,7 +1,6 @@
 // @flow
 
-import {type Arg} from './arg'
-import {type BooleanFlag, type OptionFlag} from './flags'
+import {type BooleanFlag, type OptionFlag, type Arg} from 'cli-engine-config'
 import type Command from './command'
 
 export type InputFlags = {[name: string]: BooleanFlag | OptionFlag<*>}
