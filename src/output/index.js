@@ -12,12 +12,16 @@ import type {TableOptions} from './table'
 import StreamOutput, {logToFile} from './stream'
 
 class ExitError extends Error {
-  constructor (code: number) {
+  code: number
+  stdout: ?string
+  stderr: ?string
+
+  constructor (code: number, stdout?: string, stderr?: string) {
     super(`Exited with code: ${code}`)
     this.code = code
+    this.stdout = stdout
+    this.stderr = stderr
   }
-
-  code: number
 }
 
 export const CustomColors = {
@@ -224,6 +228,6 @@ export default class Output {
 
   exit (code: number = 0) {
     if (this.config.debug) console.error(`Exiting with code: ${code}`)
-    if (this.mock) throw new ExitError(code); else process.exit(code)
+    if (this.mock) throw new ExitError(code, this.stdout.output, this.stderr.output); else process.exit(code)
   }
 }
