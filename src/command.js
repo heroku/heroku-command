@@ -22,8 +22,10 @@ export default class Command <Flags: InputFlags> {
   static plugin: ?Plugin
 
   static get id (): string {
-    let cmd = this.command ? `${this.topic}:${this.command}` : this.topic
-    return cmd
+    let cmd = []
+    if (this.topic) cmd.push(this.topic)
+    if (this.command) cmd.push(this.command)
+    return cmd.join(':')
   }
 
   /**
