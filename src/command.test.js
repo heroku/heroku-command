@@ -54,29 +54,6 @@ test('has stderr', async () => {
   expect(stderr).toEqual('foo\n')
 })
 
-test('errors on unhandled', async () => {
-  class Command extends Base<*> {
-    async run () {
-      throw new Error('uh oh')
-    }
-  }
-
-  const {stderr, code} = await Command.mock()
-  expect(stderr).toContain('uh oh')
-  expect(code).toEqual(1)
-})
-
-test('exits with code 100', async () => {
-  class Command extends Base<*> {
-    async run () {
-      this.out.exit(100)
-    }
-  }
-
-  const {code} = await Command.mock()
-  expect(code).toEqual(100)
-})
-
 test('parses args', async () => {
   const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})

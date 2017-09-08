@@ -1,6 +1,6 @@
 // @flow
 
-import Output, {ExitError} from './output'
+import Output from './output'
 import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
 import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions} from 'cli-engine-config'
@@ -40,18 +40,11 @@ export default class Command <Flags: InputFlags> {
   static async run (config: ?ConfigOptions): Promise<this> {
     const cmd = new this({config})
     try {
-      try {
-        await cmd.init()
-        await cmd.run()
-        await cmd.out.done()
-      } catch (err) {
-        cmd.err = err
-        cmd.out.error(err)
-      }
+      await cmd.init()
+      await cmd.run()
+      await cmd.out.done()
     } catch (err) {
-      if (err instanceof ExitError) {
-        cmd.code = err.code
-      } else throw err
+      cmd.out.error(err)
     }
     return cmd
   }
@@ -101,8 +94,6 @@ export default class Command <Flags: InputFlags> {
    */
   async run (...rest: void[]): Promise<void> { }
 
-  code = 0
-  err: ?Error
   get stdout (): string {
     return this.out.stdout.output
   }
