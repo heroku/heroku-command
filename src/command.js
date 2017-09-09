@@ -6,6 +6,7 @@ import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions, type Arg, type Plugin} from 'cli-engine-config'
 import HTTP from 'http-call'
 import Help from './help'
+import type {CLI} from 'cli-ux'
 
 export default class Command <Flags: InputFlags> {
   static topic: string
@@ -54,6 +55,7 @@ export default class Command <Flags: InputFlags> {
   config: Config
   http: Class<HTTP>
   out: Output
+  cli: CLI
   flags: OutputFlags = {}
   argv: string[]
   args: {[name: string]: string} = {}
@@ -61,6 +63,8 @@ export default class Command <Flags: InputFlags> {
   constructor (options: {config?: ConfigOptions} = {}) {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
+    const {CLI} = require('cli-ux')
+    this.cli = new CLI({mock: this.config.mock})
     this.out = new Output(this.config)
     this.http = HTTP.defaults({
       headers: {
