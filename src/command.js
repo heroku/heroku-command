@@ -63,6 +63,7 @@ export default class Command <Flags: InputFlags> {
     this.argv = this.config.argv
     const {CLI} = require('cli-ux')
     this.out = new CLI({mock: this.config.mock})
+    this.out.color = require('./color').color
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
