@@ -1,11 +1,9 @@
 // @flow
 
-import type Output from './output'
 import type Command from './command'
 
 export default class Topic {
-  constructor (commands: Class<Command<*>>[], out: Output) {
-    this.out = out
+  constructor (commands: Class<Command<*>>[]) {
     this.commands = commands
   }
 
@@ -14,7 +12,6 @@ export default class Topic {
   static hidden = false
 
   commands: Class<Command<*>>[]
-  out: Output
 
   static get id (): string {
     return this.topic

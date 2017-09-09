@@ -1,8 +1,8 @@
 // @flow
 
-import {stdtermwidth} from './output/screen'
+import {stdtermwidth} from './screen'
 import type {Config, ICommand, Arg, Flag} from 'cli-engine-config'
-import Output from './output'
+import {color} from './color'
 
 function linewrap (length: number, s: string): string {
   const linewrap = require('@heroku/linewrap')
@@ -44,15 +44,12 @@ function renderArg (arg: Arg): string {
 
 export default class Help {
   config: Config
-  out: Output
 
-  constructor (config: Config, output: ?Output) {
+  constructor (config: Config) {
     this.config = config
-    this.out = output || new Output(config)
   }
 
   command (cmd: ICommand): string {
-    let color = this.out.color
     let flags: any = Object.entries(cmd.flags || {}).filter(([name, flag]) => !(flag: any).hidden)
     let args = (cmd.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
@@ -68,14 +65,14 @@ export default class Help {
   commandLine (cmd: ICommand): [string, ?string] {
     return [
       buildUsage(cmd),
-      cmd.description ? this.out.color.dim(cmd.description) : null
+      cmd.description ? color.dim(cmd.description) : null
     ]
   }
 
   renderAliases (aliases: ?string[]): string {
     if (!aliases || !aliases.length) return ''
     let a = aliases.map(a => `  $ ${this.config.bin} ${a}`).join('\n')
-    return `\n${this.out.color.blue('Aliases:')}\n${a}\n`
+    return `\n${color.blue('Aliases:')}\n${a}\n`
   }
 
   renderArgs (args: Arg[]): string {
@@ -83,7 +80,7 @@ export default class Help {
     return '\n' + renderList(args.map(a => {
       return [
         a.name.toUpperCase(),
-        a.description ? this.out.color.dim(a.description) : null
+        a.description ? color.dim(a.description) : null
       ]
     })) + '\n'
   }
@@ -96,7 +93,7 @@ export default class Help {
       if (a[0] < b[0]) return -1
       return b[0] < a[0] ? 1 : 0
     })
-    return `\n${this.out.color.blue('Flags:')}\n` +
+    return `\n${color.blue('Flags:')}\n` +
       renderList(flags.map(([name, f]) => {
         let label = []
         if (f.char) label.push(`-${f.char}`)
@@ -106,7 +103,7 @@ export default class Help {
         if (f.required || f.optional === false) description = `(required) ${description}`
         return [
           ` ${label.join(',').trim()}` + usage,
-          description ? this.out.color.dim(description) : null
+          description ? color.dim(description) : null
         ]
       })) + '\n'
   }

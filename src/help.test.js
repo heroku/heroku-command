@@ -5,7 +5,6 @@ import Command from './command'
 import {buildConfig} from 'cli-engine-config'
 import boolean from './flags/boolean'
 import string from './flags/string'
-import Output from './output'
 
 class AppsCreate extends Command<*> {
   static topic = 'apps'
@@ -27,8 +26,7 @@ multiline help
   }
 }
 
-const output = new Output({mock: true})
-const help = new Help(buildConfig(), output)
+const help = new Help(buildConfig({mock: true}))
 
 describe('commandLine()', () => {
   test('has help', () => {

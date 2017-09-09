@@ -1,6 +1,5 @@
 // @flow
 
-import Output from './output'
 import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
 import pjson from '../package.json'
 import {buildConfig, type Config, type ConfigOptions, type Arg, type Plugin} from 'cli-engine-config'
@@ -54,8 +53,7 @@ export default class Command <Flags: InputFlags> {
 
   config: Config
   http: Class<HTTP>
-  out: Output
-  cli: CLI
+  out: CLI
   flags: OutputFlags = {}
   argv: string[]
   args: {[name: string]: string} = {}
@@ -64,8 +62,7 @@ export default class Command <Flags: InputFlags> {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
     const {CLI} = require('cli-ux')
-    this.cli = new CLI({mock: this.config.mock})
-    this.out = new Output(this.config)
+    this.out = new CLI({mock: this.config.mock})
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
