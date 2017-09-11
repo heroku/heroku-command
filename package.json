@@ -38,9 +38,6 @@
     "rimraf": "2.6.1",
     "std-mocks": "1.0.1"
   },
-  "engines": {
-    "node": ">=7.6.0"
-  },
   "files": [
     "lib"
   ],
@@ -58,9 +55,10 @@
   ],
   "license": "ISC",
   "lint-staged": {
-    "src/**/*.js": [
+    "**/*.ts": [
       "prettier --write",
-      "git add"
+      "git add",
+      "jest --bail --findRelatedTests"
     ]
   },
   "main": "lib/index.js",
@@ -69,13 +67,10 @@
   },
   "repository": "heroku/cli-engine-command",
   "scripts": {
-    "build": "babel src -d lib --ignore '*.test.js'",
-    "clean": "rimraf lib",
-    "copy-flow": "flow-copy-source -v -i '**/*.test.js' src lib",
-    "posttest": "flow",
+    "coverage": "cat coverage/coverage-final.json | remap-istanbul -o coverage/coverage-final.json && curl -s https://codecov.io/bash | bash",
     "precommit": "lint-staged",
-    "prepare": "npm run clean && npm run build && npm run copy-flow",
-    "test": "jest",
-    "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
+    "prepare": "rimraf lib && tsc",
+    "pretest": "tsc --sourcemap",
+    "test": "jest"
   }
 }

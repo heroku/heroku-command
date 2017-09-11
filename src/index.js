@@ -1,5 +1,2 @@
-// @flow
-
-export { default, default as Command } from './command'
-export { default as Topic } from './topic'
-export { flags } from './flags'
+export {Command} from './command'
+export {flags} from 'cli-flags'

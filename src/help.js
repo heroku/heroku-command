@@ -1,31 +1,6 @@
-// @flow
-
-import { stdtermwidth } from './screen'
-import type { Config, ICommand, Arg, Flag } from 'cli-engine-config'
-import { color } from './color'
-
-function linewrap(length: number, s: string): string {
-  const linewrap = require('@heroku/linewrap')
-  return linewrap(length, stdtermwidth, {
-    skipScheme: 'ansi-color',
-  })(s).trim()
-}
-
-function renderList(items: [string, ?string][]): string {
-  const S = require('string')
-  const max = require('lodash.maxby')
-
-  let maxLength = max(items, '[0].length')[0].length
-  let lines = items.map(i => {
-    let left = i[0]
-    let right = i[1]
-    if (!right) return left
-    left = `${S(left).padRight(maxLength)}`
-    right = linewrap(maxLength + 2, right)
-    return `${left}  ${right}`
-  })
-  return lines.join('\n')
-}
+import {renderList} from 'cli-ux/lib/renderList'
+import type {Config, ICommand, Arg, Flag} from 'cli-engine-config'
+import chalk from 'chalk'
 
 function buildUsage(command: ICommand): string {
   if (command.usage) return command.usage.trim()
