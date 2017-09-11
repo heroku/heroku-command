@@ -4,9 +4,9 @@ import Command from '../command'
 import NumberFlag from './number'
 
 class MyCommand extends Command<*> {
-  static flags = {foo: NumberFlag()}
+  static flags = { foo: NumberFlag() }
   foo: ?number
-  async run () {
+  async run() {
     this.foo = this.flags.foo
   }
 }

@@ -1,13 +1,13 @@
 // @flow
 
-import Parser, {type OutputFlags, type OutputArgs, type InputFlags} from './parser' // eslint-disable-line
+import Parser, { type OutputFlags, type OutputArgs, type InputFlags } from './parser' // eslint-disable-line
 import pjson from '../package.json'
-import {buildConfig, type Config, type ConfigOptions, type Arg, type Plugin} from 'cli-engine-config'
+import { buildConfig, type Config, type ConfigOptions, type Arg, type Plugin } from 'cli-engine-config'
 import HTTP from 'http-call'
 import Help from './help'
-import type {CLI} from 'cli-ux'
+import type { CLI } from 'cli-ux'
 
-export default class Command <Flags: InputFlags> {
+export default class Command<Flags: InputFlags> {
   static topic: string
   static command: ?string
   static description: ?string
@@ -21,7 +21,7 @@ export default class Command <Flags: InputFlags> {
   static _version = pjson.version
   static plugin: ?Plugin
 
-  static get id (): string {
+  static get id(): string {
     let cmd = []
     if (this.topic) cmd.push(this.topic)
     if (this.command) cmd.push(this.command)
@@ -31,16 +31,16 @@ export default class Command <Flags: InputFlags> {
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
-  static async mock (...argv: string[]): Promise<this> {
+  static async mock(...argv: string[]): Promise<this> {
     argv.unshift('argv0', 'cmd')
-    return this.run({argv, mock: true})
+    return this.run({ argv, mock: true })
   }
 
   /**
    * instantiate and run the command
    */
-  static async run (config: ?ConfigOptions): Promise<this> {
-    const cmd = new this({config})
+  static async run(config: ?ConfigOptions): Promise<this> {
+    const cmd = new this({ config })
     try {
       await cmd.init()
       await cmd.run()
@@ -56,29 +56,30 @@ export default class Command <Flags: InputFlags> {
   out: CLI
   flags: OutputFlags = {}
   argv: string[]
-  args: {[name: string]: string} = {}
+  args: { [name: string]: string } = {}
 
-  constructor (options: {config?: ConfigOptions} = {}) {
+  constructor(options: { config?: ConfigOptions } = {}) {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
-    const {CLI} = require('cli-ux')
-    this.out = new CLI({mock: this.config.mock})
+    const { CLI } = require('cli-ux')
+    this.out = new CLI({ mock: this.config.mock })
     this.out.color = require('./color').color
     this.http = HTTP.defaults({
       headers: {
-        'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${process.version}`
-      }
+        'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config
+          .arch}) node-${process.version}`,
+      },
     })
   }
 
-  async init () {
+  async init() {
     const parser = new Parser({
       flags: this.constructor.flags || {},
       args: this.constructor.args || [],
       variableArgs: this.constructor.variableArgs,
-      cmd: this
+      cmd: this,
     })
-    const {argv, flags, args} = await parser.parse({flags: this.flags, argv: this.argv.slice(2)})
+    const { argv, flags, args } = await parser.parse({ flags: this.flags, argv: this.argv.slice(2) })
     this.flags = flags
     this.argv = argv
     this.args = args
@@ -96,22 +97,22 @@ export default class Command <Flags: InputFlags> {
   /**
    * actual command run code goes here
    */
-  async run (...rest: void[]): Promise<void> { }
+  async run(...rest: void[]): Promise<void> {}
 
-  get stdout (): string {
+  get stdout(): string {
     return this.out.stdout.output
   }
 
-  get stderr (): string {
+  get stderr(): string {
     return this.out.stderr.output
   }
 
-  static buildHelp (config: Config): string {
+  static buildHelp(config: Config): string {
     let help = new Help(config)
     return help.command(this)
   }
 
-  static buildHelpLine (config: Config): [string, ?string] {
+  static buildHelpLine(config: Config): [string, ?string] {
     let help = new Help(config)
     return help.commandLine(this)
   }

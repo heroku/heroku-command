@@ -1,6 +1,6 @@
 // @flow
 
-function termwidth (stream: any): number {
+function termwidth(stream: any): number {
   if (!stream.isTTY) return 80
   const width = stream.getWindowSize()[0]
   if (width < 1) return 80

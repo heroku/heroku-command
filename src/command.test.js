@@ -1,15 +1,15 @@
 // @flow
 
 import Base from './command'
-import {type ICommand, buildConfig} from 'cli-engine-config'
-import {flags as Flags} from './flags'
+import { type ICommand, buildConfig } from 'cli-engine-config'
+import { flags as Flags } from './flags'
 import nock from 'nock'
 
 class Command extends Base<*> {
   static topic = 'foo'
   static command = 'bar'
-  static flags = {myflag: Flags.boolean()}
-  static args = [{name: 'myarg', required: false}]
+  static flags = { myflag: Flags.boolean() }
+  static args = [{ name: 'myarg', required: false }]
 }
 
 test('it meets the interface', () => {
@@ -31,26 +31,26 @@ test('has stdout', async () => {
   class Command extends Base<*> {
     static flags = {
       print: Flags.string(),
-      bool: Flags.boolean()
+      bool: Flags.boolean(),
     }
-    async run () {
+    async run() {
       this.out.stdout.log(this.flags.print)
     }
   }
 
-  const {stdout} = await Command.mock('--print=foo')
+  const { stdout } = await Command.mock('--print=foo')
   expect(stdout).toEqual('foo\n')
 })
 
 test('has stderr', async () => {
   class Command extends Base<*> {
-    static flags = {print: Flags.string()}
-    async run () {
+    static flags = { print: Flags.string() }
+    async run() {
       this.out.stderr.log(this.flags.print)
     }
   }
 
-  const {stderr} = await Command.mock('--print=foo')
+  const { stderr } = await Command.mock('--print=foo')
   expect(stderr).toEqual('foo\n')
 })
 
@@ -58,7 +58,7 @@ test('parses args', async () => {
   const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
-  expect(cmd.args).toEqual({myarg: 'one'})
+  expect(cmd.args).toEqual({ myarg: 'one' })
 })
 
 test('has help', async () => {
@@ -70,7 +70,7 @@ test('has help', async () => {
 some multiline help
 `
   }
-  let config = buildConfig({mock: true})
+  let config = buildConfig({ mock: true })
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
 
 this is
@@ -95,46 +95,43 @@ describe('http', () => {
   test('makes an HTTP request', async () => {
     api = nock('https://api.heroku.com', {
       reqheaders: {
-        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
-      }
+        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`,
+      },
     })
-    api.get('/')
-      .reply(200, {message: 'ok'})
+    api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({config: {platform: 'darwin', arch: 'x64'}})
-    let {body} = await command.http.get('https://api.heroku.com')
-    expect(body).toEqual({message: 'ok'})
+    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    let { body } = await command.http.get('https://api.heroku.com')
+    expect(body).toEqual({ message: 'ok' })
   })
 
   describe('.post', async () => {
     test('makes a post request with body', async () => {
-      api.post('/', {'karate': 'chop', 'judo': 'throw', 'jujitsu': 'strangle'})
-        .reply(200, {message: 'ok'})
+      api.post('/', { karate: 'chop', judo: 'throw', jujitsu: 'strangle' }).reply(200, { message: 'ok' })
       const body = {
-        'karate': 'chop',
-        'judo': 'throw',
-        'jujitsu': 'strangle'
+        karate: 'chop',
+        judo: 'throw',
+        jujitsu: 'strangle',
       }
 
-      await command.http.post('https://api.heroku.com', {'body': body})
+      await command.http.post('https://api.heroku.com', { body: body })
     })
   })
   test('stream', async () => {
     api = nock('https://api.heroku.com', {
       reqheaders: {
-        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`
-      }
+        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`,
+      },
     })
-    api.get('/')
-      .reply(200, {message: 'ok'})
+    api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({config: {platform: 'darwin', arch: 'x64'}})
-    const {response} = await command.http.stream('https://api.heroku.com')
+    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    const { response } = await command.http.stream('https://api.heroku.com')
     const body = JSON.parse(await concat(response))
-    expect(body).toEqual({message: 'ok'})
+    expect(body).toEqual({ message: 'ok' })
   })
 
-  function concat (stream) {
+  function concat(stream) {
     return new Promise(resolve => {
       let strings = []
       stream.on('data', data => strings.push(data))

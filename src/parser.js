@@ -1,35 +1,35 @@
 // @flow
 
-import {type BooleanFlag, type OptionFlag, type Arg} from 'cli-engine-config'
+import { type BooleanFlag, type OptionFlag, type Arg } from 'cli-engine-config'
 import type Command from './command'
 
-export type InputFlags = {[name: string]: BooleanFlag | OptionFlag<*>}
+export type InputFlags = { [name: string]: BooleanFlag | OptionFlag<*> }
 export type Input = {
   flags: InputFlags,
   args: Arg[],
   variableArgs: boolean,
-  cmd?: Command<any>
+  cmd?: Command<any>,
 }
 
-export type OutputFlags = {[name: string]: any}
-export type OutputArgs = {[name: string]: string}
+export type OutputFlags = { [name: string]: any }
+export type OutputArgs = { [name: string]: string }
 
 export type Output = {
   flags: OutputFlags,
   argv: Array<*>,
-  args: {[name: string]: string}
+  args: { [name: string]: string },
 }
 
 export default class Parse {
   input: Input
-  constructor (input: $Shape<Input>) {
+  constructor(input: $Shape<Input>) {
     this.input = input
     input.args = input.args || []
     input.flags = input.flags || {}
   }
 
-  async parse (output: $Shape<Output> = {}) {
-    let argv = (output.argv || [])
+  async parse(output: $Shape<Output> = {}) {
+    let argv = output.argv || []
     output.flags = output.flags || {}
     output.argv = []
     output.args = {}
@@ -87,7 +87,10 @@ export default class Parse {
       let arg = argv.shift()
       if (parsingFlags && arg.startsWith('-')) {
         // attempt to parse as flag
-        if (arg === '--') { parsingFlags = false; continue }
+        if (arg === '--') {
+          parsingFlags = false
+          continue
+        }
         if (parseFlag(arg)) continue
         // not actually a flag if it reaches here so parse as an arg
       }
@@ -97,8 +100,10 @@ export default class Parse {
       output.argv.push(arg)
     }
 
-    if (!this.input.variableArgs && output.argv.length > maxArgs) throw new Error(`Unexpected argument ${output.argv[maxArgs]}`)
-    if (output.argv.length < minArgs) throw new Error(new Error(`Missing required argument ${this.input.args[output.argv.length].name}`))
+    if (!this.input.variableArgs && output.argv.length > maxArgs)
+      throw new Error(`Unexpected argument ${output.argv[maxArgs]}`)
+    if (output.argv.length < minArgs)
+      throw new Error(new Error(`Missing required argument ${this.input.args[output.argv.length].name}`))
 
     for (let name of Object.keys(this.input.flags)) {
       const flag = this.input.flags[name]
@@ -114,7 +119,7 @@ export default class Parse {
 }
 
 export class RequiredFlagError extends Error {
-  constructor (name: string) {
+  constructor(name: string) {
     super(`Missing required flag --${name}`)
   }
 }

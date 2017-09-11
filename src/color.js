@@ -19,12 +19,12 @@ export const CustomColors = {
     if (!CustomColors.supports) return s
     let has256 = CustomColors.supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
     return has256 ? '\u001b[38;5;104m' + s + ansiStyles.reset.open : chalk.magenta(s)
-  }
+  },
 }
 
 export const color = new Proxy(chalk, {
   get: (chalk, name) => {
     if (CustomColors[name]) return CustomColors[name]
     return chalk[name]
-  }
+  },
 })

@@ -3,7 +3,7 @@
 import type Command from './command'
 
 export default class Topic {
-  constructor (commands: Class<Command<*>>[]) {
+  constructor(commands: Class<Command<*>>[]) {
     this.commands = commands
   }
 
@@ -13,7 +13,7 @@ export default class Topic {
 
   commands: Class<Command<*>>[]
 
-  static get id (): string {
+  static get id(): string {
     return this.topic
   }
 }
