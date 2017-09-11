@@ -1,2 +1,2 @@
-export {Command} from './command'
-export {flags} from 'cli-flags'
+export { Command } from './command'
+export { flags } from 'cli-flags'

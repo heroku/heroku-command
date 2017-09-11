@@ -1,14 +1,14 @@
 import { parse, OutputFlags, OutputArgs, InputFlags, InputArgs } from 'cli-flags'
 import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
-import {HTTP} from 'http-call'
+import { HTTP } from 'http-call'
 import Help from './help'
 import { CLI } from 'cli-ux'
-import {deprecate} from 'util'
+import { deprecate } from 'util'
 
 const pjson = require('../package.json')
 
 export default class Command {
-  "constructor": typeof Command  // Explicitly declare constructor property
+  constructor: typeof Command // Explicitly declare constructor property
 
   static topic?: string
   static command?: string
@@ -73,7 +73,7 @@ export default class Command {
     })
   }
 
-  get out () {
+  get out() {
     deprecate(() => {}, 'this.out is deprecated, use this.cli')
     return this.cli
   }
@@ -83,7 +83,7 @@ export default class Command {
       flags: this.constructor.flags || {},
       args: this.constructor.args || [],
       strict: !this.constructor.variableArgs,
-      argv: this.argv.slice(2)
+      argv: this.argv.slice(2),
     })
     this.flags = flags
     this.argv = argv
