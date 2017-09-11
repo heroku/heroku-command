@@ -72,9 +72,10 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "copy-flow": "flow-copy-source -v -i '**/*.test.js' src lib",
+    "posttest": "flow",
     "precommit": "lint-staged",
     "prepare": "npm run clean && npm run build && npm run copy-flow",
-    "test": "jest && flow",
+    "test": "jest",
     "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
   }
 }
