@@ -22,7 +22,7 @@
     "@types/jest": "^20.0.8",
     "@types/nock": "^8.2.1",
     "@types/node": "^8.0.28",
-    "cli-engine-config": "ts",
+    "cli-engine-config": "^4.0.1-ts.3",
     "del-cli": "^1.1.0",
     "husky": "^0.14.3",
     "jest": "^21.0.2",
@@ -48,6 +48,7 @@
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "coverage": "cat coverage/coverage-final.json | remap-istanbul -o coverage/coverage-final.json && curl -s https://codecov.io/bash | bash",
+    "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
     "prepare": "del lib && tsc && del 'lib/**/*.test.js' 'lib/**/*.test.d.ts'",
     "pretest": "tsc --sourcemap",
