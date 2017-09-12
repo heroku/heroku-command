@@ -47,9 +47,8 @@
   "homepage": "https://github.com/heroku/cli-engine-command",
   "jest": {
     "testEnvironment": "node",
-    "rootDir": "./src",
     "setupFiles": [
-      "../test/init.js"
+      "./test/init.js"
     ]
   },
   "keywords": [
