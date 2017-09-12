@@ -1,24 +1,17 @@
-// @flow
+import { Command as Base } from './command'
+import { buildConfig } from 'cli-engine-config'
+import { flags as Flags } from 'cli-flags'
+import * as nock from 'nock'
 
-import Base from './command'
-import { type ICommand, buildConfig } from 'cli-engine-config'
-import { flags as Flags } from './flags'
-import nock from 'nock'
-
-class Command extends Base<*> {
-  static topic = 'foo'
-  static command = 'bar'
-  static flags = { myflag: Flags.boolean() }
-  static args = [{ name: 'myarg', required: false }]
+class Command extends Base {
+  topic = 'foo'
+  command = 'bar'
+  Flags = { myflag: Flags.boolean() }
+  Args = [{ name: 'myarg', required: false }]
 }
 
-test('it meets the interface', () => {
-  let c: ICommand = Command
-  expect(c).toBeDefined()
-})
-
 test('shows the ID', () => {
-  expect(Command.id).toEqual('foo:bar')
+  expect(new Command().id).toEqual('foo:bar')
 })
 
 test('runs the command', async () => {
@@ -28,8 +21,8 @@ test('runs the command', async () => {
 })
 
 test('has stdout', async () => {
-  class Command extends Base<*> {
-    static flags = {
+  class Command extends Base {
+    Flags = {
       print: Flags.string(),
       bool: Flags.boolean(),
     }
@@ -43,8 +36,8 @@ test('has stdout', async () => {
 })
 
 test('has stderr', async () => {
-  class Command extends Base<*> {
-    static flags = { print: Flags.string() }
+  class Command extends Base {
+    Flags = { print: Flags.string() }
     async run() {
       this.out.stderr.log(this.flags.print)
     }
@@ -62,26 +55,26 @@ test('parses args', async () => {
 })
 
 test('has help', async () => {
-  class Command extends Base<*> {
-    static topic = 'config'
-    static command = 'get'
-    static help = `this is
+  class Command extends Base {
+    topic = 'config'
+    command = 'get'
+    help = `this is
 
 some multiline help
 `
   }
-  let config = buildConfig({ mock: true })
-  expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
+  let config = buildConfig()
+  expect(new Command().buildHelp(config)).toEqual(`Usage: cli-engine config:get
 
 this is
 
 some multiline help\n`)
-  expect(Command.buildHelpLine(config)).toEqual(['config:get', null])
+  expect(new Command().buildHelpLine(config)).toEqual(['config:get', null])
 })
 
 describe('http', () => {
-  let api
-  let command
+  let api = nock('https://api.heroku.com')
+  let command = new Command()
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -131,9 +124,9 @@ describe('http', () => {
     expect(body).toEqual({ message: 'ok' })
   })
 
-  function concat(stream) {
-    return new Promise(resolve => {
-      let strings = []
+  function concat(stream: NodeJS.ReadableStream) {
+    return new Promise<string>(resolve => {
+      let strings: string[] = []
       stream.on('data', data => strings.push(data))
       stream.on('end', () => resolve(strings.join('')))
     })

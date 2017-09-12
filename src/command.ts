@@ -1,29 +1,30 @@
-import { parse, OutputFlags, OutputArgs, InputFlags, InputArgs } from 'cli-flags'
-import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
+import { parse, InputFlags, InputArgs, OutputArgs, OutputFlags } from 'cli-flags'
+import { buildConfig, Config, ConfigOptions, Plugin, ICommand } from 'cli-engine-config'
 import { HTTP } from 'http-call'
-import Help from './help'
+import { Help } from './help'
 import { CLI } from 'cli-ux'
 import { deprecate } from 'util'
 
 const pjson = require('../package.json')
 
-export default class Command {
-  constructor: typeof Command // Explicitly declare constructor property
+export class Command implements ICommand {
+  // constructor: typeof Command // Explicitly declare constructor property
 
-  static topic?: string
-  static command?: string
-  static description?: string
-  static hidden?: boolean
-  static usage?: string
-  static help?: string
-  static aliases: string[] = []
-  static variableArgs = false
-  static flags: InputFlags = {}
-  static args: InputArgs = []
-  static _version = pjson.version
-  static plugin?: Plugin
+  topic?: string
+  command?: string
+  description?: string
+  hidden: boolean = false
+  usage?: string
+  help?: string
+  aliases: string[] = []
+  strict = true
+  variableArgs: boolean = false
+  Flags: InputFlags = {}
+  Args: InputArgs = []
+  _version = pjson.version
+  plugin?: Plugin
 
-  static get id(): string {
+  get id(): string {
     let cmd = []
     if (this.topic) cmd.push(this.topic)
     if (this.command) cmd.push(this.command)
@@ -56,9 +57,9 @@ export default class Command {
   config: Config
   http: typeof HTTP
   cli: CLI
-  flags: OutputFlags = {}
+  flags: OutputFlags<this['Flags']>
   argv: string[]
-  args: { [name: string]: string } = {}
+  args: OutputArgs
 
   constructor(options: { config?: ConfigOptions } = {}) {
     this.config = buildConfig(options.config)
@@ -79,10 +80,13 @@ export default class Command {
   }
 
   async init() {
-    const { argv, flags, args } = await parse({
-      flags: this.constructor.flags || {},
-      args: this.constructor.args || [],
-      strict: !this.constructor.variableArgs,
+    if (this.variableArgs) {
+      deprecate(() => {}, 'variableArgs is deprecated. Use strict = true instead.')
+    }
+    const { argv, flags, args } = await parse<this['Flags']>({
+      flags: this.Flags,
+      args: this.Args,
+      strict: this.strict !== false && !this.variableArgs,
       argv: this.argv.slice(2),
     })
     this.flags = flags
@@ -90,34 +94,26 @@ export default class Command {
     this.args = args
   }
 
-  // prevent setting things that need to be static
-  topic: null
-  command: null
-  description: null
-  hidden: null
-  usage: null
-  help: null
-  aliases: null
-
   /**
    * actual command run code goes here
    */
-  async run(...rest: void[]): Promise<void> {}
+  async run(): Promise<void> {}
 
   get stdout(): string {
-    return this.out.stdout.output
+    // used in testing
+    return this.cli.stdout.output
   }
 
   get stderr(): string {
-    return this.out.stderr.output
+    return this.cli.stderr.output
   }
 
-  static buildHelp(config: Config): string {
+  buildHelp(config: Config): string {
     let help = new Help(config)
     return help.command(this)
   }
 
-  static buildHelpLine(config: Config): [string, string | undefined] {
+  buildHelpLine(config: Config): [string, string | undefined] {
     let help = new Help(config)
     return help.commandLine(this)
   }
