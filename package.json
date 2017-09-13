@@ -10,7 +10,7 @@
     "cli-flags": "^1.0.10",
     "cli-ux": "^1.1.7",
     "fs-extra": "^4.0.2",
-    "http-call": "ts"
+    "http-call": "^4.0.0-ts2"
   },
   "devDependencies": {
     "@types/chalk": "^0.4.31",
