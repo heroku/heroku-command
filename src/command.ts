@@ -3,7 +3,7 @@ import { buildConfig, Config, ConfigOptions, Plugin, ICommand } from 'cli-engine
 import { HTTP } from 'http-call'
 import { Help } from './help'
 import { CLI } from 'cli-ux'
-import chalk = require('chalk')
+import color = require('./color')
 
 const pjson = require('../package.json')
 const debug = require('debug')('cli-engine-command')
@@ -71,7 +71,7 @@ export class Command implements ICommand {
   flags: OutputFlags<this['parse']['flags']>
   argv: string[]
   args: OutputArgs
-  color: typeof chalk
+  color: typeof color
 
   constructor(config?: ConfigOptions) {
     this.config = buildConfig(config)
@@ -98,7 +98,7 @@ export class Command implements ICommand {
    * sets up the command and parses the flags just before it is run
    */
   async init() {
-    this.color = require('chalk')
+    this.color = require('./color')
     const { CLI } = require('cli-ux')
     this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
     this.http = HTTP.defaults({
