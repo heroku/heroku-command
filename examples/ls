@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// an example of creating a cli-engine-command command that lists the files in a directory
+// check out the typescript example as it is a bit cleaner and does the same thing
+
 const {Command, flags} = require('..') // require('cli-engine-command') outisde of this repo
 const fs = require('fs')
 
