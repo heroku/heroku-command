@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "cli-engine-command": "^8.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.28",
+    "typescript": "^2.5.2"
+  },
+  "bin": {
+    "ls": "./bin/ls"
+  },
+  "scripts": {
+    "prepare": "tsc"
+  }
+}
