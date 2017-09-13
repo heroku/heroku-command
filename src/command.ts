@@ -6,12 +6,18 @@ import { CLI } from 'cli-ux'
 import { deprecate } from 'util'
 
 const pjson = require('../package.json')
+const debug = require('debug')('cli-engine-command')
+
+export interface IMockOutput<T extends Command> {
+  cmd: T
+  stdout: string
+  stderr: string
+}
 
 export class Command implements ICommand {
-  // constructor: typeof Command // Explicitly declare constructor property
-
   topic?: string
   command?: string
+  name?: string
   description?: string
   hidden: boolean = false
   usage?: string
@@ -25,31 +31,44 @@ export class Command implements ICommand {
   plugin?: Plugin
 
   get id(): string {
+    if (this.name) return this.name
     let cmd = []
     if (this.topic) cmd.push(this.topic)
     if (this.command) cmd.push(this.command)
-    return cmd.join(':')
+    let id = cmd.join(':')
+    if (id) return id
+    let ctor = this.constructor as typeof Command
+    return ctor.name
   }
 
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
-  static async mock(...argv: string[]): Promise<Command> {
-    argv.unshift('argv0', 'cmd')
-    return this.run({ argv, mock: true })
+  static async mock<T extends Command>(...argv: string[]): Promise<IMockOutput<T>> {
+    argv.unshift('argv0', 'argv1')
+    const cmd = (await this.run({ argv, mock: true })) as T
+    return {
+      cmd,
+      stdout: cmd.cli.stdout.output,
+      stderr: cmd.cli.stderr.output,
+    }
   }
 
   /**
    * instantiate and run the command
    */
   static async run(config?: ConfigOptions): Promise<Command> {
-    const cmd = new this({ config })
+    const cmd = new this(config)
     try {
+      debug('initializing %s version: %s', cmd.id, cmd._version)
+      debug('argv: %o', cmd.config.argv)
       await cmd.init()
+      debug('run')
       await cmd.run()
-      await cmd.out.done()
+      debug('done')
+      await cmd.cli.done()
     } catch (err) {
-      cmd.out.error(err)
+      cmd.cli.error(err)
     }
     return cmd
   }
@@ -61,11 +80,10 @@ export class Command implements ICommand {
   argv: string[]
   args: OutputArgs
 
-  constructor(options: { config?: ConfigOptions } = {}) {
-    this.config = buildConfig(options.config)
-    this.argv = this.config.argv
+  constructor(config?: ConfigOptions) {
+    this.config = buildConfig(config)
     const { CLI } = require('cli-ux')
-    this.cli = new CLI({ mock: this.config.mock })
+    this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config
@@ -80,6 +98,7 @@ export class Command implements ICommand {
   }
 
   async init() {
+    this.cli.handleUnhandleds()
     if (this.variableArgs) {
       deprecate(() => {}, 'variableArgs is deprecated. Use strict = true instead.')
     }
@@ -87,7 +106,7 @@ export class Command implements ICommand {
       flags: this.Flags,
       args: this.Args,
       strict: this.strict !== false && !this.variableArgs,
-      argv: this.argv.slice(2),
+      argv: this.config.argv.slice(2),
     })
     this.flags = flags
     this.argv = argv
@@ -99,22 +118,13 @@ export class Command implements ICommand {
    */
   async run(): Promise<void> {}
 
-  get stdout(): string {
-    // used in testing
-    return this.cli.stdout.output
-  }
-
-  get stderr(): string {
-    return this.cli.stderr.output
-  }
-
-  buildHelp(config: Config): string {
-    let help = new Help(config)
+  buildHelp(): string {
+    let help = new Help(this.config)
     return help.command(this)
   }
 
-  buildHelpLine(config: Config): [string, string | undefined] {
-    let help = new Help(config)
+  buildHelpLine(): [string, string | undefined] {
+    let help = new Help(this.config)
     return help.commandLine(this)
   }
 }

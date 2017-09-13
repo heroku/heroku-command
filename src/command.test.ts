@@ -15,7 +15,7 @@ test('shows the ID', () => {
 })
 
 test('runs the command', async () => {
-  const cmd = await Command.mock()
+  const { cmd } = await Command.mock()
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual([])
 })
@@ -48,7 +48,7 @@ test('has stderr', async () => {
 })
 
 test('parses args', async () => {
-  const cmd = await Command.mock('one')
+  const { cmd } = await Command.mock('one')
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
   expect(cmd.args).toEqual({ myarg: 'one' })
@@ -63,13 +63,12 @@ test('has help', async () => {
 some multiline help
 `
   }
-  let config = buildConfig()
-  expect(new Command().buildHelp(config)).toEqual(`Usage: cli-engine config:get
+  expect(new Command().buildHelp()).toEqual(`Usage: cli-engine config:get
 
 this is
 
 some multiline help\n`)
-  expect(new Command().buildHelpLine(config)).toEqual(['config:get', null])
+  expect(new Command().buildHelpLine()).toEqual(['config:get', null])
 })
 
 describe('http', () => {
@@ -93,7 +92,8 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    let command = new Command()
+    command.config = buildConfig({ platform: 'darwin', arch: 'x64' })
     let { body } = await command.http.get('https://api.heroku.com')
     expect(body).toEqual({ message: 'ok' })
   })
@@ -118,7 +118,8 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    let command = new Command()
+    command.config = buildConfig({ platform: 'darwin', arch: 'x64' })
     const { response } = await command.http.stream('https://api.heroku.com')
     const body = JSON.parse(await concat(response))
     expect(body).toEqual({ message: 'ok' })

@@ -526,17 +526,24 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@^4.0.1-ts.3:
-  version "4.0.1-ts.3"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.3.tgz#c368f573b001cdd99d1c0db97194d235a4cd3eb8"
+cli-engine-config@^4.0.1-ts.5:
+  version "4.0.1-ts.5"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.5.tgz#bcabdd58ca3cb816c911fdb6c670698d3e4fc997"
   dependencies:
     cli-flags "^1.0.6"
     fs-extra "^4.0.1"
     uuid "^3.1.0"
 
-cli-flags@^1.0.4, cli-flags@^1.0.6:
+cli-flags@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.6.tgz#c3c302dc6d857f648a762cb4f2cd38c836445af1"
+  dependencies:
+    cli-ux "^1.1.1"
+    lodash "^4.17.4"
+
+cli-flags@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.7.tgz#bd039f0bfe761163364a22f8948fd7789c67008d"
   dependencies:
     cli-ux "^1.1.1"
     lodash "^4.17.4"
@@ -555,6 +562,29 @@ cli-truncate@^0.2.1:
 cli-ux@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.1.tgz#a10db3586dc1c37a0565e5e69c98be164d7c9f14"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.1"
+    lodash.ary "^4.1.1"
+    lodash.get "^4.4.2"
+    lodash.identity "^3.0.0"
+    lodash.maxby "^4.6.0"
+    lodash.padend "^4.6.1"
+    lodash.partial "^4.2.1"
+    lodash.property "^4.4.2"
+    lodash.result "^4.5.2"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
+
+cli-ux@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.3.tgz#5e62a3ebeba9edfcd5379a1e217a22b372489994"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -1097,6 +1127,14 @@ fs-extra@^4.0.0, fs-extra@^4.0.1:
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^3.0.0"
+    universalify "^0.1.0"
+
+fs-extra@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.2.tgz#f91704c53d1b461f893452b0c307d9997647ab6b"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^4.0.0"
     universalify "^0.1.0"
 
 fs.realpath@^1.0.0:
@@ -2001,6 +2039,12 @@ json5@^0.5.1:
 jsonfile@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-3.0.1.tgz#a5ecc6f65f53f662c4415c7675a0331d0992ec66"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
+
+jsonfile@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-4.0.0.tgz#8771aae0799b64076b76640fca058f9c10e33ecb"
   optionalDependencies:
     graceful-fs "^4.1.6"
 
