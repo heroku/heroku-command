@@ -4,6 +4,7 @@ import { HTTP } from 'http-call'
 import { Help } from './help'
 import { CLI } from 'cli-ux'
 import { deprecate } from 'util'
+import chalk = require('chalk')
 
 const pjson = require('../package.json')
 const debug = require('debug')('cli-engine-command')
@@ -79,9 +80,11 @@ export class Command implements ICommand {
   flags: OutputFlags<this['Flags']>
   argv: string[]
   args: OutputArgs
+  color: typeof chalk
 
   constructor(config?: ConfigOptions) {
     this.config = buildConfig(config)
+    this.color = require('chalk')
     const { CLI } = require('cli-ux')
     this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
     this.http = HTTP.defaults({
