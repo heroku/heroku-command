@@ -526,20 +526,13 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@^4.0.1-ts.5:
-  version "4.0.1-ts.5"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.5.tgz#bcabdd58ca3cb816c911fdb6c670698d3e4fc997"
+cli-engine-config@^4.0.1-ts.7:
+  version "4.0.1-ts.7"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.7.tgz#2b00094b0f7dd69339839cd7be46c5db2dd17a2e"
   dependencies:
-    cli-flags "^1.0.6"
-    fs-extra "^4.0.1"
+    cli-flags "^1.0.7"
+    fs-extra "^4.0.2"
     uuid "^3.1.0"
-
-cli-flags@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.6.tgz#c3c302dc6d857f648a762cb4f2cd38c836445af1"
-  dependencies:
-    cli-ux "^1.1.1"
-    lodash "^4.17.4"
 
 cli-flags@^1.0.7:
   version "1.0.7"

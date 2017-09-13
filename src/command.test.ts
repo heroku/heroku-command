@@ -1,17 +1,26 @@
 import { Command as Base } from './command'
-import { buildConfig } from 'cli-engine-config'
-import { flags as Flags } from 'cli-flags'
+import { flags } from 'cli-flags'
 import * as nock from 'nock'
+
+const config = { platform: 'darwin', arch: 'x64', argv: [] }
 
 class Command extends Base {
   topic = 'foo'
   command = 'bar'
-  Flags = { myflag: Flags.boolean() }
-  Args = [{ name: 'myarg', required: false }]
+  parse = {
+    flags: { myflag: flags.boolean() },
+    args: [{ name: 'myarg', required: false }],
+  }
 }
 
+let command: Command
+beforeEach(async () => {
+  command = new Command(config)
+  await command.init()
+})
+
 test('shows the ID', () => {
-  expect(new Command().id).toEqual('foo:bar')
+  expect(command.id).toEqual('foo:bar')
 })
 
 test('runs the command', async () => {
@@ -22,12 +31,14 @@ test('runs the command', async () => {
 
 test('has stdout', async () => {
   class Command extends Base {
-    Flags = {
-      print: Flags.string(),
-      bool: Flags.boolean(),
+    parse = {
+      flags: {
+        print: flags.string(),
+        bool: flags.boolean(),
+      },
     }
     async run() {
-      this.out.stdout.log(this.flags.print)
+      this.cli.stdout.log(this.flags.print)
     }
   }
 
@@ -37,9 +48,11 @@ test('has stdout', async () => {
 
 test('has stderr', async () => {
   class Command extends Base {
-    Flags = { print: Flags.string() }
+    parse = {
+      flags: { print: flags.string() },
+    }
     async run() {
-      this.out.stderr.log(this.flags.print)
+      this.cli.stderr.log(this.flags.print)
     }
   }
 
@@ -63,22 +76,21 @@ test('has help', async () => {
 some multiline help
 `
   }
-  expect(new Command().buildHelp()).toEqual(`Usage: cli-engine config:get
+  let command = new Command(config)
+  expect(command.buildHelp()).toEqual(`Usage: cli-engine config:get
 
 this is
 
 some multiline help\n`)
-  expect(new Command().buildHelpLine()).toEqual(['config:get', null])
+  expect(command.buildHelpLine()).toEqual(['config:get', null])
 })
 
 describe('http', () => {
   let api = nock('https://api.heroku.com')
-  let command = new Command()
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     nock.disableNetConnect()
-    command = new Command()
   })
   afterEach(() => {
     api.done()
@@ -92,8 +104,6 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command()
-    command.config = buildConfig({ platform: 'darwin', arch: 'x64' })
     let { body } = await command.http.get('https://api.heroku.com')
     expect(body).toEqual({ message: 'ok' })
   })
@@ -118,8 +128,6 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command()
-    command.config = buildConfig({ platform: 'darwin', arch: 'x64' })
     const { response } = await command.http.stream('https://api.heroku.com')
     const body = JSON.parse(await concat(response))
     expect(body).toEqual({ message: 'ok' })

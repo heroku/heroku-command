@@ -14,19 +14,20 @@ class AppsCreate extends Command {
   command = 'create'
   description = 'description of apps:create'
 
-  Args = [{ name: 'app_name', description: 'app to use', required: false }]
+  parse = {
+    args: [{ name: 'app_name', description: 'app to use', required: false }],
+    flags: {
+      force: flags.boolean({ description: 'force it' }),
+      app: flags.string({ char: 'a', hidden: true }),
+      foo: flags.string({ char: 'f', description: 'foobar' }),
+      remote: flags.string({ char: 'r' }),
+    },
+  }
 
   help = `some
 
 multiline help
 `
-
-  Flags = {
-    force: flags.boolean({ description: 'force it' }),
-    app: flags.string({ char: 'a', hidden: true }),
-    foo: flags.string({ char: 'f', description: 'foobar' }),
-    remote: flags.string({ char: 'r' }),
-  }
 }
 
 const help = new Help(buildConfig({ mock: true }))
@@ -53,11 +54,13 @@ multiline help
   class AppsCreate3 extends Command {
     topic = 'apps'
     command = 'create'
-    Flags = {
-      force: flags.boolean({ description: 'force it' }),
-      app: flags.string({ char: 'a', hidden: true }),
-      foo: flags.string({ char: 'f', description: 'foobar' }),
-      remote: flags.string({ char: 'r' }),
+    parse = {
+      flags: {
+        force: flags.boolean({ description: 'force it' }),
+        app: flags.string({ char: 'a', hidden: true }),
+        foo: flags.string({ char: 'f', description: 'foobar' }),
+        remote: flags.string({ char: 'r' }),
+      },
     }
   }
   test('has just flags', () => {
@@ -75,11 +78,13 @@ Flags:
       topic = 'apps'
       command = 'create'
       description = 'description of apps:create'
-      Flags = {
-        force: flags.boolean({ description: 'force it' }),
-        app: flags.string({ char: 'a', hidden: true }),
-        foo: flags.string({ char: 'f', description: 'foobar' }),
-        remote: flags.string({ char: 'r' }),
+      parse = {
+        flags: {
+          force: flags.boolean({ description: 'force it' }),
+          app: flags.string({ char: 'a', hidden: true }),
+          foo: flags.string({ char: 'f', description: 'foobar' }),
+          remote: flags.string({ char: 'r' }),
+        },
       }
     }
     expect(help.command(new CMD())).toEqual(`Usage: cli-engine apps:create [flags]
@@ -97,11 +102,13 @@ Flags:
     topic = 'apps'
     command = 'create'
     help = 'description of apps:create'
-    Flags = {
-      force: flags.boolean({ description: 'force it' }),
-      app: flags.string({ char: 'a', hidden: true }),
-      foo: flags.string({ char: 'f', description: 'foobar' }),
-      remote: flags.string({ char: 'r' }),
+    parse = {
+      flags: {
+        force: flags.boolean({ description: 'force it' }),
+        app: flags.string({ char: 'a', hidden: true }),
+        foo: flags.string({ char: 'f', description: 'foobar' }),
+        remote: flags.string({ char: 'r' }),
+      },
     }
   }
   test('has description + help', () => {
@@ -120,7 +127,10 @@ description of apps:create
     topic = 'apps'
     command = 'create'
     description = 'description of apps:create'
-    Args = [{ name: 'app_name', description: 'app to use', required: false }]
+    parse = {
+      args: [{ name: 'app_name', description: 'app to use', required: false }],
+      flags: {},
+    }
   }
 
   test('has description + args', () => {
@@ -137,7 +147,10 @@ APP_NAME  app to use
     command = 'create'
     description = 'description of apps:create'
     aliases = ['foo', 'bar']
-    Args = [{ name: 'app_name', description: 'app to use', required: false }]
+    parse = {
+      flags: {},
+      args: [{ name: 'app_name', description: 'app to use', required: false }],
+    }
   }
   test('has aliases', () => {
     expect(help.command(new CMD())).toEqual(`Usage: cli-engine apps:create [APP_NAME]

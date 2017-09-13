@@ -3,7 +3,6 @@ import { buildConfig, Config, ConfigOptions, Plugin, ICommand } from 'cli-engine
 import { HTTP } from 'http-call'
 import { Help } from './help'
 import { CLI } from 'cli-ux'
-import { deprecate } from 'util'
 import chalk = require('chalk')
 
 const pjson = require('../package.json')
@@ -24,12 +23,14 @@ export class Command implements ICommand {
   usage?: string
   help?: string
   aliases: string[] = []
-  strict = true
-  variableArgs: boolean = false
-  Flags: InputFlags = {}
-  Args: InputArgs = []
   _version = pjson.version
   plugin?: Plugin
+
+  parse: {
+    args?: InputArgs
+    flags: InputFlags
+    strict?: boolean
+  } = { flags: {} }
 
   get id(): string {
     if (this.name) return this.name
@@ -60,30 +61,43 @@ export class Command implements ICommand {
    */
   static async run(config?: ConfigOptions): Promise<Command> {
     const cmd = new this(config)
-    try {
-      debug('initializing %s version: %s', cmd.id, cmd._version)
-      debug('argv: %o', cmd.config.argv)
-      await cmd.init()
-      debug('run')
-      await cmd.run()
-      debug('done')
-      await cmd.cli.done()
-    } catch (err) {
-      cmd.cli.error(err)
-    }
+    await cmd._run()
     return cmd
   }
 
   config: Config
   http: typeof HTTP
   cli: CLI
-  flags: OutputFlags<this['Flags']>
+  flags: OutputFlags<this['parse']['flags']>
   argv: string[]
   args: OutputArgs
   color: typeof chalk
 
   constructor(config?: ConfigOptions) {
     this.config = buildConfig(config)
+  }
+
+  /**
+   * runs the command with the lifecycle scripts [init/run/done]
+   */
+  async _run() {
+    try {
+      debug('initializing %s version: %s', this.id, this._version)
+      debug('argv: %o', this.config.argv)
+      await this.init()
+      debug('run')
+      await this.run()
+      debug('done')
+      await this.cli.done()
+    } catch (err) {
+      this.cli.error(err)
+    }
+  }
+
+  /**
+   * sets up the command and parses the flags just before it is run
+   */
+  async init() {
     this.color = require('chalk')
     const { CLI } = require('cli-ux')
     this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
@@ -93,33 +107,23 @@ export class Command implements ICommand {
           .arch}) node-${process.version}`,
       },
     })
-  }
-
-  get out() {
-    deprecate(() => {}, 'this.out is deprecated, use this.cli')
-    return this.cli
-  }
-
-  async init() {
-    this.cli.handleUnhandleds()
-    if (this.variableArgs) {
-      deprecate(() => {}, 'variableArgs is deprecated. Use strict = true instead.')
-    }
-    const { argv, flags, args } = await parse<this['Flags']>({
-      flags: this.Flags,
-      args: this.Args,
-      strict: this.strict !== false && !this.variableArgs,
+    if (!this.config.mock) this.cli.handleUnhandleds()
+    const { argv, flags, args } = await parse<this['parse']['flags']>({
+      ...this.parse,
       argv: this.config.argv.slice(2),
     })
     this.flags = flags
     this.argv = argv
     this.args = args
   }
+  async run(): Promise<void> {}
 
   /**
-   * actual command run code goes here
+   * handle any needed cleanup
    */
-  async run(): Promise<void> {}
+  async done() {
+    this.cli.done()
+  }
 
   buildHelp(): string {
     let help = new Help(this.config)

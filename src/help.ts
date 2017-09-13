@@ -6,8 +6,8 @@ import * as chalk from 'chalk'
 function buildUsage(command: ICommand): string {
   if (command.usage) return command.usage.trim()
   let cmd = command.id
-  if (!command.Args) return cmd.trim()
-  let args = command.Args.map(renderArg)
+  if (!command.parse.args) return cmd.trim()
+  let args = command.parse.args.map(renderArg)
   return `${cmd} ${args.join(' ')}`.trim()
 }
 
@@ -25,8 +25,8 @@ export class Help {
   }
 
   command(cmd: ICommand): string {
-    let flags = Object.entries(cmd.Flags || {}).filter(([, flag]) => !flag.hidden)
-    let args = (cmd.Args || []).filter(a => !a.hidden)
+    let flags = Object.entries(cmd.parse.flags || {}).filter(([, flag]) => !flag.hidden)
+    let args = (cmd.parse.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${chalk.blue('[flags]')}` : ''
     let usage = `${chalk.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
     return [
