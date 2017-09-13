@@ -468,7 +468,7 @@ capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
-cardinal@1.x, cardinal@^1.0.0:
+cardinal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-1.0.0.tgz#50e21c1b0aa37729f9377def196b5a9cec932ee9"
   dependencies:
@@ -526,27 +526,21 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@^4.0.1-ts.7:
-  version "4.0.1-ts.7"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.7.tgz#2b00094b0f7dd69339839cd7be46c5db2dd17a2e"
+cli-engine-config@^4.0.1-ts.10:
+  version "4.0.1-ts.10"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.10.tgz#4d10dc774ad6c8d5395e447fc02f955fb6f2ba2c"
   dependencies:
-    cli-flags "^1.0.7"
+    cli-flags "^1.0.10"
     fs-extra "^4.0.2"
     uuid "^3.1.0"
 
-cli-flags@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.7.tgz#bd039f0bfe761163364a22f8948fd7789c67008d"
+cli-flags@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.10.tgz#58939d0653cd4b25f5aeac25d31ac74a30a4b70a"
   dependencies:
-    cli-ux "^1.1.1"
+    cli-ux "^1.1.7"
     lodash "^4.17.4"
-
-cli-flags@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.8.tgz#e45a78c68be5562043ba0e01258cde371ba0b441"
-  dependencies:
-    cli-ux "^1.1.1"
-    lodash "^4.17.4"
+    ts-lodash "^4.0.4"
 
 cli-spinners@^0.1.2:
   version "0.1.2"
@@ -559,51 +553,22 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.1.tgz#a10db3586dc1c37a0565e5e69c98be164d7c9f14"
+cli-ux@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.7.tgz#ef82dcf7d9feeec608be462bc3d2238530579807"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     ansi-styles "^3.2.0"
     cardinal "^1.0.0"
     chalk "^2.1.0"
-    fs-extra "^4.0.1"
-    lodash.ary "^4.1.1"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.maxby "^4.6.0"
-    lodash.padend "^4.6.1"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
+    fs-extra "^4.0.2"
+    lodash "^4.17.4"
     moment "^2.18.1"
     password-prompt "^1.0.3"
     strip-ansi "^4.0.0"
     supports-color "^4.4.0"
-
-cli-ux@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.5.tgz#e1bd0ddf292cb94d79d338cdff3e352c7db57ea6"
-  dependencies:
-    "@heroku/linewrap" "^1.0.0"
-    ansi-escapes "^3.0.0"
-    ansi-styles "^3.2.0"
-    cardinal "^1.0.0"
-    chalk "^2.1.0"
-    fs-extra "^4.0.1"
-    lodash.ary "^4.1.1"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.maxby "^4.6.0"
-    lodash.padend "^4.6.1"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
-    moment "^2.18.1"
-    password-prompt "^1.0.3"
-    strip-ansi "^4.0.0"
-    supports-color "^4.4.0"
+    ts-lodash "^4.0.4"
 
 cliui@^2.1.0:
   version "2.1.0"
@@ -1121,7 +1086,7 @@ form-data@~2.1.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
-fs-extra@^4.0.0, fs-extra@^4.0.1:
+fs-extra@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.1.tgz#7fc0c6c8957f983f57f306a24e5b9ddd8d0dd880"
   dependencies:
@@ -2228,23 +2193,11 @@ lodash._root@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/lodash._root/-/lodash._root-3.0.1.tgz#fba1c4524c19ee9a5f8136b4609f017cf4ded692"
 
-lodash.ary@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.ary/-/lodash.ary-4.1.1.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
-
 lodash.escape@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-3.2.0.tgz#995ee0dc18c1b48cc92effae71a10aab5b487698"
   dependencies:
     lodash._root "^3.0.0"
-
-lodash.get@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
-
-lodash.identity@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/lodash.identity/-/lodash.identity-3.0.0.tgz#ad7bc6a4e647d79c972e1b80feef7af156267876"
 
 lodash.isarguments@^3.0.0:
   version "3.1.0"
@@ -2262,29 +2215,9 @@ lodash.keys@^3.0.0:
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
 
-lodash.maxby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.maxby/-/lodash.maxby-4.6.0.tgz#082240068f3c7a227aa00a8380e4f38cf0786e3d"
-
-lodash.padend@^4.6.1:
-  version "4.6.1"
-  resolved "https://registry.yarnpkg.com/lodash.padend/-/lodash.padend-4.6.1.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
-
-lodash.partial@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/lodash.partial/-/lodash.partial-4.2.1.tgz#49f3d8cfdaa3bff8b3a91d127e923245418961d4"
-
-lodash.property@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.property/-/lodash.property-4.4.2.tgz#da07124821c6409d025f30db8df851314515bffe"
-
 lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
-
-lodash.result@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/lodash.result/-/lodash.result-4.5.2.tgz#cb45b27fb914eaa8d8ee6f0ce7b2870b87cb70aa"
 
 lodash.template@^3.0.0:
   version "3.6.2"
@@ -3253,10 +3186,6 @@ string.prototype.trim@~1.1.2:
     es-abstract "^1.5.0"
     function-bind "^1.0.2"
 
-string@3.x:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/string/-/string-3.3.3.tgz#5ea211cd92d228e184294990a6cc97b366a77cb0"
-
 string_decoder@~0.10.x:
   version "0.10.31"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
@@ -3468,6 +3397,10 @@ ts-jest@^21.0.0:
     pkg-dir "^2.0.0"
     source-map-support "^0.4.4"
     yargs "^8.0.1"
+
+ts-lodash@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.4.tgz#082700585b9f34a4b2abb0a6ada75cfd26deb2bd"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
