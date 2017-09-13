@@ -6,7 +6,7 @@
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
     "chalk": "^2.1.0",
-    "cli-engine-config": "^4.0.1-ts.10",
+    "cli-engine-config": "^4.0.1-ts.11",
     "cli-flags": "^1.0.10",
     "cli-ux": "^1.1.7",
     "fs-extra": "^4.0.2",
