@@ -71,7 +71,7 @@ export class Command implements ICommand {
   flags: OutputFlags<this['parse']['flags']>
   argv: string[]
   args: OutputArgs
-  color: typeof color
+  color: typeof color.color
 
   constructor(config?: ConfigOptions) {
     this.config = buildConfig(config)
@@ -98,7 +98,7 @@ export class Command implements ICommand {
    * sets up the command and parses the flags just before it is run
    */
   async init() {
-    this.color = require('./color')
+    this.color = require('./color').color
     const { CLI } = require('cli-ux')
     this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
     this.http = HTTP.defaults({
