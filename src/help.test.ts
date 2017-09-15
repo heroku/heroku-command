@@ -20,7 +20,7 @@ class AppsCreate extends Command {
 
 multiline help
 `,
-    args: [{ name: 'app_name', description: 'app to use', required: false }],
+    args: [{ name: 'app_name', description: 'app to use' }],
     flags: {
       force: flags.boolean({ description: 'force it' }),
       app: flags.string({ char: 'a', hidden: true }),
@@ -136,7 +136,7 @@ description of apps:create
     }
     options = {
       description: 'description of apps:create',
-      args: [{ name: 'app_name', description: 'app to use', required: false }],
+      args: [{ name: 'app_name', description: 'app to use' }],
     }
   }
 
@@ -157,7 +157,7 @@ APP_NAME  app to use
     options = {
       description: 'description of apps:create',
       aliases: ['foo', 'bar'],
-      args: [{ name: 'app_name', description: 'app to use', required: false }],
+      args: [{ name: 'app_name', description: 'app to use' }],
     }
   }
   test('has aliases', () => {

@@ -2,7 +2,7 @@ import { Command as Base } from './command'
 import { flags } from 'cli-flags'
 import * as nock from 'nock'
 
-const config = { platform: 'darwin', arch: 'x64' }
+const config = { platform: 'darwin', arch: 'x64', argv: [] }
 
 class Command extends Base {
   __config = {

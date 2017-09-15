@@ -1,9 +1,8 @@
-import { parse, InputArgs, InputFlags, OutputArgs, OutputFlags } from 'cli-flags'
-import { buildConfig, Config, ConfigOptions, Plugin, ICommand } from 'cli-engine-config'
+import { InputArgs, InputFlags, OutputArgs, OutputFlags } from 'cli-flags'
+import { Config, ConfigOptions, Plugin, ICommand } from 'cli-engine-config'
 import { HTTP } from 'http-call'
-import { Help } from './help'
+import { deps } from './deps'
 import { CLI } from 'cli-ux'
-import color = require('./color')
 
 const pjson = require('../package.json')
 const debug = require('debug')('cli-engine-command')
@@ -63,10 +62,10 @@ export class Command implements ICommand {
   flags: OutputFlags<this['_flags']>
   argv: string[]
   args: OutputArgs
-  color: typeof color.color
+  color: typeof deps.Color.color
 
   constructor(config?: ConfigOptions) {
-    this.config = buildConfig(config)
+    this.config = deps.Config.buildConfig(config)
   }
 
   /**
@@ -74,9 +73,8 @@ export class Command implements ICommand {
    */
   async _run(argv?: string[]) {
     try {
-      this.options.argv = argv || this.config.argv.slice(2)
+      this.options.argv = argv
       debug('initializing %s version: %s', this.__config.id, this.__config._version)
-      debug('argv: %o', this.options.argv)
       await this.init()
       debug('run')
       await this.run()
@@ -91,17 +89,19 @@ export class Command implements ICommand {
    * sets up the command and parses the flags just before it is run
    */
   async init() {
-    this.color = require('./color').color
-    const { CLI } = require('cli-ux')
+    this.color = deps.Color.color
+    const CLI = deps.CLI
     this.cli = new CLI({ debug: this.config.debug, mock: this.config.mock, errlog: this.config.errlog })
-    this.http = HTTP.defaults({
+    this.http = deps.HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config
           .arch}) node-${process.version}`,
       },
     })
     if (!this.config.mock) this.cli.handleUnhandleds()
-    const { argv, flags, args } = await parse<this['_flags']>(this.options)
+    this.options.argv = this.options.argv || this.config.argv.slice(2)
+    debug('argv: %o', this.options.argv)
+    const { argv, flags, args } = await deps.CLIFlags.parse<this['_flags']>(this.options)
     this.flags = flags
     this.argv = argv
     this.args = args
@@ -116,12 +116,12 @@ export class Command implements ICommand {
   }
 
   buildHelp(): string {
-    let help = new Help(this.config)
+    let help = new deps.Help(this.config)
     return help.command(this)
   }
 
   buildHelpLine(): [string, string | undefined] {
-    let help = new Help(this.config)
+    let help = new deps.Help(this.config)
     return help.commandLine(this)
   }
 }

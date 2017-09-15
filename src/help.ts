@@ -11,9 +11,9 @@ function buildUsage(command: ICommand): string {
   return `${cmd} ${args.join(' ')}`.trim()
 }
 
-function renderArg(arg: IArg): string {
+function renderArg(arg: IArg<any>): string {
   let name = arg.name!.toUpperCase()
-  if (arg.required !== false && arg.optional !== true) return `${name}`
+  if (arg.required) return `${name}`
   else return `[${name}]`
 }
 
@@ -52,7 +52,7 @@ export class Help {
     return `\n${chalk.blue('Aliases:')}\n${a}\n`
   }
 
-  renderArgs(args: IArg[]): string {
+  renderArgs(args: IArg<string>[]): string {
     if (!args.find(f => !!f.description)) return ''
     return (
       '\n' +
