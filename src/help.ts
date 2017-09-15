@@ -4,10 +4,10 @@ import { IArg, IFlag } from 'cli-flags'
 import * as chalk from 'chalk'
 
 function buildUsage(command: ICommand): string {
-  if (command.usage) return command.usage.trim()
-  let cmd = command.id
-  if (!command.parse.args) return cmd.trim()
-  let args = command.parse.args.map(renderArg)
+  if (command.options.usage) return command.options.usage.trim()
+  let cmd = command.__config.id
+  if (!command.options.args) return (cmd || '').trim()
+  let args = command.options.args.map(renderArg)
   return `${cmd} ${args.join(' ')}`.trim()
 }
 
@@ -25,22 +25,25 @@ export class Help {
   }
 
   command(cmd: ICommand): string {
-    let flags = Object.entries(cmd.parse.flags || {}).filter(([, flag]) => !flag.hidden)
-    let args = (cmd.parse.args || []).filter(a => !a.hidden)
+    let flags = Object.entries(cmd.options.flags || {}).filter(([, flag]) => !flag.hidden)
+    let args = (cmd.options.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${chalk.blue('[flags]')}` : ''
     let usage = `${chalk.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
     return [
       usage,
-      cmd.description ? `\n${chalk.bold(cmd.description.trim())}\n` : '',
-      this.renderAliases(cmd.aliases),
+      cmd.options.description ? `\n${chalk.bold(cmd.options.description.trim())}\n` : '',
+      this.renderAliases(cmd.options.aliases),
       this.renderArgs(args),
       this.renderFlags(flags),
-      cmd.help ? `\n${cmd.help.trim()}\n` : '',
+      cmd.options.help ? `\n${cmd.options.help.trim()}\n` : '',
     ].join('')
   }
 
   commandLine(cmd: ICommand): [string, string | undefined] {
-    return [buildUsage(cmd), cmd.description ? chalk.dim(cmd.description) : null] as [string, string | undefined]
+    return [buildUsage(cmd), cmd.options.description ? chalk.dim(cmd.options.description) : null] as [
+      string,
+      string | undefined
+    ]
   }
 
   renderAliases(aliases: string[] | undefined): string {

@@ -10,11 +10,16 @@ class Command extends Base {
 }
 
 class AppsCreate extends Command {
-  topic = 'apps'
-  command = 'create'
-  description = 'description of apps:create'
+  __config = {
+    _version: '',
+    id: 'apps:create',
+  }
+  options = {
+    description: 'description of apps:create',
+    help: `some
 
-  parse = {
+multiline help
+`,
     args: [{ name: 'app_name', description: 'app to use', required: false }],
     flags: {
       force: flags.boolean({ description: 'force it' }),
@@ -23,11 +28,6 @@ class AppsCreate extends Command {
       remote: flags.string({ char: 'r' }),
     },
   }
-
-  help = `some
-
-multiline help
-`
 }
 
 const help = new Help(buildConfig({ mock: true }))
@@ -52,9 +52,11 @@ multiline help
   })
 
   class AppsCreate3 extends Command {
-    topic = 'apps'
-    command = 'create'
-    parse = {
+    __config = {
+      _version: '',
+      id: 'apps:create',
+    }
+    options = {
       flags: {
         force: flags.boolean({ description: 'force it' }),
         app: flags.string({ char: 'a', hidden: true }),
@@ -75,10 +77,12 @@ Flags:
 
   test('has flags + description', () => {
     class CMD extends Command {
-      topic = 'apps'
-      command = 'create'
-      description = 'description of apps:create'
-      parse = {
+      __config = {
+        _version: '',
+        id: 'apps:create',
+      }
+      options = {
+        description: 'description of apps:create',
         flags: {
           force: flags.boolean({ description: 'force it' }),
           app: flags.string({ char: 'a', hidden: true }),
@@ -99,10 +103,12 @@ Flags:
   })
 
   class AppsCreate1 extends Command {
-    topic = 'apps'
-    command = 'create'
-    help = 'description of apps:create'
-    parse = {
+    __config = {
+      _version: '',
+      id: 'apps:create',
+    }
+    options = {
+      help: 'description of apps:create',
       flags: {
         force: flags.boolean({ description: 'force it' }),
         app: flags.string({ char: 'a', hidden: true }),
@@ -124,12 +130,13 @@ description of apps:create
   })
 
   class AppsCreate2 extends Command {
-    topic = 'apps'
-    command = 'create'
-    description = 'description of apps:create'
-    parse = {
+    __config = {
+      _version: '',
+      id: 'apps:create',
+    }
+    options = {
+      description: 'description of apps:create',
       args: [{ name: 'app_name', description: 'app to use', required: false }],
-      flags: {},
     }
   }
 
@@ -143,12 +150,13 @@ APP_NAME  app to use
   })
 
   class CMD extends Command {
-    topic = 'apps'
-    command = 'create'
-    description = 'description of apps:create'
-    aliases = ['foo', 'bar']
-    parse = {
-      flags: {},
+    __config = {
+      _version: '',
+      id: 'apps:create',
+    }
+    options = {
+      description: 'description of apps:create',
+      aliases: ['foo', 'bar'],
       args: [{ name: 'app_name', description: 'app to use', required: false }],
     }
   }

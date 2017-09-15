@@ -2,12 +2,14 @@ import { Command as Base } from './command'
 import { flags } from 'cli-flags'
 import * as nock from 'nock'
 
-const config = { platform: 'darwin', arch: 'x64', argv: [] }
+const config = { platform: 'darwin', arch: 'x64' }
 
 class Command extends Base {
-  topic = 'foo'
-  command = 'bar'
-  parse = {
+  __config = {
+    _version: '',
+    id: 'foo:bar',
+  }
+  options = {
     flags: { myflag: flags.boolean() },
     args: [{ name: 'myarg', required: false }],
   }
@@ -19,10 +21,6 @@ beforeEach(async () => {
   await command.init()
 })
 
-test('shows the ID', () => {
-  expect(command.id).toEqual('foo:bar')
-})
-
 test('runs the command', async () => {
   const { cmd } = await Command.mock()
   expect(cmd.flags).toEqual({})
@@ -31,7 +29,7 @@ test('runs the command', async () => {
 
 test('has stdout', async () => {
   class Command extends Base {
-    parse = {
+    options = {
       flags: {
         print: flags.string(),
         bool: flags.boolean(),
@@ -48,7 +46,7 @@ test('has stdout', async () => {
 
 test('has stderr', async () => {
   class Command extends Base {
-    parse = {
+    options = {
       flags: { print: flags.string() },
     }
     async run() {
@@ -69,12 +67,16 @@ test('parses args', async () => {
 
 test('has help', async () => {
   class Command extends Base {
-    topic = 'config'
-    command = 'get'
-    help = `this is
+    __config = {
+      _version: '',
+      id: 'config:get',
+    }
+    options = {
+      help: `this is
 
 some multiline help
-`
+`,
+    }
   }
   let command = new Command(config)
   expect(command.buildHelp()).toEqual(`Usage: cli-engine config:get

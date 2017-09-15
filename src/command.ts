@@ -1,4 +1,4 @@
-import { parse, InputFlags, InputArgs, OutputArgs, OutputFlags } from 'cli-flags'
+import { parse, InputArgs, InputFlags, OutputArgs, OutputFlags } from 'cli-flags'
 import { buildConfig, Config, ConfigOptions, Plugin, ICommand } from 'cli-engine-config'
 import { HTTP } from 'http-call'
 import { Help } from './help'
@@ -15,40 +15,32 @@ export interface IMockOutput<T extends Command> {
 }
 
 export class Command implements ICommand {
-  topic?: string
-  command?: string
-  name?: string
-  description?: string
-  hidden: boolean = false
-  usage?: string
-  help?: string
-  aliases: string[] = []
-  _version = pjson.version
-  plugin?: Plugin
+  __config: {
+    _version: string
+    id?: string
+    plugin?: Plugin
+  } = { _version: pjson.version as string }
 
-  parse: {
+  options: {
+    argv?: string[]
+    flags?: InputFlags
     args?: InputArgs
-    flags: InputFlags
     strict?: boolean
-  } = { flags: {} }
-
-  get id(): string {
-    if (this.name) return this.name
-    let cmd = []
-    if (this.topic) cmd.push(this.topic)
-    if (this.command) cmd.push(this.command)
-    let id = cmd.join(':')
-    if (id) return id
-    let ctor = this.constructor as typeof Command
-    return ctor.name
+    description?: string
+    hidden?: boolean
+    usage?: string
+    help?: string
+    aliases?: string[]
+  } = {}
+  get _flags(): InputFlags {
+    return this.options.flags || {}
   }
 
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static async mock<T extends Command>(...argv: string[]): Promise<IMockOutput<T>> {
-    argv.unshift('argv0', 'argv1')
-    const cmd = (await this.run({ argv, mock: true })) as T
+    const cmd = (await this.run({ argv: ['argv0', 'argv1'].concat(argv), mock: true })) as T
     return {
       cmd,
       stdout: cmd.cli.stdout.output,
@@ -68,7 +60,7 @@ export class Command implements ICommand {
   config: Config
   http: typeof HTTP
   cli: CLI
-  flags: OutputFlags<this['parse']['flags']>
+  flags: OutputFlags<this['_flags']>
   argv: string[]
   args: OutputArgs
   color: typeof color.color
@@ -80,10 +72,11 @@ export class Command implements ICommand {
   /**
    * runs the command with the lifecycle scripts [init/run/done]
    */
-  async _run() {
+  async _run(argv?: string[]) {
     try {
-      debug('initializing %s version: %s', this.id, this._version)
-      debug('argv: %o', this.config.argv)
+      this.options.argv = argv || this.config.argv.slice(2)
+      debug('initializing %s version: %s', this.__config.id, this.__config._version)
+      debug('argv: %o', this.options.argv)
       await this.init()
       debug('run')
       await this.run()
@@ -108,10 +101,7 @@ export class Command implements ICommand {
       },
     })
     if (!this.config.mock) this.cli.handleUnhandleds()
-    const { argv, flags, args } = await parse<this['parse']['flags']>({
-      ...this.parse,
-      argv: this.config.argv.slice(2),
-    })
+    const { argv, flags, args } = await parse<this['_flags']>(this.options)
     this.flags = flags
     this.argv = argv
     this.args = args
