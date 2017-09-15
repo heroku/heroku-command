@@ -31,9 +31,6 @@ export class Command implements ICommand {
     help?: string
     aliases?: string[]
   } = {}
-  get _flags(): InputFlags {
-    return this.options.flags || {}
-  }
 
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
@@ -59,7 +56,7 @@ export class Command implements ICommand {
   config: Config
   http: typeof HTTP
   cli: CLI
-  flags: OutputFlags<this['_flags']>
+  flags: OutputFlags<this['options']['flags']>
   argv: string[]
   args: OutputArgs
   color: typeof deps.Color.color
@@ -101,7 +98,7 @@ export class Command implements ICommand {
     if (!this.config.mock) this.cli.handleUnhandleds()
     this.options.argv = this.options.argv || this.config.argv.slice(2)
     debug('argv: %o', this.options.argv)
-    const { argv, flags, args } = await deps.CLIFlags.parse<this['_flags']>(this.options)
+    const { argv, flags, args } = await deps.CLIFlags.parse<this['options']['flags']>(this.options)
     this.flags = flags
     this.argv = argv
     this.args = args

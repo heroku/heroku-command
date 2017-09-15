@@ -10,10 +10,6 @@
   version "0.4.31"
   resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-0.4.31.tgz#a31d74241a6b1edbb973cf36d97a2896834a51f9"
 
-"@types/debug@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
-
 "@types/jest@^20.0.8":
   version "20.0.8"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.8.tgz#7f8c97f73d20d3bf5448fbe33661a342002b5954"
@@ -3540,6 +3536,10 @@ ts-jest@^21.0.1:
 ts-lodash@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.4.tgz#082700585b9f34a4b2abb0a6ada75cfd26deb2bd"
+
+tslib@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.7.1.tgz#bc8004164691923a79fe8378bbeb3da2017538ec"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
