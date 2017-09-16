@@ -10,7 +10,7 @@
     "outDir": "./lib",
     "removeComments": true,
     "strict": true,
-    "target": "es6",
+    "target": "es2017",
     "lib": [
       "es2016",
       "es2017.object"

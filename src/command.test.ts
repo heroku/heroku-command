@@ -9,9 +9,14 @@ class Command extends Base {
     _version: '',
     id: 'foo:bar',
   }
+  myarg?: string
   options = {
     flags: { myflag: flags.boolean() },
     args: [{ name: 'myarg', required: false }],
+  }
+
+  async run() {
+    this.myarg = this.args.myarg
   }
 }
 
@@ -142,4 +147,20 @@ describe('http', () => {
       stream.on('end', () => resolve(strings.join('')))
     })
   }
+})
+
+describe('static properties', () => {
+  class Command extends Base {
+    static flags = { myflag: flags.string() }
+    static args = [{ name: 'myarg', required: false }]
+
+    async run() {
+      this.cli.log('myflag: ' + (<any>this.flags).myflag)
+      this.cli.log('myarg: ' + this.args.myarg)
+    }
+  }
+  test('supports static flags', async () => {
+    const { stdout } = await Command.mock('one', '--myflag=two')
+    expect(stdout).toEqual(`myflag: two\nmyarg: one\n`)
+  })
 })

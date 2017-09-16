@@ -36,21 +36,13 @@ export class Command implements ICommand {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static async mock<T extends Command>(...argv: string[]): Promise<IMockOutput<T>> {
-    const cmd = (await this.run({ argv: ['argv0', 'argv1'].concat(argv), mock: true })) as T
+    const cmd = new this({ argv: ['argv0', 'argv1'].concat(argv), mock: true }) as T
+    await cmd._run()
     return {
       cmd,
       stdout: cmd.cli.stdout.output,
       stderr: cmd.cli.stderr.output,
     }
-  }
-
-  /**
-   * instantiate and run the command
-   */
-  static async run(config?: ConfigOptions): Promise<Command> {
-    const cmd = new this(config)
-    await cmd._run()
-    return cmd
   }
 
   config: Config
@@ -63,6 +55,26 @@ export class Command implements ICommand {
 
   constructor(config?: ConfigOptions) {
     this.config = deps.Config.buildConfig(config)
+
+    // port flow-style options
+    const ctor: any = this.constructor
+    const props = [
+      ['flags', 'flags'],
+      ['args', 'args'],
+      ['variableArgs', 'strict'],
+      ['description', 'description'],
+      ['hidden', 'hidden'],
+      ['usage', 'usage'],
+      ['help', 'help'],
+      ['aliases', 'aliases'],
+    ]
+    for (let [from, to] of props) {
+      if (ctor[from]) {
+        let cli = new deps.CLI({ mock: this.config.mock })
+        cli.warn(`${from} is defined as a static property on ${this.__config.id}`)
+        ;(<any>this.options)[to] = ctor[from]
+      }
+    }
   }
 
   /**
