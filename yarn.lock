@@ -526,12 +526,11 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.3.1.tgz#79970a47e97bd4caad29d40f5577a23ddd7982cc"
+cli-engine-config@^4.0.1-ts.15:
+  version "4.0.1-ts.15"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.15.tgz#cbd74333143287c55ae660c1922b3c8fbd5f4d3b"
   dependencies:
-    debug "^3.0.1"
-    fs-extra "^4.0.1"
+    fs-extra "^4.0.2"
     uuid "^3.1.0"
 
 cli-flags@^1.0.15:
@@ -1106,7 +1105,7 @@ fs-extra@^4.0.0:
     jsonfile "^3.0.0"
     universalify "^0.1.0"
 
-fs-extra@^4.0.1, fs-extra@^4.0.2:
+fs-extra@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.2.tgz#f91704c53d1b461f893452b0c307d9997647ab6b"
   dependencies:
