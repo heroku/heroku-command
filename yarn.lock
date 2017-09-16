@@ -526,21 +526,22 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@^4.0.1-ts.11:
-  version "4.0.1-ts.11"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.11.tgz#c25f21d8bbd5eeb93961dc28fb9e861993f773c4"
+cli-engine-config@^4.0.1-ts.13:
+  version "4.0.1-ts.13"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.13.tgz#962576d4899d0b992310e0edb4abf33e858546c0"
   dependencies:
-    cli-flags "^1.0.10"
+    cli-flags "^1.0.14"
     fs-extra "^4.0.2"
     uuid "^3.1.0"
 
-cli-flags@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.10.tgz#58939d0653cd4b25f5aeac25d31ac74a30a4b70a"
+cli-flags@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-1.0.14.tgz#3a1dd3befe640c1e4f91951256dde56722648ebb"
   dependencies:
-    cli-ux "^1.1.7"
+    chalk "^2.1.0"
+    cli-ux "^1.1.8"
     lodash "^4.17.4"
-    ts-lodash "^4.0.4"
+    ts-lodash "^4.0.5"
 
 cli-spinners@^0.1.2:
   version "0.1.2"
@@ -553,9 +554,9 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.7.tgz#ef82dcf7d9feeec608be462bc3d2238530579807"
+cli-ux@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.8.tgz#c534246ac849eb0fdcc3433bae9637ac12d4416b"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -568,7 +569,7 @@ cli-ux@^1.1.7:
     password-prompt "^1.0.3"
     strip-ansi "^4.0.0"
     supports-color "^4.4.0"
-    ts-lodash "^4.0.4"
+    ts-lodash "^4.0.5"
 
 cliui@^2.1.0:
   version "2.1.0"
@@ -3533,9 +3534,11 @@ ts-jest@^21.0.1:
     source-map-support "^0.4.4"
     yargs "^8.0.1"
 
-ts-lodash@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.4.tgz#082700585b9f34a4b2abb0a6ada75cfd26deb2bd"
+ts-lodash@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.5.tgz#1d0a74de2758df43a821d176e2cc85c50925ee67"
+  dependencies:
+    lodash "^4.17.4"
 
 tslib@^1.7.1:
   version "1.7.1"
