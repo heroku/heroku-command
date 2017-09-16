@@ -7,7 +7,7 @@
   "dependencies": {
     "chalk": "^2.1.0",
     "cli-engine-config": "^4.0.1-ts.13",
-    "cli-flags": "^1.0.14",
+    "cli-flags": "^1.0.15",
     "cli-ux": "^1.1.8",
     "fs-extra": "^4.0.2",
     "http-call": "^4.0.0-ts2.0",
