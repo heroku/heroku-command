@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
     "chalk": "^2.1.0",
+    "cli-flags": "^1.0.15",
     "fs-extra": "^4.0.2",
     "http-call": "^4.0.0-ts2.0",
     "tslib": "^1.7.1"
@@ -17,7 +18,6 @@
     "@types/node": "^8.0.28",
     "babel-core": "^6.26.0",
     "cli-engine-config": "^4.0.1-ts.15",
-    "cli-flags": "^1.0.15",
     "cli-ux": "^1.1.8",
     "del-cli": "^1.1.0",
     "husky": "^0.14.3",
@@ -41,7 +41,6 @@
   "main": "lib/index.js",
   "peerDependencies": {
     "cli-engine-config": "^4.0.1-ts.15",
-    "cli-flags": "^1.0.15",
     "cli-ux": "^1.1.8"
   },
   "repository": "heroku/cli-engine-command",
