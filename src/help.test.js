@@ -48,20 +48,16 @@ multiline help
   })
 
   test('has just flags', () => {
-    expect(
-      help.command(
-        class extends Command<*> {
+    expect(help.command(class extends Command<*> {
           static topic = 'apps'
           static command = 'create'
-          static flags = {
-            force: boolean({ description: 'force it' }),
-            app: string({ char: 'a', hidden: true }),
-            foo: string({ char: 'f', description: 'foobar' }),
-            remote: string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+          static flags = { force: boolean({
+              description: 'force it',
+            }), app: string({
+              char: 'a',
+              hidden: true,
+            }), foo: string({ char: 'f', description: 'foobar' }), remote: string({ char: 'r' }) }
+        })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo FOO        foobar
@@ -71,21 +67,17 @@ Flags:
   })
 
   test('has flags + description', () => {
-    expect(
-      help.command(
-        class extends Command<*> {
+    expect(help.command(class extends Command<*> {
           static topic = 'apps'
           static command = 'create'
           static description = 'description of apps:create'
-          static flags = {
-            force: boolean({ description: 'force it' }),
-            app: string({ char: 'a', hidden: true }),
-            foo: string({ char: 'f', description: 'foobar' }),
-            remote: string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+          static flags = { force: boolean({
+              description: 'force it',
+            }), app: string({
+              char: 'a',
+              hidden: true,
+            }), foo: string({ char: 'f', description: 'foobar' }), remote: string({ char: 'r' }) }
+        })).toEqual(`Usage: cli-engine apps:create [flags]
 
 description of apps:create
 
@@ -97,21 +89,17 @@ Flags:
   })
 
   test('has description + help', () => {
-    expect(
-      help.command(
-        class extends Command<*> {
+    expect(help.command(class extends Command<*> {
           static topic = 'apps'
           static command = 'create'
           static help = 'description of apps:create'
-          static flags = {
-            force: boolean({ description: 'force it' }),
-            app: string({ char: 'a', hidden: true }),
-            foo: string({ char: 'f', description: 'foobar' }),
-            remote: string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+          static flags = { force: boolean({
+              description: 'force it',
+            }), app: string({
+              char: 'a',
+              hidden: true,
+            }), foo: string({ char: 'f', description: 'foobar' }), remote: string({ char: 'r' }) }
+        })).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo FOO        foobar
@@ -123,16 +111,12 @@ description of apps:create
   })
 
   test('has description + args', () => {
-    expect(
-      help.command(
-        class extends Command<*> {
+    expect(help.command(class extends Command<*> {
           static topic = 'apps'
           static command = 'create'
           static description = 'description of apps:create'
           static args = [{ name: 'app_name', description: 'app to use', required: false }]
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+        })).toEqual(`Usage: cli-engine apps:create [APP_NAME]
 
 description of apps:create
 
@@ -141,17 +125,13 @@ APP_NAME  app to use
   })
 
   test('has aliases', () => {
-    expect(
-      help.command(
-        class extends Command<*> {
+    expect(help.command(class extends Command<*> {
           static topic = 'apps'
           static command = 'create'
           static description = 'description of apps:create'
           static aliases = ['foo', 'bar']
           static args = [{ name: 'app_name', description: 'app to use', required: false }]
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+        })).toEqual(`Usage: cli-engine apps:create [APP_NAME]
 
 description of apps:create
 

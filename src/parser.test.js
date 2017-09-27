@@ -4,10 +4,7 @@ import Parser from './parser'
 import { flags as Flags } from './flags'
 
 test('parses args and flags', async () => {
-  const p = new Parser({
-    args: [{ name: 'myarg' }, { name: 'myarg2' }],
-    flags: { myflag: Flags.string() },
-  })
+  const p = new Parser({ args: [{ name: 'myarg' }, { name: 'myarg2' }], flags: { myflag: Flags.string() } })
   const { argv, flags } = await p.parse({ argv: ['foo', '--myflag', 'bar', 'baz'] })
   expect(argv[0]).toEqual('foo')
   expect(argv[1]).toEqual('baz')
@@ -23,53 +20,32 @@ describe('flags', () => {
   })
 
   test('parses short flags', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.boolean({ char: 'm' }),
-        force: Flags.boolean({ char: 'f' }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.boolean({ char: 'm' }), force: Flags.boolean({ char: 'f' }) } })
     const { flags } = await p.parse({ argv: ['-mf'] })
     expect(flags.myflag).toBeTruthy()
     expect(flags.force).toBeTruthy()
   })
 
   test('parses flag value with "=" to separate', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.string({ char: 'm' }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.string({ char: 'm' }) } })
     const { flags } = await p.parse({ argv: ['--myflag=foo'] })
     expect(flags).toEqual({ myflag: 'foo' })
   })
 
   test('parses flag value with "=" in value', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.string({ char: 'm' }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.string({ char: 'm' }) } })
     const { flags } = await p.parse({ argv: ['--myflag', '=foo'] })
     expect(flags).toEqual({ myflag: '=foo' })
   })
 
   test('parses short flag value with "="', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.string({ char: 'm' }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.string({ char: 'm' }) } })
     const { flags } = await p.parse({ argv: ['-m=foo'] })
     expect(flags).toEqual({ myflag: 'foo' })
   })
 
   test('requires required flag', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.string({ required: true }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.string({ required: true }) } })
     expect.assertions(1)
     try {
       await p.parse()
@@ -79,11 +55,7 @@ describe('flags', () => {
   })
 
   test('requires nonoptional flag', async () => {
-    const p = new Parser({
-      flags: {
-        myflag: Flags.string({ optional: false }),
-      },
-    })
+    const p = new Parser({ flags: { myflag: Flags.string({ optional: false }) } })
     expect.assertions(1)
     try {
       await p.parse()
@@ -93,10 +65,7 @@ describe('flags', () => {
   })
 
   test('removes flags from argv', async () => {
-    const p = new Parser({
-      args: [{ name: 'myarg' }],
-      flags: { myflag: Flags.string() },
-    })
+    const p = new Parser({ args: [{ name: 'myarg' }], flags: { myflag: Flags.string() } })
     const { flags, argv } = await p.parse({ argv: ['--myflag', 'bar', 'foo'] })
     expect(flags).toEqual({ myflag: 'bar' })
     expect(argv).toEqual(['foo'])
@@ -141,20 +110,14 @@ describe('args', () => {
 
 describe('variableArgs', () => {
   test('skips flag parsing after "--"', async () => {
-    const p = new Parser({
-      variableArgs: true,
-      flags: { myflag: Flags.boolean() },
-      args: [{ name: 'argOne' }],
-    })
+    const p = new Parser({ variableArgs: true, flags: { myflag: Flags.boolean() }, args: [{ name: 'argOne' }] })
     const { argv, args } = await p.parse({ argv: ['foo', 'bar', '--', '--myflag'] })
     expect(argv).toEqual(['foo', 'bar', '--myflag'])
     expect(args).toEqual({ argOne: 'foo' })
   })
 
   test('does not repeat arguments', async () => {
-    const p = new Parser({
-      variableArgs: true,
-    })
+    const p = new Parser({ variableArgs: true })
     const { argv } = await p.parse({ argv: ['foo', '--myflag=foo bar'] })
     expect(argv).toEqual(['foo', '--myflag=foo bar'])
   })

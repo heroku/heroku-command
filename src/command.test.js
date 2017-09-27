@@ -29,10 +29,7 @@ test('runs the command', async () => {
 
 test('has stdout', async () => {
   class Command extends Base<*> {
-    static flags = {
-      print: Flags.string(),
-      bool: Flags.boolean(),
-    }
+    static flags = { print: Flags.string(), bool: Flags.boolean() }
     async run() {
       this.out.stdout.log(this.flags.print)
     }
@@ -108,11 +105,7 @@ describe('http', () => {
   describe('.post', async () => {
     test('makes a post request with body', async () => {
       api.post('/', { karate: 'chop', judo: 'throw', jujitsu: 'strangle' }).reply(200, { message: 'ok' })
-      const body = {
-        karate: 'chop',
-        judo: 'throw',
-        jujitsu: 'strangle',
-      }
+      const body = { karate: 'chop', judo: 'throw', jujitsu: 'strangle' }
 
       await command.http.post('https://api.heroku.com', { body: body })
     })
