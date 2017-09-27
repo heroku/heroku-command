@@ -53,6 +53,7 @@ export default class Command<Flags: InputFlags> {
 
   config: Config
   http: Class<HTTP>
+  cli: CLI
   out: CLI
   flags: OutputFlags = {}
   argv: string[]
@@ -63,6 +64,7 @@ export default class Command<Flags: InputFlags> {
     this.argv = this.config.argv
     const { CLI } = require('cli-ux')
     this.out = new CLI({ mock: this.config.mock })
+    this.cli = this.out
     this.out.color = require('./color').color
     this.http = HTTP.defaults({
       headers: {
