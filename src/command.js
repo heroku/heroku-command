@@ -62,9 +62,8 @@ export default class Command<Flags: InputFlags> {
   constructor(options: { config?: ConfigOptions } = {}) {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
-    const { CLI } = require('cli-ux')
-    this.out = new CLI({ mock: this.config.mock })
-    this.cli = this.out
+    const { cli } = require('cli-ux')
+    this.out = this.cli = cli
     this.out.color = require('./color').color
     this.http = HTTP.defaults({
       headers: {
