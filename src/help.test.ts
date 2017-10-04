@@ -10,7 +10,7 @@ class Command extends Base {
 }
 
 class AppsCreate extends Command {
-  __config = {
+  static __config = {
     _version: '',
     id: 'apps:create',
   }
@@ -52,7 +52,7 @@ multiline help
   })
 
   class AppsCreate3 extends Command {
-    __config = {
+    static __config = {
       _version: '',
       id: 'apps:create',
     }
@@ -77,7 +77,7 @@ Flags:
 
   test('has flags + description', () => {
     class CMD extends Command {
-      __config = {
+      static __config = {
         _version: '',
         id: 'apps:create',
       }
@@ -103,7 +103,7 @@ Flags:
   })
 
   class AppsCreate1 extends Command {
-    __config = {
+    static __config = {
       _version: '',
       id: 'apps:create',
     }
@@ -130,7 +130,7 @@ description of apps:create
   })
 
   class AppsCreate2 extends Command {
-    __config = {
+    static __config = {
       _version: '',
       id: 'apps:create',
     }
@@ -150,7 +150,7 @@ APP_NAME  app to use
   })
 
   class CMD extends Command {
-    __config = {
+    static __config = {
       _version: '',
       id: 'apps:create',
     }

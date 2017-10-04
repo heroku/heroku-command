@@ -7,11 +7,14 @@ const pjson = require('../package.json')
 const debug = require('debug')('cli-engine-command')
 
 export class Command implements ICommand {
-  __config: {
+  static __config: {
     _version: string
     id?: string
     plugin?: Plugin
   } = { _version: pjson.version as string }
+  get __config(): typeof Command.__config {
+    return (<any>this.constructor).__config
+  }
 
   options: {
     argv?: string[]

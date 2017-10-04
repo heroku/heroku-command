@@ -6,7 +6,7 @@ import cli from 'cli-ux'
 const config = { platform: 'darwin', arch: 'x64', argv: [] }
 
 class Command extends Base {
-  __config = {
+  static __config = {
     _version: '',
     id: 'foo:bar',
   }
@@ -73,7 +73,7 @@ test('parses args', async () => {
 
 test('has help', async () => {
   class Command extends Base {
-    __config = {
+    static __config = {
       _version: '',
       id: 'config:get',
     }
