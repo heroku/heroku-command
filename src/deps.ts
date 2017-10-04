@@ -13,7 +13,7 @@ export const deps = {
 
   // remote
   get Config(): typeof Config { return fetch('cli-engine-config')},
-  get CLI(): typeof CLI.CLI { return fetch('cli-ux').CLI },
+  get CLI(): typeof CLI.default { return fetch('cli-ux').default },
   get CLIFlags(): typeof CLIFlags { return fetch('cli-flags') },
   get HTTP(): typeof HTTP.HTTP { return fetch('http-call').HTTP },
 }

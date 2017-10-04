@@ -1,6 +1,7 @@
 import { Command as Base } from './command'
 import { flags } from 'cli-flags'
 import * as nock from 'nock'
+import cli from 'cli-ux'
 
 const config = { platform: 'darwin', arch: 'x64', argv: [] }
 
@@ -27,7 +28,7 @@ beforeEach(async () => {
 })
 
 test('runs the command', async () => {
-  const { cmd } = await Command.mock()
+  const cmd = await Command.mock()
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual([])
 })
@@ -41,12 +42,12 @@ test('has stdout', async () => {
       },
     }
     async run() {
-      this.cli.stdout.log(this.flags.print)
+      cli.stdout.log(this.flags.print)
     }
   }
 
-  const { stdout } = await Command.mock('--print=foo')
-  expect(stdout).toEqual('foo\n')
+  await Command.mock('--print=foo')
+  expect(cli.stdout.output).toEqual('foo\n')
 })
 
 test('has stderr', async () => {
@@ -55,16 +56,16 @@ test('has stderr', async () => {
       flags: { print: flags.string() },
     }
     async run() {
-      this.cli.stderr.log(this.flags.print)
+      cli.stderr.log(this.flags.print)
     }
   }
 
-  const { stderr } = await Command.mock('--print=foo')
-  expect(stderr).toEqual('foo\n')
+  await Command.mock('--print=foo')
+  expect(cli.stderr.output).toEqual('foo\n')
 })
 
 test('parses args', async () => {
-  const { cmd } = await Command.mock('one')
+  const cmd = await Command.mock('one')
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
   expect(cmd.args).toEqual({ myarg: 'one' })
@@ -155,12 +156,12 @@ describe('static properties', () => {
     static args = [{ name: 'myarg', required: false }]
 
     async run() {
-      this.cli.log('myflag: ' + (<any>this.flags).myflag)
-      this.cli.log('myarg: ' + this.args.myarg)
+      cli.log('myflag: ' + (<any>this.flags).myflag)
+      cli.log('myarg: ' + this.args.myarg)
     }
   }
   test('supports static flags', async () => {
-    const { stdout } = await Command.mock('one', '--myflag=two')
-    expect(stdout).toEqual(`myflag: two\nmyarg: one\n`)
+    await Command.mock('one', '--myflag=two')
+    expect(cli.stdout.output).toEqual(`myflag: two\nmyarg: one\n`)
   })
 })
