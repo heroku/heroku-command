@@ -739,9 +739,9 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.2.tgz#e74a11ff2ac239b1ed00dfc5fa18c7e23a9a45f8"
+cli-ux@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.3.tgz#3baae3447557cbc50056ffa0bb93a10ebd58de87"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
