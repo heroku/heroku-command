@@ -2,7 +2,7 @@
   "name": "cli-engine-command",
   "description": "base CLI command for cli-engine",
   "version": "9.0.3",
-  "author": "Jeff Dickey @dickeyxxx",
+  "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
     "@heroku/linewrap": "^1.0.0",
@@ -54,25 +54,17 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "lint-staged": {
-    "src/**/*.js": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "main": "lib/index.js",
   "peerDependencies": {
-    "cli-engine-config": "^3.0.0"
+    "cli-engine-config": "^4.0.0"
   },
   "repository": "heroku/cli-engine-command",
   "scripts": {
-    "build": "babel src -d lib --ignore '*.test.js'",
-    "clean": "rimraf lib",
-    "copy-flow": "flow-copy-source -v -i '**/*.test.js' src lib",
-    "posttest": "prettier -l 'src/**/*.js' && flow",
+    "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
-    "prepare": "npm run clean && npm run build && npm run copy-flow",
-    "test": "jest",
-    "watch": "nodemon -e js -i lib --exec \"npm run prepare\""
-  }
+    "prepare": "del lib && tsc",
+    "pretest": "tsc",
+    "test": "jest"
+  },
+  "types": "./lib/index.d.ts"
 }
