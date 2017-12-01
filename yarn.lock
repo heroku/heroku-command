@@ -642,9 +642,9 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@4.0.1-ts.18:
-  version "4.0.1-ts.18"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.18.tgz#dbe426a8147142f673921f217280e1ee1c0ff626"
+cli-engine-config@4.0.1-ts.19:
+  version "4.0.1-ts.19"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.0.1-ts.19.tgz#1e58a069a5ba996ba4b7a9b6e9e67954e3cb4d92"
   dependencies:
     debug "^3.1.0"
     fs-extra "^4.0.2"
