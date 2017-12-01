@@ -57,7 +57,7 @@
   "scripts": {
     "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
-    "prepare": "del lib && tsc && del 'lib/**/*.test.+(d.ts|js)'",
+    "prepare": "del-cli lib && tsc && del-cli 'lib/**/*.test.+(d.ts|js)'",
     "pretest": "tsc",
     "test": "jest"
   },
