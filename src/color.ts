@@ -18,13 +18,13 @@ export const CustomColors: {
   // map gray -> dim because it's not solarized compatible
   gray: chalk.dim,
   grey: chalk.dim,
-  attachment: (s: string) => chalk.cyan(s),
-  addon: (s: string) => chalk.yellow(s),
-  configVar: (s: string) => chalk.green(s),
-  release: (s: string) => chalk.blue.bold(s),
-  cmd: (s: string) => chalk.cyan.bold(s),
+  attachment: chalk.cyan,
+  addon: chalk.yellow,
+  configVar: chalk.green,
+  release: chalk.blue.bold,
+  cmd: chalk.cyan.bold,
   app: (s: string) => color.heroku(`⬢ ${s}`),
-  heroku: (s: string): string => {
+  heroku: (s: string) => {
     if (!color.supports) return s
     let has256 = color.supports.has256 || (process.env.TERM || '').indexOf('256') !== -1
     return has256 ? '\u001b[38;5;104m' + s + ansiStyles.reset.open : chalk.magenta(s)
