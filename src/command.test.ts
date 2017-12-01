@@ -1,15 +1,18 @@
-// @flow
+import { Command as Base } from './command'
+import { ICommand, buildConfig } from 'cli-engine-config'
+import { flags as Flags } from 'cli-flags'
+import * as nock from 'nock'
+import cli from 'cli-ux'
 
-import Base from './command'
-import { type ICommand, buildConfig } from 'cli-engine-config'
-import { flags as Flags } from './flags'
-import nock from 'nock'
-
-class Command extends Base<*> {
+class Command extends Base {
   static topic = 'foo'
   static command = 'bar'
   static flags = { myflag: Flags.boolean() }
   static args = [{ name: 'myarg', required: false }]
+
+  async run() {
+    this.out.log('foo')
+  }
 }
 
 test('it meets the interface', () => {
@@ -25,10 +28,11 @@ test('runs the command', async () => {
   const cmd = await Command.mock()
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual([])
+  expect(cli.stdout.output).toEqual('foo\n')
 })
 
 test('has stdout', async () => {
-  class Command extends Base<*> {
+  class Command extends Base {
     static flags = { print: Flags.string(), bool: Flags.boolean() }
     async run() {
       this.out.stdout.log(this.flags.print)
@@ -40,7 +44,7 @@ test('has stdout', async () => {
 })
 
 test('has stderr', async () => {
-  class Command extends Base<*> {
+  class Command extends Base {
     static flags = { print: Flags.string() }
     async run() {
       this.out.stderr.log(this.flags.print)
@@ -59,7 +63,7 @@ test('parses args', async () => {
 })
 
 test('has help', async () => {
-  class Command extends Base<*> {
+  class Command extends Base {
     static topic = 'config'
     static command = 'get'
     static help = `this is
@@ -73,12 +77,12 @@ some multiline help
 this is
 
 some multiline help\n`)
-  expect(Command.buildHelpLine(config)).toEqual(['config:get', null])
+  expect(Command.buildHelpLine(config)).toEqual(['config:get', undefined])
 })
 
 describe('http', () => {
-  let api
-  let command
+  let api: nock.Scope
+  let command: Command
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -124,9 +128,9 @@ describe('http', () => {
     expect(body).toEqual({ message: 'ok' })
   })
 
-  function concat(stream) {
+  function concat(stream: NodeJS.ReadableStream): Promise<string> {
     return new Promise(resolve => {
-      let strings = []
+      let strings: string[] = []
       stream.on('data', data => strings.push(data))
       stream.on('end', () => resolve(strings.join('')))
     })

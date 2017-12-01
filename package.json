@@ -8,35 +8,34 @@
     "@heroku/linewrap": "^1.0.0",
     "ansi-escapes": "^3.0.0",
     "cardinal": "1.x",
-    "chalk": "^2.1.0",
+    "chalk": "2.3.0",
+    "cli-flags": "1.0.16",
     "cli-ux": "^2.0.4",
     "fs-extra": "^4.0.2",
-    "http-call": "^3.0.2",
+    "http-call": "^4.0.0",
     "lodash.maxby": "^4.6.0",
-    "moment": "^2.18.1",
+    "moment": "^2.19.3",
     "string": "3.x",
-    "supports-color": "^4.4.0"
+    "supports-color": "^5.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-jest": "^21.2.0",
-    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
-    "babel-plugin-transform-class-properties": "6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "cli-engine-config": "^3.3.1",
-    "flow-bin": "^0.55.0",
-    "flow-copy-source": "^1.2.1",
-    "flow-typed": "^2.1.5",
+    "@types/ansi-styles": "2.0.30",
+    "@types/chalk": "2.2.0",
+    "@types/jest": "21.1.8",
+    "@types/nock": "8.2.1",
+    "@types/node": "8.0.53",
+    "@types/supports-color": "3.1.0",
+    "cli-engine-config": "4.0.1-ts.18",
+    "del-cli": "1.1.0",
     "husky": "^0.14.3",
     "jest": "^21.2.1",
-    "jest-junit": "^3.0.0",
-    "lint-staged": "^4.2.3",
-    "nock": "^9.0.21",
-    "nodemon": "^1.12.1",
-    "prettier": "^1.7.1",
-    "rimraf": "2.6.2",
-    "std-mocks": "1.0.1"
+    "lint-staged": "^6.0.0",
+    "nock": "^9.1.3",
+    "prettier": "^1.8.2",
+    "std-mocks": "1.0.1",
+    "ts-jest": "21.2.4",
+    "ts-node": "3.3.0",
+    "typescript": "2.6.2"
   },
   "engines": {
     "node": ">=7.6.0"
@@ -45,10 +44,6 @@
     "lib"
   ],
   "homepage": "https://github.com/heroku/cli-engine-command",
-  "jest": {
-    "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "./test/init.js"
-  },
   "keywords": [
     "heroku",
     "heroku-cli-plugin"
@@ -62,7 +57,7 @@
   "scripts": {
     "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
-    "prepare": "del lib && tsc",
+    "prepare": "del lib && tsc && del 'lib/**/*.test.+(d.ts|js)'",
     "pretest": "tsc",
     "test": "jest"
   },

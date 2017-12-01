@@ -1,17 +1,16 @@
-// @flow
-
-import { stdtermwidth } from './screen'
-import type { Config, ICommand, Arg, Flag } from 'cli-engine-config'
+import screen from 'cli-ux/lib/screen'
+import { Config, ICommand } from 'cli-engine-config'
+import { IArg, IFlag } from 'cli-flags'
 import { color } from './color'
 
 function linewrap(length: number, s: string): string {
   const linewrap = require('@heroku/linewrap')
-  return linewrap(length, stdtermwidth, {
+  return linewrap(length, screen.stdtermwidth, {
     skipScheme: 'ansi-color',
   })(s).trim()
 }
 
-function renderList(items: [string, ?string][]): string {
+function renderList(items: [string, string | undefined][]): string {
   const S = require('string')
   const max = require('lodash.maxby')
 
@@ -35,9 +34,9 @@ function buildUsage(command: ICommand): string {
   return `${cmd} ${args.join(' ')}`.trim()
 }
 
-function renderArg(arg: Arg): string {
+function renderArg(arg: IArg): string {
   let name = arg.name.toUpperCase()
-  if (arg.required !== false && arg.optional !== true) return `${name}`
+  if (arg.required) return `${name}`
   else return `[${name}]`
 }
 
@@ -49,7 +48,7 @@ export default class Help {
   }
 
   command(cmd: ICommand): string {
-    let flags: any = Object.entries(cmd.flags || {}).filter(([name, flag]) => !(flag: any).hidden)
+    let flags: any = Object.entries(cmd.flags || {}).filter(([, flag]) => !(<any>flag).hidden)
     let args = (cmd.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${color.blue('[flags]')}` : ''
     let usage = `${color.bold('Usage:')} ${this.config.bin} ${buildUsage(cmd)}${hasFlags}\n`
@@ -63,30 +62,33 @@ export default class Help {
     ].join('')
   }
 
-  commandLine(cmd: ICommand): [string, ?string] {
-    return [buildUsage(cmd), cmd.description ? color.dim(cmd.description) : null]
+  commandLine(cmd: ICommand): [string, string | undefined] {
+    return [buildUsage(cmd), cmd.description ? color.dim(cmd.description) : undefined]
   }
 
-  renderAliases(aliases: ?(string[])): string {
+  renderAliases(aliases?: string[]): string {
     if (!aliases || !aliases.length) return ''
     let a = aliases.map(a => `  $ ${this.config.bin} ${a}`).join('\n')
     return `\n${color.blue('Aliases:')}\n${a}\n`
   }
 
-  renderArgs(args: Arg[]): string {
-    if (!args.find(f => f.description)) return ''
+  renderArgs(args: IArg[]): string {
+    if (!args.find(f => !!f.description)) return ''
     return (
       '\n' +
       renderList(
         args.map(a => {
-          return [a.name.toUpperCase(), a.description ? color.dim(a.description) : null]
+          return [a.name.toUpperCase(), a.description ? color.dim(a.description) : undefined] as [
+            string,
+            string | undefined
+          ]
         }),
       ) +
       '\n'
     )
   }
 
-  renderFlags(flags: [string, Flag][]): string {
+  renderFlags(flags: [string, IFlag<any>][]): string {
     if (!flags.length) return ''
     flags.sort((a, b) => {
       if (a[1].char && !b[1].char) return -1
@@ -101,10 +103,13 @@ export default class Help {
           let label = []
           if (f.char) label.push(`-${f.char}`)
           if (name) label.push(` --${name}`)
-          let usage = f.parse ? ` ${name.toUpperCase()}` : ''
+          let usage = f.type === 'option' ? ` ${name.toUpperCase()}` : ''
           let description = f.description || ''
-          if (f.required || f.optional === false) description = `(required) ${description}`
-          return [` ${label.join(',').trim()}` + usage, description ? color.dim(description) : null]
+          if (f.required) description = `(required) ${description}`
+          return [` ${label.join(',').trim()}` + usage, description ? color.dim(description) : undefined] as [
+            string,
+            string | undefined
+          ]
         }),
       ) +
       '\n'
