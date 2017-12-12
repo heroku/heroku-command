@@ -1,10 +1,12 @@
 #!/usr/bin/env ts-node
 
-const { Command, flags } = require('..') // change to 'cli-engine-command' when used outside this repo
-const fs = require('fs')
+import { Command, flags } from '..' // use cli-engine-command outside this repo
+import { cli } from 'cli-ux'
+import * as fs from 'fs'
 
 class LS extends Command {
   static flags = {
+    // run with --dir= or -d=
     dir: flags.string({
       char: 'd',
       default: process.cwd(),
@@ -14,7 +16,7 @@ class LS extends Command {
   async run() {
     let files = fs.readdirSync(this.flags.dir)
     for (let f of files) {
-      this.out.log(f)
+      cli.log(f)
     }
   }
 }
