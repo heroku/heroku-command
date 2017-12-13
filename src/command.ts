@@ -1,10 +1,25 @@
-// import Parser, { type OutputFlags, type OutputArgs, type InputFlags } from './parser' // eslint-disable-line
 const pjson = require('../package.json')
 import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
 import { HTTP } from 'http-call'
 import Help from './help'
 import { cli, CLI } from 'cli-ux'
 import { parse, IArg } from 'cli-flags'
+
+export interface CommandClass<T extends Command> {
+  new ({ config }: { config?: ConfigOptions }): T
+}
+
+export async function run<T extends Command>(Command: CommandClass<T>, config?: ConfigOptions) {
+  const cmd = new Command({ config })
+  try {
+    await cmd.init()
+    await cmd.run()
+    await cmd.out.done()
+  } catch (err) {
+    cmd.out.error(err)
+  }
+  return cmd
+}
 
 export class Command {
   static topic: string
@@ -40,16 +55,8 @@ export class Command {
   /**
    * instantiate and run the command
    */
-  static async run(config?: ConfigOptions): Promise<Command> {
-    const cmd = new this({ config })
-    try {
-      await cmd.init()
-      await cmd.run()
-      await cmd.out.done()
-    } catch (err) {
-      cmd.out.error(err)
-    }
-    return cmd
+  static run(config?: ConfigOptions): Promise<Command> {
+    return run(this, config)
   }
 
   get ctor(): typeof Command {
