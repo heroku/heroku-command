@@ -67,8 +67,7 @@ export class Command {
   cli: CLI
   out: CLI
   // TODO: no any
-  flags: any
-  // flags: OutputFlags = {}
+  flags: { [name: string]: any } = {}
   argv: string[]
   args: { [name: string]: string } = {}
 
