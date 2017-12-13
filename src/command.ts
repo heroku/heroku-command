@@ -3,7 +3,7 @@ const pjson = require('../package.json')
 import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
 import { HTTP } from 'http-call'
 import Help from './help'
-import { CLI } from 'cli-ux'
+import { cli, CLI } from 'cli-ux'
 import { parse, IArg } from 'cli-flags'
 
 export class Command {
@@ -32,6 +32,7 @@ export class Command {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static async mock(...argv: string[]): Promise<Command> {
+    cli.warn('command.mock() is deprecated. Use cli-engine-test')
     argv.unshift('cmd')
     return this.run({ argv, mock: true })
   }

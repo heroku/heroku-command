@@ -4,6 +4,18 @@ import { flags as Flags } from 'cli-flags'
 import * as nock from 'nock'
 import cli from 'cli-ux'
 
+async function mock(command: typeof Command, ...argv: string[]) {
+  argv.unshift('cmd')
+  const cmd = await command.run({ argv, mock: true })
+  return {
+    cmd,
+    args: cmd.args,
+    flags: cmd.flags,
+    stdout: cli.stdout.output,
+    stderr: cli.stderr.output,
+  }
+}
+
 class Command extends Base {
   static topic = 'foo'
   static command = 'bar'
@@ -25,7 +37,7 @@ test('shows the ID', () => {
 })
 
 test('runs the command', async () => {
-  const cmd = await Command.mock()
+  const { cmd } = await mock(Command)
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual([])
   expect(cli.stdout.output).toEqual('foo\n')
@@ -39,7 +51,7 @@ test('has stdout', async () => {
     }
   }
 
-  const { stdout } = await Command.mock('--print=foo')
+  const { stdout } = await mock(Command as any, '--print=foo')
   expect(stdout).toEqual('foo\n')
 })
 
@@ -51,7 +63,7 @@ test('has stderr', async () => {
     }
   }
 
-  const { stderr } = await Command.mock('--print=foo')
+  const { stderr } = await mock(Command as any, '--print=foo')
   expect(stderr).toEqual('foo\n')
 })
 
