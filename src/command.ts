@@ -9,7 +9,7 @@ export interface CommandClass<T extends Command> {
   new ({ config }: { config?: ConfigOptions }): T
 }
 
-export async function run<T extends Command>(Command: CommandClass<T>, config?: ConfigOptions) {
+export async function run<T extends Command>(Command: CommandClass<T>, config?: ConfigOptions): Promise<T> {
   const cmd = new Command({ config })
   try {
     await cmd.init()
