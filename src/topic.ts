@@ -1,7 +1,7 @@
 import { Command } from './command'
-import { Topic as ITopic } from 'cli-engine-config'
+// import { Topic as ITopic } from 'cli-engine-config'
 
-export const Topic: ITopic = class Topic {
+export class Topic {
   constructor(commands: typeof Command[]) {
     this.commands = commands
   }
