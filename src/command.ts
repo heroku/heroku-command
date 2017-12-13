@@ -2,23 +2,23 @@ const pjson = require('../package.json')
 import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
 import { HTTP } from 'http-call'
 import Help from './help'
-import { cli, CLI } from 'cli-ux'
+import { cli } from 'cli-ux'
 import { parse, IArg } from 'cli-flags'
+import { IFlag } from './flags'
+
+export type MockReturn<T extends Command> = {
+  cmd: T
+  stdout: string
+  stderr: string
+}
+
+export type CommandRunFn = <T extends Command>(this: CommandClass<T>, config?: ConfigOptions) => Promise<T>
+export type CommandMockFn = <T extends Command>(this: CommandClass<T>, ...argv: string[]) => Promise<MockReturn<T>>
 
 export interface CommandClass<T extends Command> {
   new ({ config }: { config?: ConfigOptions }): T
-}
-
-export async function run<T extends Command>(Command: CommandClass<T>, config?: ConfigOptions): Promise<T> {
-  const cmd = new Command({ config })
-  try {
-    await cmd.init()
-    await cmd.run()
-    await cmd.out.done()
-  } catch (err) {
-    cmd.out.error(err)
-  }
-  return cmd
+  run: CommandRunFn
+  mock: CommandMockFn
 }
 
 export class Command {
@@ -30,8 +30,7 @@ export class Command {
   static help: string | undefined
   static aliases: string[] = []
   static variableArgs = false
-  // TODO: not any type
-  static flags: { [name: string]: any }
+  static flags: { [name: string]: IFlag<any> }
   static args: IArg[] = []
   static _version = pjson.version
   static plugin: Plugin | undefined
@@ -46,17 +45,29 @@ export class Command {
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
-  static async mock(...argv: string[]): Promise<Command> {
-    cli.warn('command.mock() is deprecated. Use cli-engine-test')
+  static mock: CommandMockFn = async function(...argv: string[]) {
     argv.unshift('cmd')
-    return this.run({ argv, mock: true })
+    const cmd = await this.run({ argv, mock: true })
+    return {
+      cmd,
+      stdout: cli.stdout.output,
+      stderr: cli.stderr.output,
+    }
   }
 
   /**
    * instantiate and run the command
    */
-  static run(config?: ConfigOptions): Promise<Command> {
-    return run(this, config)
+  static run: CommandRunFn = async function(config?: ConfigOptions) {
+    const cmd = new this({ config })
+    try {
+      await cmd.init()
+      await cmd.run()
+      await cli.done()
+    } catch (err) {
+      cli.error(err)
+    }
+    return cmd
   }
 
   get ctor(): typeof Command {
@@ -64,9 +75,6 @@ export class Command {
   }
   config: Config
   http: typeof HTTP
-  cli: CLI
-  out: CLI
-  // TODO: no any
   flags: { [name: string]: any } = {}
   argv: string[]
   args: { [name: string]: string } = {}
@@ -74,9 +82,6 @@ export class Command {
   constructor(options: { config?: ConfigOptions } = {}) {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
-    const { cli } = require('cli-ux')
-    this.out = this.cli = cli
-    ;(<any>this.out).color = require('./color').color
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${
@@ -111,14 +116,6 @@ export class Command {
    * actual command run code goes here
    */
   async run(): Promise<void> {}
-
-  get stdout(): string {
-    return this.out.stdout.output
-  }
-
-  get stderr(): string {
-    return this.out.stderr.output
-  }
 
   static buildHelp(config: Config): string {
     let help = new Help(config)

@@ -28,11 +28,13 @@ export type Completion = {
 export type withCompletion = { completion?: Completion }
 export type CompletionOptionFlag<T> = IOptionFlag<T> & withCompletion
 
-export type FlagBuilder<T> = {
+export type FlagBuilder<T = string> = {
   (options: Partial<IMultiOptionFlag<T>> & { multiple: true }): IMultiOptionFlag<T> & withCompletion
   (options: Partial<IRequiredFlag<T>> & { required: true }): IRequiredFlag<T> & withCompletion
   (options?: Partial<IOptionalFlag<T>>): IOptionalFlag<T> & withCompletion
 }
+
+export type IFlag<T> = IBooleanFlag | CompletionOptionFlag<T>
 
 export const flags = {
   ...base,

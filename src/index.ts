@@ -1,3 +1,3 @@
-export { Command as default, Command, run, CommandClass } from './command'
+export { Command as default, Command } from './command'
 export { Topic } from './topic'
-export { flags, Completion } from './flags'
+export { flags, Completion, FlagBuilder } from './flags'
