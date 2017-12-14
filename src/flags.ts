@@ -36,6 +36,8 @@ export type FlagBuilder<T = string> = {
 
 export type IFlag<T> = IBooleanFlag | CompletionOptionFlag<T>
 
+export type InputFlags = { [k: string]: IFlag<any> }
+
 export const flags = {
   ...base,
   option: <T = string>(defaults: Partial<CompletionOptionFlag<T>> = {}): FlagBuilder<T> => {
