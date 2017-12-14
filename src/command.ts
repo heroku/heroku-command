@@ -1,7 +1,7 @@
 const pjson = require('../package.json')
 import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
 import { HTTP } from 'http-call'
-import Help from './help'
+import { Help } from './help'
 import { cli } from 'cli-ux'
 import { parse, IArg } from 'cli-flags'
 import { IFlag } from './flags'

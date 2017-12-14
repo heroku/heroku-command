@@ -1,20 +1,23 @@
-import Help from './help'
-import { Command } from './command'
+import { Help } from './help'
+import { Command as Base } from './command'
 import { buildConfig } from 'cli-engine-config'
 import { flags } from 'cli-flags'
+
+class Command extends Base {
+  async run() {
+    return
+  }
+}
 
 class AppsCreate extends Command {
   static topic = 'apps'
   static command = 'create'
   static description = 'description of apps:create'
-
-  static args = [{ name: 'app_name', description: 'app to use', required: false }]
-
   static help = `some
 
 multiline help
 `
-
+  static args = [{ name: 'app_name', description: 'app to use' }]
   static flags = {
     force: flags.boolean({ description: 'force it' }),
     app: flags.string({ char: 'a', hidden: true }),
@@ -23,7 +26,13 @@ multiline help
   }
 }
 
-const help = new Help(buildConfig({ mock: true }))
+const help = new Help(
+  buildConfig({
+    aliases: {
+      'apps:create2': ['foo', 'bar'],
+    },
+  }),
+)
 
 describe('commandLine()', () => {
   test('has help', () => {
@@ -44,26 +53,18 @@ multiline help
 `)
   })
 
+  class AppsCreate3 extends Command {
+    static topic = 'apps'
+    static command = 'create'
+    static flags = {
+      force: flags.boolean({ description: 'force it' }),
+      app: flags.string({ char: 'a', hidden: true }),
+      foo: flags.string({ char: 'f', description: 'foobar' }),
+      remote: flags.string({ char: 'r' }),
+    }
+  }
   test('has just flags', () => {
-    expect(
-      help.command(
-        class extends Command {
-          static topic = 'apps'
-          static command = 'create'
-          static flags = {
-            force: flags.boolean({
-              description: 'force it',
-            }),
-            app: flags.string({
-              char: 'a',
-              hidden: true,
-            }),
-            foo: flags.string({ char: 'f', description: 'foobar' }),
-            remote: flags.string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+    expect(help.command(AppsCreate3)).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo FOO        foobar
@@ -73,26 +74,18 @@ Flags:
   })
 
   test('has flags + description', () => {
-    expect(
-      help.command(
-        class extends Command {
-          static topic = 'apps'
-          static command = 'create'
-          static description = 'description of apps:create'
-          static flags = {
-            force: flags.boolean({
-              description: 'force it',
-            }),
-            app: flags.string({
-              char: 'a',
-              hidden: true,
-            }),
-            foo: flags.string({ char: 'f', description: 'foobar' }),
-            remote: flags.string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+    class CMD extends Command {
+      static topic = 'apps'
+      static command = 'create'
+      static description = 'description of apps:create'
+      static flags = {
+        force: flags.boolean({ description: 'force it' }),
+        app: flags.string({ char: 'a', hidden: true }),
+        foo: flags.string({ char: 'f', description: 'foobar' }),
+        remote: flags.string({ char: 'r' }),
+      }
+    }
+    expect(help.command(CMD)).toEqual(`Usage: cli-engine apps:create [flags]
 
 description of apps:create
 
@@ -103,27 +96,19 @@ Flags:
 `)
   })
 
+  class AppsCreate1 extends Command {
+    static topic = 'apps'
+    static command = 'create'
+    static help = 'description of apps:create'
+    static flags = {
+      force: flags.boolean({ description: 'force it' }),
+      app: flags.string({ char: 'a', hidden: true }),
+      foo: flags.string({ char: 'f', description: 'foobar' }),
+      remote: flags.string({ char: 'r' }),
+    }
+  }
   test('has description + help', () => {
-    expect(
-      help.command(
-        class extends Command {
-          static topic = 'apps'
-          static command = 'create'
-          static help = 'description of apps:create'
-          static flags = {
-            force: flags.boolean({
-              description: 'force it',
-            }),
-            app: flags.string({
-              char: 'a',
-              hidden: true,
-            }),
-            foo: flags.string({ char: 'f', description: 'foobar' }),
-            remote: flags.string({ char: 'r' }),
-          }
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [flags]
+    expect(help.command(AppsCreate1)).toEqual(`Usage: cli-engine apps:create [flags]
 
 Flags:
  -f, --foo FOO        foobar
@@ -133,18 +118,16 @@ Flags:
 description of apps:create
 `)
   })
+
+  class AppsCreate2 extends Command {
+    static topic = 'apps'
+    static command = 'create'
+    static description = 'description of apps:create'
+    static args = [{ name: 'app_name', description: 'app to use' }]
+  }
 
   test('has description + args', () => {
-    expect(
-      help.command(
-        class extends Command {
-          static topic = 'apps'
-          static command = 'create'
-          static description = 'description of apps:create'
-          static args = [{ name: 'app_name', description: 'app to use', required: false }]
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+    expect(help.command(AppsCreate2)).toEqual(`Usage: cli-engine apps:create [APP_NAME]
 
 description of apps:create
 
@@ -152,20 +135,16 @@ APP_NAME  app to use
 `)
   })
 
+  class CMD extends Command {
+    static topic = 'apps'
+    static command = 'create2'
+    static description = 'description of apps:create2'
+    static args = [{ name: 'app_name', description: 'app to use' }]
+  }
   test('has aliases', () => {
-    expect(
-      help.command(
-        class extends Command {
-          static topic = 'apps'
-          static command = 'create'
-          static description = 'description of apps:create'
-          static aliases = ['foo', 'bar']
-          static args = [{ name: 'app_name', description: 'app to use', required: false }]
-        },
-      ),
-    ).toEqual(`Usage: cli-engine apps:create [APP_NAME]
+    expect(help.command(CMD)).toEqual(`Usage: cli-engine apps:create2 [APP_NAME]
 
-description of apps:create
+description of apps:create2
 
 Aliases:
   $ cli-engine foo
@@ -177,7 +156,7 @@ APP_NAME  app to use
 })
 
 describe('command()', () => {
-  test('has help', () => {
+  test('has command help', () => {
     expect(help.commandLine(AppsCreate)).toEqual(['apps:create [APP_NAME]', 'description of apps:create'])
   })
 })
