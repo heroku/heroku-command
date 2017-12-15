@@ -10,10 +10,6 @@
   version "2.0.30"
   resolved "https://registry.yarnpkg.com/@types/ansi-styles/-/ansi-styles-2.0.30.tgz#9a645299020a224afc6a8cd055195850b3c2af85"
 
-"@types/arrify@^1.0.1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/arrify/-/arrify-1.0.2.tgz#4a6856b9bfd4713c781df95349c6b15db60d4de1"
-
 "@types/chalk@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-2.2.0.tgz#b7f6e446f4511029ee8e3f43075fb5b73fbaa0ba"
@@ -24,23 +20,9 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@types/content-type/-/content-type-1.1.2.tgz#bff0a1b7aa5bd48516c8ed7a6efefb1e85813245"
 
-"@types/diff@^3.2.1":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@types/diff/-/diff-3.2.2.tgz#4d6f45537322a7a420d353a0939513c7e96d14a6"
-
 "@types/jest@21.1.8":
   version "21.1.8"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-21.1.8.tgz#d497213725684f1e5a37900b17a47c9c018f1a97"
-
-"@types/minimist@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
-
-"@types/mkdirp@^0.5.0":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.5.2.tgz#503aacfe5cc2703d5484326b1b27efa67a339c1f"
-  dependencies:
-    "@types/node" "*"
 
 "@types/nock@9.1.0":
   version "9.1.0"
@@ -56,16 +38,6 @@
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.1.tgz#4ec3020bcdfe2abffeef9ba3fbf26fca097514b5"
 
-"@types/node@^8.0.27":
-  version "8.0.58"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.58.tgz#5b3881c0be3a646874803fee3197ea7f1ed6df90"
-
-"@types/source-map-support@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.4.0.tgz#a62a1866614af68c888173c001481f242aaf148b"
-  dependencies:
-    "@types/node" "*"
-
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/strip-bom/-/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"
@@ -77,14 +49,6 @@
 "@types/supports-color@3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@types/supports-color/-/supports-color-3.1.0.tgz#3584b6b54f45333e988da2c29e6797eff5a20f8c"
-
-"@types/v8flags@types/npm-v8flags#de224ae1cd5fd7dbb4e7158a6cc7a29e5315930d":
-  version "2.0.0"
-  resolved "https://codeload.github.com/types/npm-v8flags/tar.gz/de224ae1cd5fd7dbb4e7158a6cc7a29e5315930d"
-
-"@types/yn@types/npm-yn#ca75f6c82940fae6a06fb41d2d37a6aa9b4ea8e9":
-  version "2.0.0"
-  resolved "https://codeload.github.com/types/npm-yn/tar.gz/ca75f6c82940fae6a06fb41d2d37a6aa9b4ea8e9"
 
 abab@^1.0.3:
   version "1.0.3"
@@ -694,9 +658,9 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.2.3.tgz#83aa08c1d596cbe2742af28204d6bc1ef6f69640"
+cli-engine-config@4.3.0-ts.0:
+  version "4.3.0-ts.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-4.3.0-ts.0.tgz#759f4bdea5941d402b9a10258a904bf4168ec795"
   dependencies:
     cli-flags "1.0.18"
     debug "^3.1.0"
@@ -740,9 +704,9 @@ cli-ux@^2.0.5:
     supports-color "^4.4.0"
     ts-lodash "^4.0.5"
 
-cli-ux@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.6.tgz#51a6d07827f24cc31946178fd7cae8fc5fe2127b"
+cli-ux@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.7.tgz#61ed276700a7fa90a4aa8456c2e28a944c91d268"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -3457,18 +3421,10 @@ ts-lodash@^4.0.6:
   dependencies:
     lodash "^4.17.4"
 
-ts-node@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-4.0.1.tgz#4d368088b50c382d78285c029784ea0f32a4eb5c"
+ts-node@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-4.0.2.tgz#cb3d039b9898fdc79ad09ab7e69c84564c8c41ee"
   dependencies:
-    "@types/arrify" "^1.0.1"
-    "@types/diff" "^3.2.1"
-    "@types/minimist" "^1.2.0"
-    "@types/mkdirp" "^0.5.0"
-    "@types/node" "^8.0.27"
-    "@types/source-map-support" "^0.4.0"
-    "@types/v8flags" types/npm-v8flags#de224ae1cd5fd7dbb4e7158a6cc7a29e5315930d
-    "@types/yn" types/npm-yn#ca75f6c82940fae6a06fb41d2d37a6aa9b4ea8e9
     arrify "^1.0.0"
     chalk "^2.3.0"
     diff "^3.1.0"
