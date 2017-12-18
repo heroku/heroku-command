@@ -92,11 +92,6 @@ export class Command {
   }
 
   async init() {
-    for (let arg of this.ctor.args) {
-      if (arg.required !== false && !(<any>arg).optional) {
-        arg.required = true
-      }
-    }
     const { argv, flags, args } = await parse({
       flags: this.ctor.flags || {},
       argv: this.argv.slice(1),
