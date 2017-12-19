@@ -1,7 +1,7 @@
 {
   "name": "cli-engine-command",
   "description": "base CLI command for cli-engine",
-  "version": "10.0.2",
+  "version": "10.1.0-ts.4",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
@@ -9,13 +9,12 @@
     "ansi-escapes": "^3.0.0",
     "cardinal": "1.x",
     "chalk": "2.3.0",
-    "cli-engine-config": "4.2.3",
-    "cli-flags": "1.0.18",
-    "cli-ux": "^2.0.6",
+    "cli-flags": "1.0.19",
+    "cli-ux": "^2.0.8",
     "fs-extra": "^5.0.0",
     "http-call": "^4.0.4",
     "lodash.maxby": "^4.6.0",
-    "moment": "^2.19.4",
+    "moment": "^2.20.0",
     "string": "3.x",
     "supports-color": "^5.1.0"
   },
@@ -26,6 +25,7 @@
     "@types/nock": "9.1.0",
     "@types/node": "8.5.1",
     "@types/supports-color": "3.1.0",
+    "cli-engine-config": "4.3.0-ts.4",
     "del-cli": "1.1.0",
     "husky": "^0.14.3",
     "jest": "^21.2.1",
@@ -34,7 +34,7 @@
     "prettier": "^1.9.2",
     "std-mocks": "1.0.1",
     "ts-jest": "21.2.4",
-    "ts-node": "4.0.1",
+    "ts-node": "4.0.2",
     "typescript": "2.6.2"
   },
   "engines": {
@@ -50,12 +50,18 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
+  "peerDependencies": {
+    "cli-engine-config": "^5.0.0"
+  },
   "repository": "heroku/cli-engine-command",
   "scripts": {
+    "clean": "del-cli lib",
     "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
-    "prepare": "del-cli lib && tsc && del-cli \"lib/**/*.test.+(d.ts|js)\"",
+    "prepare": "tsc",
+    "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",
     "pretest": "tsc",
+    "prune": "del-cli \"lib/**/*\\.test\\.(d.ts|js)\"",
     "test": "jest"
   },
   "types": "./lib/index.d.ts"
