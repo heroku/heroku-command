@@ -1,4 +1,4 @@
-import { Config, ICommand } from 'cli-engine-config'
+import { ICommand, IConfig } from 'cli-engine-config'
 import { args, flags } from 'cli-flags'
 import deps from './deps'
 
@@ -17,9 +17,9 @@ function renderArg(arg: args.IArg<any>): string {
 }
 
 export class Help {
-  config: Config
+  config: IConfig
 
-  constructor(config: Config) {
+  constructor(config: IConfig) {
     this.config = config
   }
 

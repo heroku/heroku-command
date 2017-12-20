@@ -14,9 +14,9 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@heroku/linewrap/-/linewrap-1.0.0.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"
 
-"@types/jest@21.1.8":
-  version "21.1.8"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-21.1.8.tgz#d497213725684f1e5a37900b17a47c9c018f1a97"
+"@types/jest@21.1.9":
+  version "21.1.9"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-21.1.9.tgz#a913d6224e9d8a1f24908af536f65b5bf4d489bc"
 
 "@types/nock@9.1.0":
   version "9.1.0"
@@ -28,9 +28,9 @@
   version "8.0.53"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.53.tgz#396b35af826fa66aad472c8cb7b8d5e277f4e6d8"
 
-"@types/node@8.5.1":
-  version "8.5.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.1.tgz#4ec3020bcdfe2abffeef9ba3fbf26fca097514b5"
+"@types/node@8.5.2":
+  version "8.5.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.2.tgz#83b8103fa9a2c2e83d78f701a9aa7c9539739aa5"
 
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
@@ -673,11 +673,9 @@ cli-cursor@^1.0.2:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-config@5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-5.0.3.tgz#b143a0cd739bd5f9acafe0b7ab7ad9de4e4d2d63"
-  dependencies:
-    uuid "^3.1.0"
+cli-engine-config@5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-5.0.5.tgz#5d0736b58a9d23b4be55a9ba7f1c0fd9f81ac1fb"
 
 cli-flags@2.0.2:
   version "2.0.2"
@@ -3630,9 +3628,9 @@ tslib@^1.7.1, tslib@^1.8.0:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.8.1.tgz#6946af2d1d651a7b1863b531d6e5afa41aa44eac"
 
-tslint-cli-engine@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/tslint-cli-engine/-/tslint-cli-engine-1.0.0.tgz#0f8fbd33115b1b507ce2680d2b63f35ac9dfc02e"
+tslint-cli-engine@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/tslint-cli-engine/-/tslint-cli-engine-1.0.1.tgz#b355a3f87f0b60a4b0708c28837bf8e667aa54c8"
   dependencies:
     tslint-config-prettier "*"
 

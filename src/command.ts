@@ -1,5 +1,5 @@
 const pjson = require('../package.json')
-import { Config, ConfigOptions, Plugin } from 'cli-engine-config'
+import { ConfigOptions, IConfig, IPlugin } from 'cli-engine-config'
 import { args } from 'cli-flags'
 import { HTTP } from 'http-call'
 import deps from './deps'
@@ -33,7 +33,7 @@ export abstract class Command {
   static args: args.IArg[] = []
   // tslint:disable-next-line
   static _version = pjson.version
-  static plugin: Plugin | undefined
+  static plugin: IPlugin | undefined
 
   static get id(): string {
     let cmd = []
@@ -69,17 +69,17 @@ export abstract class Command {
     return cmd
   }
 
-  static buildHelp(config: Config): string {
+  static buildHelp(config: IConfig): string {
     let help = new deps.Help(config)
     return help.command(this)
   }
 
-  static buildHelpLine(config: Config): [string, string | undefined] {
+  static buildHelpLine(config: IConfig): [string, string | undefined] {
     let help = new deps.Help(config)
     return help.commandLine(this)
   }
 
-  config: Config
+  config: IConfig
   http: typeof HTTP
   flags: { [name: string]: any } = {}
   argv: string[]
