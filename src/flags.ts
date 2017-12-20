@@ -16,16 +16,22 @@ export interface Completion {
   options: (ctx: CompletionContext) => Promise<string[]>
 }
 
-export interface IOptionFlag<T> extends flags.IOptionFlag<T> {
+export interface IOptionFlag<T = string> extends flags.IOptionFlag<T> {
   completion?: Completion
 }
 
-export type IFlag<T> = flags.IBooleanFlag | IOptionFlag<T>
+export type IFlag<T = string> = flags.IBooleanFlag | IOptionFlag<T>
 
-export type InputFlags = { [k: string]: IFlag<any> }
+export type Input = { [k: string]: IFlag<any> }
 
-export type Definition<T> = (options?: Partial<IOptionFlag<T>>) => IOptionFlag<T>
+export type Definition<T = string> = (options?: Partial<IOptionFlag<T>>) => IOptionFlag<T>
 
 export function option<T = string>(defaults: Partial<IOptionFlag<T>> = {}): Definition<T> {
   return deps.CLIFlags.flags.option<T>(defaults)
 }
+
+export function string(defaults: Partial<IOptionFlag> = {}): IOptionFlag {
+  return deps.CLIFlags.flags.string(defaults)
+}
+
+export { boolean } from 'cli-flags/lib/flags'
