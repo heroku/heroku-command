@@ -46,7 +46,7 @@
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "clean": "del-cli lib",
-    "posttest": "tslint -p .",
+    "posttest": "tslint -p . && prettier -l 'src/**/*.ts'",
     "precommit": "lint-staged",
     "prepare": "tsc",
     "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",
