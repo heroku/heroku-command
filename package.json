@@ -6,8 +6,8 @@
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
     "chalk": "2.3.0",
-    "cli-flags": "2.0.1",
-    "cli-ux": "^2.0.9",
+    "cli-flags": "2.0.2",
+    "cli-ux": "^2.0.10",
     "http-call": "^4.0.5"
   },
   "devDependencies": {
