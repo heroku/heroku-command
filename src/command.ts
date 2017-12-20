@@ -1,9 +1,8 @@
 const pjson = require('../package.json')
-import { buildConfig, Config, ConfigOptions, Plugin } from 'cli-engine-config'
+import deps from './deps'
+import { Config, ConfigOptions, Plugin } from 'cli-engine-config'
 import { HTTP } from 'http-call'
-import { Help } from './help'
-import { cli } from 'cli-ux'
-import { parse, IArg } from 'cli-flags'
+import { args } from 'cli-flags'
 import { IFlag } from './flags'
 
 export type MockReturn<T extends Command> = {
@@ -31,7 +30,7 @@ export class Command {
   static aliases: string[] = []
   static variableArgs = false
   static flags: { [name: string]: IFlag<any> }
-  static args: IArg[] = []
+  static args: args.IArg[] = []
   static _version = pjson.version
   static plugin: Plugin | undefined
 
@@ -50,8 +49,8 @@ export class Command {
     const cmd = await this.run({ argv, mock: true })
     return {
       cmd,
-      stdout: cli.stdout.output,
-      stderr: cli.stderr.output,
+      stdout: deps.cli.stdout.output,
+      stderr: deps.cli.stderr.output,
     }
   }
 
@@ -63,9 +62,9 @@ export class Command {
     try {
       await cmd.init()
       await cmd.run()
-      await cli.done()
+      await deps.cli.done()
     } catch (err) {
-      cli.error(err)
+      deps.cli.error(err)
     }
     return cmd
   }
@@ -80,9 +79,9 @@ export class Command {
   args: { [name: string]: string } = {}
 
   constructor(options: { config?: ConfigOptions } = {}) {
-    this.config = buildConfig(options.config)
+    this.config = deps.Config.buildConfig(options.config)
     this.argv = this.config.argv
-    this.http = HTTP.defaults({
+    this.http = deps.HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${
           process.version
@@ -92,7 +91,7 @@ export class Command {
   }
 
   async init() {
-    const { argv, flags, args } = await parse({
+    const { argv, flags, args } = await deps.CLIFlags.parse({
       flags: this.ctor.flags || {},
       argv: this.argv.slice(1),
       args: this.ctor.args || [],
@@ -118,12 +117,12 @@ export class Command {
   async run(): Promise<void> {}
 
   static buildHelp(config: Config): string {
-    let help = new Help(config)
+    let help = new deps.Help(config)
     return help.command(this)
   }
 
   static buildHelpLine(config: Config): [string, string | undefined] {
-    let help = new Help(config)
+    let help = new deps.Help(config)
     return help.commandLine(this)
   }
 }
