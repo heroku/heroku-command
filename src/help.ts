@@ -1,6 +1,6 @@
-import deps from './deps'
 import { Config, ICommand } from 'cli-engine-config'
-import { flags, args } from 'cli-flags'
+import { args, flags } from 'cli-flags'
+import deps from './deps'
 
 function buildUsage(command: ICommand): string {
   if (command.usage) return command.usage.trim()
@@ -56,7 +56,7 @@ export class Help {
     return `\n${deps.chalk.blue('Aliases:')}\n${a}\n`
   }
 
-  renderArgs(args: args.IArg<string>[]): string {
+  renderArgs(args: Array<args.IArg<string>>): string {
     if (!args.find(f => !!f.description)) return ''
     return (
       '\n' +
@@ -69,7 +69,7 @@ export class Help {
     )
   }
 
-  renderFlags(flags: flags.IFlag<any>[]): string {
+  renderFlags(flags: Array<flags.IFlag<any>>): string {
     if (!flags.length) return ''
     return `\n${deps.chalk.blue('Flags:')}\n` + deps.renderList(deps.CLIFlags.flagUsages(flags)) + '\n'
   }

@@ -1,26 +1,26 @@
 const pjson = require('../package.json')
-import deps from './deps'
 import { Config, ConfigOptions, Plugin } from 'cli-engine-config'
-import { HTTP } from 'http-call'
 import { args } from 'cli-flags'
+import { HTTP } from 'http-call'
+import deps from './deps'
 import { IFlag } from './flags'
 
-export type MockReturn<T extends Command> = {
+export interface IMockReturn<T extends Command> {
   cmd: T
   stdout: string
   stderr: string
 }
 
-export type CommandRunFn = <T extends Command>(this: CommandClass<T>, config?: ConfigOptions) => Promise<T>
-export type CommandMockFn = <T extends Command>(this: CommandClass<T>, ...argv: string[]) => Promise<MockReturn<T>>
+export type CommandRunFn = <T extends Command>(this: ICommandClass<T>, config?: ConfigOptions) => Promise<T>
+export type CommandMockFn = <T extends Command>(this: ICommandClass<T>, ...argv: string[]) => Promise<IMockReturn<T>>
 
-export interface CommandClass<T extends Command> {
-  new ({ config }: { config?: ConfigOptions }): T
-  run: CommandRunFn
+export interface ICommandClass<T extends Command> {
   mock: CommandMockFn
+  run: CommandRunFn
+  new ({ config }: { config?: ConfigOptions }): T
 }
 
-export class Command {
+export abstract class Command {
   static topic: string
   static command: string | undefined
   static description: string | undefined
@@ -31,6 +31,7 @@ export class Command {
   static variableArgs = false
   static flags: { [name: string]: IFlag<any> }
   static args: args.IArg[] = []
+  // tslint:disable-next-line
   static _version = pjson.version
   static plugin: Plugin | undefined
 
@@ -48,8 +49,8 @@ export class Command {
     const cmd = await this.run({ argv: ['cmd', ...argv] })
     return {
       cmd,
-      stdout: deps.cli.stdout.output,
       stderr: deps.cli.stderr.output,
+      stdout: deps.cli.stdout.output,
     }
   }
 
@@ -68,14 +69,34 @@ export class Command {
     return cmd
   }
 
-  get ctor(): typeof Command {
-    return this.constructor as typeof Command
+  static buildHelp(config: Config): string {
+    let help = new deps.Help(config)
+    return help.command(this)
   }
+
+  static buildHelpLine(config: Config): [string, string | undefined] {
+    let help = new deps.Help(config)
+    return help.commandLine(this)
+  }
+
   config: Config
   http: typeof HTTP
   flags: { [name: string]: any } = {}
   argv: string[]
   args: { [name: string]: string } = {}
+
+  // prevent setting things that need to be static
+  topic: null
+  command: null
+  description: null
+  hidden: null
+  usage: null
+  help: null
+  aliases: null
+
+  get ctor(): typeof Command {
+    return this.constructor as typeof Command
+  }
 
   constructor(options: { config?: ConfigOptions } = {}) {
     this.config = deps.Config.buildConfig(options.config)
@@ -91,9 +112,9 @@ export class Command {
 
   async init() {
     const { argv, flags, args } = await deps.CLIFlags.parse({
-      flags: this.ctor.flags || {},
-      argv: this.argv.slice(1),
       args: this.ctor.args || [],
+      argv: this.argv.slice(1),
+      flags: this.ctor.flags || {},
       strict: !this.ctor.variableArgs,
     })
     this.flags = flags
@@ -101,27 +122,8 @@ export class Command {
     this.args = args
   }
 
-  // prevent setting things that need to be static
-  topic: null
-  command: null
-  description: null
-  hidden: null
-  usage: null
-  help: null
-  aliases: null
-
   /**
    * actual command run code goes here
    */
-  async run(): Promise<void> {}
-
-  static buildHelp(config: Config): string {
-    let help = new deps.Help(config)
-    return help.command(this)
-  }
-
-  static buildHelpLine(config: Config): [string, string | undefined] {
-    let help = new deps.Help(config)
-    return help.commandLine(this)
-  }
+  abstract async run(): Promise<void>
 }

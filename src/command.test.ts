@@ -1,8 +1,8 @@
-import { cli } from 'cli-ux'
-import { Command as Base } from './command'
-import { ICommand, buildConfig } from 'cli-engine-config'
+import { buildConfig, ICommand } from 'cli-engine-config'
 import { flags as Flags } from 'cli-flags'
+import { cli } from 'cli-ux'
 import * as nock from 'nock'
+import { Command as Base } from './command'
 
 class Command extends Base {
   static topic = 'foo'
@@ -70,6 +70,7 @@ test('has help', async () => {
 
 some multiline help
 `
+    async run() {}
   }
   let config = buildConfig()
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
@@ -111,7 +112,7 @@ describe('http', () => {
       api.post('/', { karate: 'chop', judo: 'throw', jujitsu: 'strangle' }).reply(200, { message: 'ok' })
       const body = { karate: 'chop', judo: 'throw', jujitsu: 'strangle' }
 
-      await command.http.post('https://api.heroku.com', { body: body })
+      await command.http.post('https://api.heroku.com', { body })
     })
   })
   test('stream', async () => {

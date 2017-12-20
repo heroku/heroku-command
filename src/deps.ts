@@ -1,12 +1,9 @@
-// remote
-import Config = require('cli-engine-config')
-import CLI = require('cli-ux')
-import HTTP = require('http-call')
-import CLIFlags = require('cli-flags')
 import { Chalk } from 'chalk'
+import Config = require('cli-engine-config')
+import CLIFlags = require('cli-flags')
+import CLI = require('cli-ux')
 import list = require('cli-ux/lib/list')
-
-// local
+import HTTP = require('http-call')
 import help = require('./help')
 
 export const deps = {

@@ -23,6 +23,8 @@
     "prettier": "^1.9.2",
     "ts-jest": "22.0.0",
     "ts-node": "4.0.2",
+    "tslint": "^5.8.0",
+    "tslint-cli-engine": "^1.0.0",
     "typescript": "2.6.2"
   },
   "engines": {
@@ -44,7 +46,7 @@
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "clean": "del-cli lib",
-    "posttest": "prettier -l 'src/**/*.ts'",
+    "posttest": "tslint -p .",
     "precommit": "lint-staged",
     "prepare": "tsc",
     "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",

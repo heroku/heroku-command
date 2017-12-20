@@ -1,7 +1,7 @@
-import { Help } from './help'
-import { Command as Base } from './command'
 import { buildConfig } from 'cli-engine-config'
 import { flags } from 'cli-flags'
+import { Command as Base } from './command'
+import { Help } from './help'
 
 class Command extends Base {
   async run() {
@@ -19,9 +19,9 @@ multiline help
 `
   static args = [{ name: 'app_name', description: 'app to use' }]
   static flags = {
-    force: flags.boolean({ description: 'force it' }),
     app: flags.string({ char: 'a', hidden: true }),
     foo: flags.string({ char: 'f', description: 'foobar' }),
+    force: flags.boolean({ description: 'force it' }),
     remote: flags.string({ char: 'r' }),
   }
 }
@@ -57,9 +57,9 @@ multiline help
     static topic = 'apps'
     static command = 'create'
     static flags = {
-      force: flags.boolean({ description: 'force it' }),
       app: flags.string({ char: 'a', hidden: true }),
       foo: flags.string({ char: 'f', description: 'foobar' }),
+      force: flags.boolean({ description: 'force it' }),
       remote: flags.string({ char: 'r' }),
     }
   }
@@ -79,9 +79,9 @@ Flags:
       static command = 'create'
       static description = 'description of apps:create'
       static flags = {
-        force: flags.boolean({ description: 'force it' }),
         app: flags.string({ char: 'a', hidden: true }),
         foo: flags.string({ char: 'f', description: 'foobar' }),
+        force: flags.boolean({ description: 'force it' }),
         remote: flags.string({ char: 'r' }),
       }
     }
@@ -101,9 +101,9 @@ Flags:
     static command = 'create'
     static help = 'description of apps:create'
     static flags = {
-      force: flags.boolean({ description: 'force it' }),
       app: flags.string({ char: 'a', hidden: true }),
       foo: flags.string({ char: 'f', description: 'foobar' }),
+      force: flags.boolean({ description: 'force it' }),
       remote: flags.string({ char: 'r' }),
     }
   }
