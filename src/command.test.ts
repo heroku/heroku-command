@@ -71,7 +71,7 @@ test('has help', async () => {
 some multiline help
 `
   }
-  let config = buildConfig({ mock: true })
+  let config = buildConfig()
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
 
 this is

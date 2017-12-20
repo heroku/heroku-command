@@ -45,8 +45,7 @@ export class Command {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static mock: CommandMockFn = async function(...argv: string[]) {
-    argv.unshift('cmd')
-    const cmd = await this.run({ argv, mock: true })
+    const cmd = await this.run({ argv: ['cmd', ...argv] })
     return {
       cmd,
       stdout: deps.cli.stdout.output,
