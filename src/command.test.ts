@@ -39,7 +39,7 @@ test('has stdout', async () => {
     }
   }
 
-  const { stdout } = await Command.mock('--print=foo')
+  const { stdout } = await Command.mock(['--print=foo'])
   expect(stdout).toEqual('foo\n')
 })
 
@@ -51,12 +51,12 @@ test('has stderr', async () => {
     }
   }
 
-  const { stderr } = await Command.mock('--print=foo')
+  const { stderr } = await Command.mock(['--print=foo'])
   expect(stderr).toEqual('foo\n')
 })
 
 test('parses args', async () => {
-  const { cmd } = await Command.mock('one')
+  const { cmd } = await Command.mock(['one'])
   expect(cmd.flags).toEqual({})
   expect(cmd.argv).toEqual(['one'])
   expect(cmd.args).toEqual({ myarg: 'one' })
@@ -88,7 +88,7 @@ describe('http', () => {
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     nock.disableNetConnect()
-    command = new Command()
+    command = new Command(buildConfig())
   })
   afterEach(() => {
     api.done()
@@ -102,7 +102,7 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    let command = new Command(buildConfig({ platform: 'darwin', arch: 'x64' }))
     let { body } = await command.http.get('https://api.heroku.com')
     expect(body).toEqual({ message: 'ok' })
   })
@@ -123,7 +123,7 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command({ config: { platform: 'darwin', arch: 'x64' } })
+    let command = new Command(buildConfig({ platform: 'darwin', arch: 'x64' }))
     const { response } = await command.http.stream('https://api.heroku.com')
     const body = JSON.parse(await concat(response))
     expect(body).toEqual({ message: 'ok' })
