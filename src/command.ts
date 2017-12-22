@@ -67,10 +67,10 @@ export abstract class Command {
     try {
       await cmd.init(argv)
       await cmd.run()
-      if (deps.cli) await deps.cli.done()
+      await cmd.done()
     } catch (err) {
-      if (deps.cli) deps.cli.error(err)
-      else throw err
+      if (!deps.cli) throw err
+      deps.cli.error(err)
     }
     return cmd
   }
@@ -115,7 +115,12 @@ export abstract class Command {
     }
   }
 
-  async init(argv: string[]) {
+  /**
+   * actual command run code goes here
+   */
+  abstract async run(): Promise<void>
+
+  protected async init(argv: string[]) {
     const parse = await deps.CLIFlags.parse({
       argv,
       args: this.ctor.args || [],
@@ -127,8 +132,26 @@ export abstract class Command {
     this.args = parse.args
   }
 
-  /**
-   * actual command run code goes here
-   */
-  abstract async run(): Promise<void>
+  protected async done() {
+    try {
+      if (deps.cli) await deps.cli.done()
+      if (deps.cli && !deps.cli.config.mock) await this.exitAfterStdoutFlush()
+    } catch (err) {
+      if (deps.cli) deps.cli.warn(err)
+      else
+        // tslint:disable-next-line
+        console.error(err)
+    }
+  }
+
+  private async exitAfterStdoutFlush() {
+    const { timeout } = require('./util')
+    await timeout(this.flush(), 10000)
+  }
+
+  private flush(): Promise<any> {
+    let p = new Promise(resolve => process.stdout.once('drain', resolve))
+    process.stdout.write('')
+    return p
+  }
 }
