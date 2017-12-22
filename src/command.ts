@@ -11,11 +11,7 @@ export interface IMockReturn<T extends Command> {
   stderr: string
 }
 
-export type CommandRunFn = <T extends Command>(
-  this: ICommandClass<T>,
-  argv?: string[],
-  config?: ConfigOptions,
-) => Promise<T>
+export type CommandRunFn = <T extends Command>(this: ICommandClass<T>, argv: string[], config: IConfig) => Promise<T>
 export type CommandMockFn = <T extends Command>(
   this: ICommandClass<T>,
   argv?: string[],
@@ -55,7 +51,7 @@ export abstract class Command {
    */
   static mock: CommandMockFn = async function(argv: string[] = [], config: ConfigOptions = {}) {
     if (deps.cli) deps.cli.config.mock = true
-    const cmd = await this.run(argv, config)
+    const cmd = await this.run(argv, deps.Config.buildConfig(config))
     return {
       cmd,
       stderr: deps.cli ? deps.cli.stderr.output : 'cli-ux not found',
@@ -66,8 +62,8 @@ export abstract class Command {
   /**
    * instantiate and run the command
    */
-  static run: CommandRunFn = async function(argv: string[] = [], config: ConfigOptions = {}) {
-    const cmd = new this(deps.Config.buildConfig(config))
+  static run: CommandRunFn = async function(argv: string[] = [], config: IConfig) {
+    const cmd = new this(config)
     try {
       await cmd.init(argv)
       await cmd.run()
