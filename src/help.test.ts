@@ -1,6 +1,7 @@
 import { buildConfig } from 'cli-engine-config'
 import { flags } from 'cli-flags'
 import { Command as Base } from './command'
+import deps from './deps'
 import { Help } from './help'
 
 class Command extends Base {
@@ -8,6 +9,8 @@ class Command extends Base {
     return
   }
 }
+
+deps.cli!.config.mock = true
 
 class AppsCreate extends Command {
   static topic = 'apps'

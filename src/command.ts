@@ -54,12 +54,12 @@ export abstract class Command {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static mock: CommandMockFn = async function(argv: string[] = [], config: ConfigOptions = {}) {
-    deps.cli.config.mock = true
+    if (deps.cli) deps.cli.config.mock = true
     const cmd = await this.run(argv, config)
     return {
       cmd,
-      stderr: deps.cli.stderr.output,
-      stdout: deps.cli.stdout.output,
+      stderr: deps.cli ? deps.cli.stderr.output : 'cli-ux not found',
+      stdout: deps.cli ? deps.cli.stdout.output : 'cli-ux not found',
     }
   }
 
@@ -71,9 +71,10 @@ export abstract class Command {
     try {
       await cmd.init(argv)
       await cmd.run()
-      await deps.cli.done()
+      if (deps.cli) await deps.cli.done()
     } catch (err) {
-      deps.cli.error(err)
+      if (deps.cli) deps.cli.error(err)
+      else throw err
     }
     return cmd
   }
@@ -107,13 +108,15 @@ export abstract class Command {
   }
 
   constructor(protected config: IConfig) {
-    this.http = deps.HTTP.defaults({
-      headers: {
-        'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config.arch}) node-${
-          process.version
-        }`,
-      },
-    })
+    if (deps.HTTP) {
+      this.http = deps.HTTP.defaults({
+        headers: {
+          'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${
+            this.config.arch
+          }) node-${process.version}`,
+        },
+      })
+    }
   }
 
   async init(argv: string[]) {

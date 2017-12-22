@@ -2,35 +2,29 @@ import { Chalk } from 'chalk'
 import Config = require('cli-engine-config')
 import CLIFlags = require('cli-flags')
 import CLI = require('cli-ux')
-import list = require('cli-ux/lib/list')
 import HTTP = require('http-call')
 import help = require('./help')
+import list = require('./list')
+import screen = require('./screen')
 
 export const deps = {
   // remote
-  get cli(): typeof CLI.default {
-    return fetch('cli-ux').default
+  get cli(): typeof CLI.default  | undefined {
+    try {
+      return fetch('cli-ux').default
+    } catch (err) {
+      if (err.code !== 'MODULE_NOT_FOUND') throw err
+    }
   },
-  get HTTP(): typeof HTTP.HTTP {
-    return fetch('http-call').HTTP
-  },
-  get Config(): typeof Config {
-    return fetch('cli-engine-config')
-  },
-  get CLIFlags(): typeof CLIFlags {
-    return fetch('cli-flags')
-  },
-  get chalk(): Chalk {
-    return fetch('chalk')
-  },
+  get HTTP(): typeof HTTP.HTTP { return fetch('http-call').HTTP },
+  get Config(): typeof Config { return fetch('cli-engine-config') },
+  get CLIFlags(): typeof CLIFlags { return fetch('cli-flags') },
+  get chalk(): Chalk { return fetch('chalk') },
 
   // local
-  get Help(): typeof help.Help {
-    return fetch('./help').Help
-  },
-  get renderList(): typeof list.renderList {
-    return fetch('cli-ux/lib/list').renderList
-  },
+  get Help(): typeof help.Help { return fetch('./help').Help },
+  get renderList(): typeof list.renderList { return fetch('./list').renderList },
+  get screen(): typeof screen.default { return fetch('./screen').default },
 }
 
 const cache: any = {}

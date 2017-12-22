@@ -57,6 +57,7 @@ export class Help {
   }
 
   renderArgs(args: Array<args.IArg<string>>): string {
+    if (!deps.renderList) return `CLI-UX NOT FOUND in ${__filename}`
     if (!args.find(f => !!f.description)) return ''
     return (
       '\n' +
@@ -70,6 +71,7 @@ export class Help {
   }
 
   renderFlags(flags: Array<flags.IFlag<any>>): string {
+    if (!deps.renderList) return `CLI-UX NOT FOUND in ${__filename}`
     if (!flags.length) return ''
     return `\n${deps.chalk.blue('Flags:')}\n` + deps.renderList(deps.CLIFlags.flagUsages(flags)) + '\n'
   }

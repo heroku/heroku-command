@@ -1,8 +1,8 @@
 import { buildConfig, ICommand } from 'cli-engine-config'
 import { flags as Flags } from 'cli-flags'
-import { cli } from 'cli-ux'
 import * as nock from 'nock'
 import { Command as Base } from './command'
+import deps from './deps'
 
 class Command extends Base {
   static topic = 'foo'
@@ -11,7 +11,7 @@ class Command extends Base {
   static args = [{ name: 'myarg', required: false }]
 
   async run() {
-    cli.log('foo')
+    deps.cli!.log('foo')
   }
 }
 
@@ -35,7 +35,7 @@ test('has stdout', async () => {
   class Command extends Base {
     static flags = { print: Flags.string(), bool: Flags.boolean() }
     async run() {
-      cli.stdout.log(this.flags.print)
+      deps.cli!.stdout.log(this.flags.print)
     }
   }
 
@@ -47,7 +47,7 @@ test('has stderr', async () => {
   class Command extends Base {
     static flags = { print: Flags.string() }
     async run() {
-      cli.stderr.log(this.flags.print)
+      deps.cli!.stderr.log(this.flags.print)
     }
   }
 
