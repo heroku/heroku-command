@@ -135,23 +135,11 @@ export abstract class Command {
   protected async done() {
     try {
       if (deps.cli) await deps.cli.done()
-      if (deps.cli && !deps.cli.config.mock) await this.exitAfterStdoutFlush()
     } catch (err) {
       if (deps.cli) deps.cli.warn(err)
       else
         // tslint:disable-next-line
         console.error(err)
     }
-  }
-
-  private async exitAfterStdoutFlush() {
-    const { timeout } = require('./util')
-    await timeout(this.flush(), 10000)
-  }
-
-  private flush(): Promise<any> {
-    let p = new Promise(resolve => process.stdout.once('drain', resolve))
-    process.stdout.write('')
-    return p
   }
 }
