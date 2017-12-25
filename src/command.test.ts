@@ -5,8 +5,7 @@ import { Command as Base } from './command'
 import deps from './deps'
 
 class Command extends Base {
-  static topic = 'foo'
-  static command = 'bar'
+  static id = 'foo:bar'
   static flags = { myflag: Flags.boolean() }
   static args = [{ name: 'myarg', required: false }]
 
@@ -64,8 +63,7 @@ test('parses args', async () => {
 
 test('has help', async () => {
   class Command extends Base {
-    static topic = 'config'
-    static command = 'get'
+    static id = 'config:get'
     static help = `this is
 
 some multiline help

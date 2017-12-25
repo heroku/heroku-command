@@ -25,8 +25,7 @@ export interface ICommandClass<T extends Command> {
 }
 
 export abstract class Command {
-  static topic: string
-  static command: string | undefined
+  static id: string
   static description: string | undefined
   static hidden: boolean
   static usage: string | undefined
@@ -38,13 +37,6 @@ export abstract class Command {
   // tslint:disable-next-line
   static _version = pjson.version
   static plugin: IPlugin | undefined
-
-  static get id(): string {
-    let cmd = []
-    if (this.topic) cmd.push(this.topic)
-    if (this.command) cmd.push(this.command)
-    return cmd.join(':')
-  }
 
   /**
    * instantiate and run the command setting {mock: true} in the config (shorthand method)

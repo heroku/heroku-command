@@ -13,8 +13,7 @@ class Command extends Base {
 deps.cli!.config.mock = true
 
 class AppsCreate extends Command {
-  static topic = 'apps'
-  static command = 'create'
+  static id = 'apps:create'
   static description = 'description of apps:create'
   static help = `some
 
@@ -57,8 +56,7 @@ multiline help
   })
 
   class AppsCreate3 extends Command {
-    static topic = 'apps'
-    static command = 'create'
+    static id = 'apps:create'
     static flags = {
       app: flags.string({ char: 'a', hidden: true }),
       foo: flags.string({ char: 'f', description: 'foobar' }),
@@ -78,8 +76,7 @@ Flags:
 
   test('has flags + description', () => {
     class CMD extends Command {
-      static topic = 'apps'
-      static command = 'create'
+      static id = 'apps:create'
       static description = 'description of apps:create'
       static flags = {
         app: flags.string({ char: 'a', hidden: true }),
@@ -100,8 +97,7 @@ Flags:
   })
 
   class AppsCreate1 extends Command {
-    static topic = 'apps'
-    static command = 'create'
+    static id = 'apps:create'
     static help = 'description of apps:create'
     static flags = {
       app: flags.string({ char: 'a', hidden: true }),
@@ -123,8 +119,7 @@ description of apps:create
   })
 
   class AppsCreate2 extends Command {
-    static topic = 'apps'
-    static command = 'create'
+    static id = 'apps:create'
     static description = 'description of apps:create'
     static args = [{ name: 'app_name', description: 'app to use' }]
   }
@@ -139,8 +134,7 @@ APP_NAME  app to use
   })
 
   class CMD extends Command {
-    static topic = 'apps'
-    static command = 'create2'
+    static id = 'apps:create2'
     static description = 'description of apps:create2'
     static args = [{ name: 'app_name', description: 'app to use' }]
   }
