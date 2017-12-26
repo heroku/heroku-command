@@ -25,11 +25,12 @@ export class Help {
   }
 
   command(cmd: ICommand): string {
-    let flags = Object.entries(cmd.flags || {})
-      .filter(([, f]) => !f.hidden)
-      .map(([k, f]) => {
-        f.name = k
-        return f
+    let flagDefs = cmd.flags || {}
+    let flags = Object.keys(flagDefs)
+      .filter(k => !flagDefs[k].hidden)
+      .map(k => {
+        flagDefs[k].name = k
+        return flagDefs[k]
       })
     let args = (cmd.args || []).filter(a => !a.hidden)
     let hasFlags = flags.length ? ` ${deps.chalk.blue('[flags]')}` : ''

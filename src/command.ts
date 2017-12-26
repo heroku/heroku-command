@@ -26,10 +26,6 @@ export interface ICommandClass<T extends Command> {
   new (config: Config): T
 }
 
-const deprecatedCLI = deprecate(() => {
-  return require('cli-ux').cli
-}, 'this.out and this.cli is deprecated. Please import the "cli-ux" module directly instead.')
-
 export abstract class Command {
   static id: string
   static description: string | undefined
@@ -49,9 +45,9 @@ export abstract class Command {
    */
   static mock: CommandMockFn = async function(argv: string[] = [], config: ConfigOptions = {}) {
     if (typeof argv === 'string') {
+      argv = Array.from(arguments)
       // old-style call
       deprecate(() => {
-        argv = Array.from(arguments)
         config = {}
       }, "`Command.mock('--foo', 'bar')` is deprecated. Please use `Command.mock(['--foo', 'bar'])` instead.")()
     }
@@ -59,9 +55,6 @@ export abstract class Command {
     const cmd = await this.run(argv, new deps.Config(config))
     return {
       cmd,
-      get out() {
-        return deprecatedCLI()
-      },
       stderr: deps.cli ? deps.cli.stderr.output : 'cli-ux not found',
       stdout: deps.cli ? deps.cli.stdout.output : 'cli-ux not found',
     }
