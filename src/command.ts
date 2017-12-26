@@ -2,6 +2,7 @@ const pjson = require('../package.json')
 import { ConfigOptions, IConfig, IPlugin } from 'cli-engine-config'
 import { args } from 'cli-flags'
 import { HTTP } from 'http-call'
+import { deprecate } from 'util'
 import deps from './deps'
 import { IFlag } from './flags'
 
@@ -42,6 +43,13 @@ export abstract class Command {
    * instantiate and run the command setting {mock: true} in the config (shorthand method)
    */
   static mock: CommandMockFn = async function(argv: string[] = [], config: ConfigOptions = {}) {
+    if (typeof argv === 'string') {
+      // old-style call
+      deprecate(() => {
+        argv = Array.from(arguments)
+        config = {}
+      }, "`Command.mock('--foo', 'bar')` is deprecated. Please use `Command.mock(['--foo', 'bar'])` instead.")()
+    }
     if (deps.cli) deps.cli.config.mock = true
     const cmd = await this.run(argv, deps.Config.buildConfig(config))
     return {

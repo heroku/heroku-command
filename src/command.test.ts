@@ -135,3 +135,15 @@ describe('http', () => {
     })
   }
 })
+
+test('allows deprecated input', async () => {
+  class Command extends Base {
+    static flags = { myflag: Flags.string() }
+    async run() {
+      deps.cli!.log(this.flags.myflag)
+    }
+  }
+
+  const { stdout } = await Command.mock('--myflag' as any, 'foo' as any)
+  expect(stdout).toEqual('foo\n')
+})
