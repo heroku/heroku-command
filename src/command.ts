@@ -25,6 +25,10 @@ export interface ICommandClass<T extends Command> {
   new (config: IConfig): T
 }
 
+const deprecatedCLI = deprecate(() => {
+  return require('cli-ux').cli
+}, 'this.out and this.cli is deprecated. Please import the "cli-ux" module directly instead.')
+
 export abstract class Command {
   static id: string
   static description: string | undefined
@@ -54,6 +58,9 @@ export abstract class Command {
     const cmd = await this.run(argv, deps.Config.buildConfig(config))
     return {
       cmd,
+      get out() {
+        return deprecatedCLI()
+      },
       stderr: deps.cli ? deps.cli.stderr.output : 'cli-ux not found',
       stdout: deps.cli ? deps.cli.stdout.output : 'cli-ux not found',
     }
