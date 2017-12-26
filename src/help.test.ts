@@ -1,4 +1,4 @@
-import { Config } from 'cli-engine-config'
+import { Config } from '@cli-engine/config'
 import { flags } from 'cli-flags'
 
 import { Command as Base } from './command'

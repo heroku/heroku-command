@@ -1,5 +1,5 @@
 import { Chalk } from 'chalk'
-import config = require('cli-engine-config')
+import config = require('@cli-engine/config')
 import CLIFlags = require('cli-flags')
 import CLI = require('cli-ux')
 import HTTP = require('http-call')
@@ -18,7 +18,7 @@ export const deps = {
     }
   },
   get HTTP(): typeof HTTP.HTTP { return fetch('http-call').HTTP },
-  get Config(): typeof config.Config { return fetch('cli-engine-config').Config },
+  get Config(): typeof config.Config { return fetch('@cli-engine/config').Config },
   get CLIFlags(): typeof CLIFlags { return fetch('cli-flags') },
   get chalk(): Chalk { return fetch('chalk') },
 

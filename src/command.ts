@@ -1,5 +1,5 @@
 const pjson = require('../package.json')
-import { Config, ConfigOptions, IPlugin } from 'cli-engine-config'
+import { Config, ConfigOptions, IPlugin } from '@cli-engine/config'
 import { args } from 'cli-flags'
 import { HTTP } from 'http-call'
 import { deprecate } from 'util'

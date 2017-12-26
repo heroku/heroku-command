@@ -1,4 +1,4 @@
-import { Config, ICommand } from 'cli-engine-config'
+import { Config, ICommand } from '@cli-engine/config'
 import { flags as Flags } from 'cli-flags'
 import * as nock from 'nock'
 

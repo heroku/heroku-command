@@ -1,4 +1,4 @@
-import { Config, ICommand } from 'cli-engine-config'
+import { Config, ICommand } from '@cli-engine/config'
 import { args, flags } from 'cli-flags'
 
 import deps from './deps'

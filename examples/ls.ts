@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-import { Command, flags } from '..' // use cli-engine-command outside this repo
+import { Command, flags } from '..' // use @cli-engine/command outside this repo
 import { cli } from 'cli-ux'
 import * as fs from 'fs'
 
