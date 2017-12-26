@@ -10,6 +10,18 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@cli-engine/config@^5.0.0-beta.1":
+  version "5.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.0-beta.1.tgz#87c5e3c11f240c7013e4e7ef940d6ba1d798b06e"
+
+"@heroku-cli/color@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.0.3.tgz#f94866b351f20771ee958f07c790011ceb36c066"
+  dependencies:
+    ansi-styles "^3.2.0"
+    chalk "^2.3.0"
+    supports-color "^5.1.0"
+
 "@heroku-cli/tslint@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.0.3.tgz#a7258f8a365ea2d0e9199b73328f913bf2656443"
@@ -672,16 +684,16 @@ cli-flags@^2.0.3:
     "@heroku/linewrap" "^1.0.0"
     ts-lodash "^4.0.8"
 
-cli-ux@^2.0.14:
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.14.tgz#37c3610566729ca88a0579d6e3f1f8ab75cb84c6"
+cli-ux@^2.0.15:
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.15.tgz#a8be9f83e64d94331394bd4af7a9ecf501a16ff4"
   dependencies:
+    "@heroku-cli/color" "^1.0.3"
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     ansi-styles "^3.2.0"
     cardinal "^1.0.0"
     chalk "^2.3.0"
-    heroku-cli-color "^1.0.3"
     lodash "^4.17.4"
     moment "^2.20.1"
     password-prompt "^1.0.3"
@@ -1421,14 +1433,6 @@ hawk@~6.0.2:
     cryptiles "3.x.x"
     hoek "4.x.x"
     sntp "2.x.x"
-
-heroku-cli-color@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/heroku-cli-color/-/heroku-cli-color-1.0.3.tgz#44c125d2ba3e27df94e927d694dbc740d7712b80"
-  dependencies:
-    ansi-styles "^3.2.0"
-    chalk "^2.3.0"
-    supports-color "^5.1.0"
 
 hoek@2.x.x:
   version "2.16.3"
