@@ -1,12 +1,13 @@
-import { IConfig } from 'cli-engine-config'
+import { Config } from 'cli-engine-config'
 import { flags } from 'cli-flags'
+
 import deps from './deps'
 
 export interface ICompletionContext {
   args?: { [name: string]: string }
   flags?: { [name: string]: string }
   argv?: string[]
-  config: IConfig
+  config: Config
 }
 
 export interface ICompletion {

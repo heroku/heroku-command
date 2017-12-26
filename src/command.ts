@@ -1,8 +1,9 @@
 const pjson = require('../package.json')
-import { ConfigOptions, IConfig, IPlugin } from 'cli-engine-config'
+import { Config, ConfigOptions, IPlugin } from 'cli-engine-config'
 import { args } from 'cli-flags'
 import { HTTP } from 'http-call'
 import { deprecate } from 'util'
+
 import deps from './deps'
 import { IFlag } from './flags'
 
@@ -12,7 +13,7 @@ export interface IMockReturn<T extends Command> {
   stderr: string
 }
 
-export type CommandRunFn = <T extends Command>(this: ICommandClass<T>, argv: string[], config: IConfig) => Promise<T>
+export type CommandRunFn = <T extends Command>(this: ICommandClass<T>, argv: string[], config: Config) => Promise<T>
 export type CommandMockFn = <T extends Command>(
   this: ICommandClass<T>,
   argv?: string[],
@@ -22,7 +23,7 @@ export type CommandMockFn = <T extends Command>(
 export interface ICommandClass<T extends Command> {
   mock: CommandMockFn
   run: CommandRunFn
-  new (config: IConfig): T
+  new (config: Config): T
 }
 
 const deprecatedCLI = deprecate(() => {
@@ -55,7 +56,7 @@ export abstract class Command {
       }, "`Command.mock('--foo', 'bar')` is deprecated. Please use `Command.mock(['--foo', 'bar'])` instead.")()
     }
     if (deps.cli) deps.cli.config.mock = true
-    const cmd = await this.run(argv, deps.Config.buildConfig(config))
+    const cmd = await this.run(argv, new deps.Config(config))
     return {
       cmd,
       get out() {
@@ -69,7 +70,7 @@ export abstract class Command {
   /**
    * instantiate and run the command
    */
-  static run: CommandRunFn = async function(argv: string[] = [], config: IConfig) {
+  static run: CommandRunFn = async function(argv: string[] = [], config: Config) {
     const cmd = new this(config)
     try {
       await cmd.init(argv)
@@ -82,12 +83,12 @@ export abstract class Command {
     return cmd
   }
 
-  static buildHelp(config: IConfig): string {
+  static buildHelp(config: Config): string {
     let help = new deps.Help(config)
     return help.command(this)
   }
 
-  static buildHelpLine(config: IConfig): [string, string | undefined] {
+  static buildHelpLine(config: Config): [string, string | undefined] {
     let help = new deps.Help(config)
     return help.commandLine(this)
   }
@@ -110,7 +111,7 @@ export abstract class Command {
     return this.constructor as typeof Command
   }
 
-  constructor(protected config: IConfig) {
+  constructor(protected config: Config) {
     if (deps.HTTP) {
       this.http = deps.HTTP.defaults({
         headers: {

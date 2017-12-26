@@ -10,6 +10,12 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@heroku-cli/tslint@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.0.3.tgz#a7258f8a365ea2d0e9199b73328f913bf2656443"
+  dependencies:
+    tslint-config-prettier "*"
+
 "@heroku/linewrap@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@heroku/linewrap/-/linewrap-1.0.0.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"

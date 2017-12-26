@@ -1,7 +1,7 @@
 {
-  "name": "cli-engine-command",
+  "name": "@cli-engine/command",
   "description": "base CLI command for cli-engine",
-  "version": "11.0.14",
+  "version": "11.0.0-beta.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
@@ -9,6 +9,7 @@
     "cli-flags": "^2.0.3"
   },
   "devDependencies": {
+    "@heroku-cli/tslint": "^1.0.3",
     "@types/ansi-styles": "^2.0.30",
     "@types/jest": "21.1.9",
     "@types/nock": "9.1.0",
@@ -29,7 +30,7 @@
     "typescript": "2.6.2"
   },
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=8.0.0"
   },
   "files": [
     "lib"

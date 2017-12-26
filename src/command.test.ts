@@ -1,6 +1,7 @@
-import { buildConfig, ICommand } from 'cli-engine-config'
+import { Config, ICommand } from 'cli-engine-config'
 import { flags as Flags } from 'cli-flags'
 import * as nock from 'nock'
+
 import { Command as Base } from './command'
 import deps from './deps'
 
@@ -70,7 +71,7 @@ some multiline help
 `
     async run() {}
   }
-  let config = buildConfig()
+  let config = new Config()
   expect(Command.buildHelp(config)).toEqual(`Usage: cli-engine config:get
 
 this is
@@ -86,7 +87,7 @@ describe('http', () => {
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     nock.disableNetConnect()
-    command = new Command(buildConfig())
+    command = new Command(new Config())
   })
   afterEach(() => {
     api.done()
@@ -100,7 +101,7 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command(buildConfig({ platform: 'darwin', arch: 'x64' }))
+    let command = new Command(new Config({ platform: 'darwin', arch: 'x64' }))
     let { body } = await command.http.get('https://api.heroku.com')
     expect(body).toEqual({ message: 'ok' })
   })
@@ -121,7 +122,7 @@ describe('http', () => {
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command(buildConfig({ platform: 'darwin', arch: 'x64' }))
+    let command = new Command(new Config({ platform: 'darwin', arch: 'x64' }))
     const { response } = await command.http.stream('https://api.heroku.com')
     const body = JSON.parse(await concat(response))
     expect(body).toEqual({ message: 'ok' })
