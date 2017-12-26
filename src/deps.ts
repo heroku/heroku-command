@@ -1,5 +1,5 @@
-import { Chalk } from 'chalk'
 import config = require('@cli-engine/config')
+import { Chalk } from 'chalk'
 import CLIFlags = require('cli-flags')
 import CLI = require('cli-ux')
 import HTTP = require('http-call')
