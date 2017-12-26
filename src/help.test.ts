@@ -1,4 +1,4 @@
-import { buildConfig } from 'cli-engine-config'
+import { Config } from 'cli-engine-config'
 import { flags } from 'cli-flags'
 
 import { Command as Base } from './command'
@@ -29,7 +29,7 @@ multiline help
   }
 }
 
-const help = new Help(buildConfig())
+const help = new Help(new Config())
 
 describe('commandLine()', () => {
   test('has help', () => {
