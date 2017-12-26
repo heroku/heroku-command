@@ -96,12 +96,12 @@ describe('http', () => {
   test('makes an HTTP request', async () => {
     api = nock('https://api.heroku.com', {
       reqheaders: {
-        'user-agent': `cli-engine/0.0.0 (darwin-x64) node-${process.version}`,
+        'user-agent': `cli-engine/0.0.0 (freebsd-x86) node-${process.version}`,
       },
     })
     api.get('/').reply(200, { message: 'ok' })
 
-    let command = new Command(new Config({ platform: 'darwin', arch: 'x64' }))
+    let command = new Command(new Config({ platform: 'freebsd', arch: 'x86' }))
     let { body } = await command.http.get('https://api.heroku.com')
     expect(body).toEqual({ message: 'ok' })
   })
