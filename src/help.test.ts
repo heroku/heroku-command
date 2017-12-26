@@ -28,13 +28,7 @@ multiline help
   }
 }
 
-const help = new Help(
-  buildConfig({
-    aliases: {
-      'apps:create2': ['foo', 'bar'],
-    },
-  }),
-)
+const help = new Help(buildConfig())
 
 describe('commandLine()', () => {
   test('has help', () => {
@@ -137,6 +131,7 @@ APP_NAME  app to use
     static id = 'apps:create2'
     static description = 'description of apps:create2'
     static args = [{ name: 'app_name', description: 'app to use' }]
+    static aliases = ['foo', 'bar']
   }
   test('has aliases', () => {
     expect(help.command(CMD)).toEqual(`Usage: cli-engine apps:create2 [APP_NAME]

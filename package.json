@@ -5,7 +5,7 @@
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
-    "chalk": "2.3.0",
+    "chalk": "^2.3.0",
     "cli-flags": "^2.0.3"
   },
   "devDependencies": {
@@ -13,7 +13,7 @@
     "@types/jest": "21.1.9",
     "@types/nock": "9.1.0",
     "@types/node": "8.5.2",
-    "cli-engine-config": "5.0.7",
+    "cli-engine-config": "^5.0.9",
     "cli-ux": "^2.0.14",
     "del-cli": "1.1.0",
     "http-call": "^4.0.5",
@@ -41,9 +41,6 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
-  "peerDependencies": {
-    "cli-engine-config": "^5.0.2"
-  },
   "repository": "heroku/cli-engine-command",
   "scripts": {
     "clean": "del-cli lib",

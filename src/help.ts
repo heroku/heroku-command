@@ -36,7 +36,7 @@ export class Help {
     return [
       usage,
       cmd.description ? `\n${deps.chalk.bold(cmd.description.trim())}\n` : '',
-      this.renderAliases(this.config.aliases[cmd.id]),
+      this.renderAliases(cmd.aliases),
       this.renderArgs(args),
       this.renderFlags(flags),
       cmd.help ? `\n${cmd.help.trim()}\n` : '',
