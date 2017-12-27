@@ -5,18 +5,19 @@
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli-engine-command/issues",
   "dependencies": {
+    "@cli-engine/screen": "^0.0.0",
     "chalk": "^2.3.0",
-    "cli-flags": "^2.0.4"
+    "cli-flags": "^2.0.6"
   },
   "devDependencies": {
     "@cli-engine/config": "^5.0.10",
-    "@cli-engine/util": "^1.0.7",
+    "@cli-engine/util": "^1.0.8",
     "@heroku-cli/tslint": "^1.0.3",
     "@types/ansi-styles": "^2.0.30",
     "@types/jest": "21.1.9",
     "@types/nock": "9.1.0",
     "@types/node": "8.5.2",
-    "cli-ux": "^2.0.16",
+    "cli-ux": "^2.0.17",
     "del-cli": "1.1.0",
     "http-call": "^4.0.6",
     "husky": "^0.14.3",

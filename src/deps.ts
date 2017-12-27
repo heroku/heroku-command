@@ -1,4 +1,5 @@
 import config = require('@cli-engine/config')
+import screen = require('@cli-engine/screen')
 import { Chalk } from 'chalk'
 import CLIFlags = require('cli-flags')
 import CLI = require('cli-ux')
@@ -7,7 +8,6 @@ import HTTP = require('http-call')
 import errors = require('./errors')
 import help = require('./help')
 import list = require('./list')
-import screen = require('./screen')
 
 export const deps = {
   // remote
@@ -27,7 +27,7 @@ export const deps = {
   get Help(): typeof help.Help { return fetch('./help').Help },
   get HelpErr(): typeof errors.HelpErr { return fetch('./errors').HelpErr },
   get renderList(): typeof list.renderList { return fetch('./list').renderList },
-  get screen(): typeof screen.default { return fetch('./screen').default },
+  get screen(): typeof screen { return fetch('@cli-engine/screen') },
 }
 
 const cache: any = {}
