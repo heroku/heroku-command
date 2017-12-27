@@ -70,6 +70,8 @@ export abstract class Command {
       await cmd.run()
       await cmd.done()
     } catch (err) {
+      // throw HelpErr to allow the CLI to do something with it
+      if (err instanceof deps.HelpErr) throw err
       if (!deps.cli) throw err
       deps.cli.error(err)
     }
