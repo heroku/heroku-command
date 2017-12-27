@@ -4,6 +4,7 @@ import * as nock from 'nock'
 
 import { Command as Base } from './command'
 import deps from './deps'
+import { HelpErr } from './errors'
 
 class Command extends Base {
   static id = 'foo:bar'
@@ -55,11 +56,48 @@ test('has stderr', async () => {
   expect(stderr).toEqual('foo\n')
 })
 
-test('parses args', async () => {
-  const { cmd } = await Command.mock(['one'])
-  expect(cmd.flags).toEqual({})
-  expect(cmd.argv).toEqual(['one'])
-  expect(cmd.args).toEqual({ myarg: 'one' })
+describe('parsing', () => {
+  test('parses args', async () => {
+    const { cmd } = await Command.mock(['one'])
+    expect(cmd.flags).toEqual({})
+    expect(cmd.argv).toEqual(['one'])
+    expect(cmd.args).toEqual({ myarg: 'one' })
+  })
+
+  describe('help', () => {
+    test('allows "-h" as an argument', async () => {
+      const { cmd } = await Command.mock(['-h'])
+      expect(cmd.argv).toEqual(['-h'])
+      expect(cmd.args).toEqual({ myarg: '-h' })
+    })
+
+    test('raises help error when "-h" is unexpected', async () => {
+      expect.assertions(1)
+      try {
+        await Command.mock(['foo', '-h'])
+      } catch (err) {
+        expect(err).toBeInstanceOf(HelpErr)
+      }
+    })
+
+    test('raises help error when "help" is unexpected', async () => {
+      expect.assertions(1)
+      try {
+        await Command.mock(['foo', 'help'])
+      } catch (err) {
+        expect(err).toBeInstanceOf(HelpErr)
+      }
+    })
+
+    test('does not raise help error when not a help string', async () => {
+      expect.assertions(1)
+      try {
+        await Command.mock(['foo', 'bar'])
+      } catch (err) {
+        expect(err).not.toBeInstanceOf(HelpErr)
+      }
+    })
+  })
 })
 
 test('has help', async () => {
@@ -137,14 +175,29 @@ describe('http', () => {
   }
 })
 
-test('allows deprecated input', async () => {
-  class Command extends Base {
-    static flags = { myflag: Flags.string() }
-    async run() {
-      deps.cli!.log(this.flags.myflag)
-    }
-  }
+describe('deprecate', () => {
+  const util = require('util')
+  const { deprecate: origDeprecate } = util
 
-  const { stdout } = await Command.mock('--myflag' as any, 'foo' as any)
-  expect(stdout).toEqual('foo\n')
+  beforeEach(() => {
+    util.deprecate = jest.fn().mockImplementation(fn => () => {
+      fn()
+    })
+  })
+
+  afterEach(() => {
+    util.deprecate = origDeprecate
+  })
+
+  test('allows deprecated input', async () => {
+    class Command extends Base {
+      static flags = { myflag: Flags.string() }
+      async run() {
+        deps.cli!.log(this.flags.myflag)
+      }
+    }
+
+    const { stdout } = await Command.mock('--myflag' as any, 'foo' as any)
+    expect(stdout).toEqual('foo\n')
+  })
 })

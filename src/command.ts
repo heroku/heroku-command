@@ -122,15 +122,22 @@ export abstract class Command {
   abstract async run(): Promise<void>
 
   protected async init(argv: string[]) {
-    const parse = await deps.CLIFlags.parse({
-      argv,
-      args: this.ctor.args || [],
-      flags: this.ctor.flags || {},
-      strict: !this.ctor.variableArgs,
-    })
-    this.flags = parse.flags
-    this.argv = parse.argv
-    this.args = parse.args
+    try {
+      const parse = await deps.CLIFlags.parse({
+        argv,
+        args: this.ctor.args || [],
+        flags: this.ctor.flags || {},
+        strict: !this.ctor.variableArgs,
+      })
+      this.flags = parse.flags
+      this.argv = parse.argv
+      this.args = parse.args
+    } catch (err) {
+      if (err.message.match(/^Unexpected argument: (-h|help)/)) {
+        throw new deps.HelpErr(err.message)
+      }
+      throw err
+    }
   }
 
   protected async done() {
