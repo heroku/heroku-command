@@ -8,14 +8,14 @@
     "@heroku/linewrap": "^1.0.0",
     "ansi-escapes": "^3.0.0",
     "cardinal": "1.x",
-    "chalk": "^2.1.0",
+    "chalk": "^2.3.0",
     "cli-ux": "^2.0.17",
-    "fs-extra": "^4.0.2",
-    "http-call": "^3.0.2",
+    "fs-extra": "^5.0.0",
+    "http-call": "^4.0.6",
     "lodash.maxby": "^4.6.0",
-    "moment": "^2.18.1",
+    "moment": "^2.20.1",
     "string": "3.x",
-    "supports-color": "^4.4.0"
+    "supports-color": "^5.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
