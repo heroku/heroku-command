@@ -4,6 +4,7 @@ import Base from './command'
 import { type ICommand, buildConfig } from 'cli-engine-config'
 import { flags as Flags } from './flags'
 import nock from 'nock'
+import cli from 'cli-ux'
 
 class Command extends Base<*> {
   static topic = 'foo'
@@ -31,7 +32,7 @@ test('has stdout', async () => {
   class Command extends Base<*> {
     static flags = { print: Flags.string(), bool: Flags.boolean() }
     async run() {
-      this.out.stdout.log(this.flags.print)
+      cli.stdout.log(this.flags.print)
     }
   }
 
@@ -43,7 +44,7 @@ test('has stderr', async () => {
   class Command extends Base<*> {
     static flags = { print: Flags.string() }
     async run() {
-      this.out.stderr.log(this.flags.print)
+      cli.stderr.log(this.flags.print)
     }
   }
 

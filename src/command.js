@@ -5,7 +5,7 @@ import pjson from '../package.json'
 import { buildConfig, type Config, type ConfigOptions, type Arg, type Plugin } from 'cli-engine-config'
 import HTTP from 'http-call'
 import Help from './help'
-import type { CLI } from 'cli-ux'
+import cli from 'cli-ux'
 
 export default class Command<Flags: InputFlags> {
   static topic: string
@@ -44,17 +44,15 @@ export default class Command<Flags: InputFlags> {
     try {
       await cmd.init()
       await cmd.run()
-      await cmd.out.done()
+      await cli.done()
     } catch (err) {
-      cmd.out.error(err)
+      cli.error(err)
     }
     return cmd
   }
 
   config: Config
   http: Class<HTTP>
-  cli: CLI
-  out: CLI
   flags: OutputFlags = {}
   argv: string[]
   args: { [name: string]: string } = {}
@@ -62,9 +60,7 @@ export default class Command<Flags: InputFlags> {
   constructor(options: { config?: ConfigOptions } = {}) {
     this.config = buildConfig(options.config)
     this.argv = this.config.argv
-    const { cli } = require('cli-ux')
-    this.out = this.cli = cli
-    this.out.color = require('./color').color
+
     this.http = HTTP.defaults({
       headers: {
         'user-agent': `${this.config.name}/${this.config.version} (${this.config.platform}-${this.config
@@ -73,12 +69,22 @@ export default class Command<Flags: InputFlags> {
     })
   }
 
+  get cli() {
+    return require('util').deprecate(
+      () => require('cli-ux').default,
+      'this.out and this.cli is deprecated. Please import the "cli-ux" module directly instead.',
+    )()
+  }
+  get out() {
+    return this.cli
+  }
+
   async init() {
     const parser = new Parser({
       flags: this.constructor.flags || {},
       args: this.constructor.args || [],
       variableArgs: this.constructor.variableArgs,
-      cmd: this,
+      cmd: (this: any),
     })
     const { argv, flags, args } = await parser.parse({ flags: this.flags, argv: this.argv.slice(2) })
     this.flags = flags
@@ -101,11 +107,11 @@ export default class Command<Flags: InputFlags> {
   async run(...rest: void[]): Promise<void> {}
 
   get stdout(): string {
-    return this.out.stdout.output
+    return cli.stdout.output
   }
 
   get stderr(): string {
-    return this.out.stderr.output
+    return cli.stderr.output
   }
 
   static buildHelp(config: Config): string {
