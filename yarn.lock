@@ -753,9 +753,9 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@^2.0.17:
-  version "2.0.17"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.17.tgz#8e510cf169f6ad5ea70ca7a430d166a9b6b33ddf"
+cli-ux@^2.0.20:
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.20.tgz#a210d1b0aceba4eab2ca2937f98487b703b9b563"
   dependencies:
     "@cli-engine/screen" "^0.0.0"
     "@heroku-cli/color" "^1.0.4"
