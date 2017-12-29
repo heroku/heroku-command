@@ -32,7 +32,7 @@ test('has stdout', async () => {
   class Command extends Base<*> {
     static flags = { print: Flags.string(), bool: Flags.boolean() }
     async run() {
-      cli.stdout.log(this.flags.print)
+      this.out.stdout.log(this.flags.print)
     }
   }
 

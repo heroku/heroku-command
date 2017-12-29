@@ -70,7 +70,8 @@ export default class Command<Flags: InputFlags> {
   }
 
   get cli() {
-    return require('util').deprecate(
+    let deprecate = process.env.DEBUG ? require('util').deprecate : (fn, _) => () => fn()
+    return deprecate(
       () => require('cli-ux').default,
       'this.out and this.cli is deprecated. Please import the "cli-ux" module directly instead.',
     )()
