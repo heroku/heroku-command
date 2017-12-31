@@ -102,11 +102,14 @@ export abstract class Command {
   help: null
   aliases: null
 
+  protected debug: (...args: any[]) => void
+
   get ctor(): typeof Command {
     return this.constructor as typeof Command
   }
 
   constructor(protected config: Config) {
+    this.debug = fetchDebug(this.ctor.id)
     if (deps.HTTP) {
       this.http = deps.HTTP.defaults({
         headers: {
@@ -124,6 +127,7 @@ export abstract class Command {
   abstract async run(): Promise<void>
 
   protected async init(argv: string[]) {
+    this.debug('init version: %s argv: %o', this.ctor._version, argv)
     try {
       const parse = await deps.CLIFlags.parse({
         argv,
@@ -151,5 +155,13 @@ export abstract class Command {
         // tslint:disable-next-line
         console.error(err)
     }
+  }
+}
+
+function fetchDebug(id: string) {
+  try {
+    return require('debug')(`cli:command:${id}`)
+  } catch (err) {
+    return () => {}
   }
 }
