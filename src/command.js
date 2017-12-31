@@ -33,6 +33,7 @@ export default class Command<Flags: InputFlags> {
    */
   static async mock(...argv: string[]): Promise<this> {
     argv.unshift('argv0', 'cmd')
+    cli.config.mock = true
     return this.run({ argv, mock: true })
   }
 
