@@ -17,7 +17,7 @@
     "@types/jest": "22.0.0",
     "@types/nock": "9.1.0",
     "@types/node": "8.5.2",
-    "cli-ux": "^2.0.20",
+    "cli-ux": "^2.0.21",
     "del-cli": "1.1.0",
     "http-call": "^4.0.6",
     "husky": "^0.14.3",
