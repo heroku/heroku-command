@@ -5,7 +5,7 @@ import { HTTP } from 'http-call'
 import { deprecate } from 'util'
 
 import deps from './deps'
-import { IFlag } from './flags'
+import * as flags from './flags'
 
 export interface IMockReturn<T extends Command> {
   cmd: T
@@ -34,7 +34,7 @@ export abstract class Command {
   static help: string | undefined
   static aliases: string[] = []
   static variableArgs = false
-  static flags: { [name: string]: IFlag<any> }
+  static flags: flags.Input
   static args: args.IArg[] = []
   // tslint:disable-next-line
   static _version = pjson.version
