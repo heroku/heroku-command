@@ -10,8 +10,8 @@
     "cli-flags": "^2.0.7"
   },
   "devDependencies": {
-    "@cli-engine/config": "^5.0.11",
-    "@cli-engine/util": "^1.0.12",
+    "@cli-engine/config": "^5.1.0",
+    "@cli-engine/util": "^1.1.1",
     "@heroku-cli/tslint": "^1.1.2",
     "@types/ansi-styles": "^2.0.30",
     "@types/jest": "22.0.1",
@@ -19,7 +19,7 @@
     "@types/node": "8.5.7",
     "cli-ux": "^2.0.21",
     "del-cli": "1.1.0",
-    "http-call": "^4.0.6",
+    "http-call": "^4.0.8",
     "husky": "^0.14.3",
     "jest": "^22.0.4",
     "nock": "^9.1.5",
