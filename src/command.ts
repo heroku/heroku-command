@@ -38,6 +38,7 @@ export abstract class Command {
   static args: args.IArg[] = []
   // tslint:disable-next-line
   static _version = pjson.version
+  static base = `${pjson.name}@${pjson.version}`
   static plugin: IPlugin | undefined
 
   /**
